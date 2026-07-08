@@ -8,6 +8,9 @@ export default function Home() {
       <a className="underline" href="/forecast">
         Forecast
       </a>
+      <a className="underline" href="/dashboard">
+        Dashboard
+      </a>
     </main>
   );
 }

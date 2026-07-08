@@ -1,6 +1,6 @@
 const PAGE_SIZE = 1000;
 
-type RangedResult<T> = { data: T[] | null; error: { message: string } | null };
+export type RangedResult<T> = { data: T[] | null; error: { message: string } | null };
 
 // Supabase/PostgREST caps unranged selects at a default max-rows setting (1000 here) —
 // anything reading a potentially large table must page through with .range().
