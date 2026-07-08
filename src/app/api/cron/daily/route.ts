@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { syncCustomerInvoices } from "@/lib/sync/customerInvoices";
-import { syncSupplierInvoices } from "@/lib/sync/supplierInvoices";
-import { computePaymentDelayStats } from "@/lib/factoring/paymentDelayStats";
-import { reallocateFactoring } from "@/lib/factoring/reallocate";
-import { generateCashEvents } from "@/lib/factoring/cashEvents";
-import { reconcileSalesForecast, reconcilePurchaseForecast } from "@/lib/forecast/reconcile";
+import { runDailyPipeline } from "@/lib/pipeline";
+
+// Observed up to ~70s locally against the full invoice set — request the max duration
+// Vercel's plan allows so a slow run doesn't get killed mid-pipeline.
+export const maxDuration = 60;
 
 // Vercel Cron hits this with `Authorization: Bearer $CRON_SECRET` (no user session) —
 // this route authenticates itself rather than relying on the session-based middleware,
@@ -16,23 +15,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const customerInvoices = await syncCustomerInvoices();
-    const supplierInvoices = await syncSupplierInvoices();
-    const paymentDelayStats = await computePaymentDelayStats();
-    const reallocation = await reallocateFactoring();
-    const cashEvents = await generateCashEvents();
-    const salesReconciled = await reconcileSalesForecast();
-    const purchasesReconciled = await reconcilePurchaseForecast();
-
-    return NextResponse.json({
-      customerInvoices,
-      supplierInvoices,
-      paymentDelayStats,
-      reallocation,
-      cashEvents,
-      salesReconciled,
-      purchasesReconciled,
-    });
+    const result = await runDailyPipeline();
+    return NextResponse.json(result);
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
