@@ -7,29 +7,73 @@ function monthKey(dateStr: string): string {
   return dateStr.slice(0, 7);
 }
 
-async function monthlyTotals(
+async function forecastTotals(
   supabase: ReturnType<typeof createAdminClient>,
-  table: "sales_forecast" | "purchase_forecast" | "customer_invoices" | "supplier_invoices",
-  dateField: string,
-  amountField: string,
+  table: "sales_forecast" | "purchase_forecast",
   startDate: string,
   endDate: string,
 ): Promise<Map<string, number>> {
-  const selectClause: string = `${dateField}, ${amountField}`;
-  type Row = Record<string, string | number>;
-  const rows = await fetchAllRows<Row>(
-    (from, to) =>
-      supabase
-        .from(table)
-        .select(selectClause)
-        .gte(dateField, startDate)
-        .lt(dateField, endDate)
-        .range(from, to) as unknown as PromiseLike<RangedResult<Row>>,
+  type Row = { expected_date: string; amount: number };
+  const rows = await fetchAllRows<Row>((from, to) =>
+    supabase
+      .from(table)
+      .select("expected_date, amount")
+      .gte("expected_date", startDate)
+      .lt("expected_date", endDate)
+      .range(from, to),
   );
   const totals = new Map<string, number>();
   for (const row of rows) {
-    const key = monthKey(String(row[dateField]));
-    totals.set(key, (totals.get(key) ?? 0) + Number(row[amountField]));
+    const key = monthKey(row.expected_date);
+    totals.set(key, (totals.get(key) ?? 0) + Number(row.amount));
+  }
+  return totals;
+}
+
+// Actual sales cash timing follows the factoring split (70% D+1, 30% at customer
+// payment) — cash_events already encodes this, so "actual" uses it directly rather
+// than the full invoice total on invoice_date.
+async function actualSalesFromCashEvents(
+  supabase: ReturnType<typeof createAdminClient>,
+  startDate: string,
+  endDate: string,
+): Promise<Map<string, number>> {
+  type Row = { event_date: string; amount: number };
+  const rows = await fetchAllRows<Row>((from, to) =>
+    supabase
+      .from("cash_events")
+      .select("event_date, amount")
+      .gte("event_date", startDate)
+      .lt("event_date", endDate)
+      .range(from, to),
+  );
+  const totals = new Map<string, number>();
+  for (const row of rows) {
+    const key = monthKey(row.event_date);
+    totals.set(key, (totals.get(key) ?? 0) + Number(row.amount));
+  }
+  return totals;
+}
+
+// Actual purchase cash timing is when the payment actually leaves the bank — paid_date
+// if settled, else due_date as the best estimate for still-open invoices. Same logic as
+// the balance projection. Fetched unfiltered (small table) since the effective date isn't
+// a real column to filter on server-side.
+async function actualPurchasesFromInvoices(
+  supabase: ReturnType<typeof createAdminClient>,
+  startDate: string,
+  endDate: string,
+): Promise<Map<string, number>> {
+  type Row = { due_date: string; paid_date: string | null; total: number };
+  const rows = await fetchAllRows<Row>((from, to) =>
+    supabase.from("supplier_invoices").select("due_date, paid_date, total").range(from, to),
+  );
+  const totals = new Map<string, number>();
+  for (const row of rows) {
+    const effectiveDate = row.paid_date ?? row.due_date;
+    if (effectiveDate < startDate || effectiveDate >= endDate) continue;
+    const key = monthKey(effectiveDate);
+    totals.set(key, (totals.get(key) ?? 0) + Number(row.total));
   }
   return totals;
 }
@@ -43,10 +87,10 @@ export async function computeForecastVsActual(monthsBack: number, monthsForward:
   const endDate = endMonth.toISOString().slice(0, 10);
 
   const [salesForecastTotals, actualSalesTotals, purchaseForecastTotals, actualPurchaseTotals] = await Promise.all([
-    monthlyTotals(supabase, "sales_forecast", "expected_date", "amount", startDate, endDate),
-    monthlyTotals(supabase, "customer_invoices", "invoice_date", "total", startDate, endDate),
-    monthlyTotals(supabase, "purchase_forecast", "expected_date", "amount", startDate, endDate),
-    monthlyTotals(supabase, "supplier_invoices", "invoice_date", "total", startDate, endDate),
+    forecastTotals(supabase, "sales_forecast", startDate, endDate),
+    actualSalesFromCashEvents(supabase, startDate, endDate),
+    forecastTotals(supabase, "purchase_forecast", startDate, endDate),
+    actualPurchasesFromInvoices(supabase, startDate, endDate),
   ]);
 
   const months: string[] = [];
