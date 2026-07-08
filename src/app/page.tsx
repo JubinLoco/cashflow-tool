@@ -5,6 +5,9 @@ export default function Home() {
       <a className="underline" href="/api/fortnox/connect">
         Connect to Fortnox
       </a>
+      <a className="underline" href="/forecast">
+        Forecast
+      </a>
     </main>
   );
 }
