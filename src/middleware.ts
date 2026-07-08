@@ -2,8 +2,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 const PUBLIC_PATHS = ["/login"];
+// Authenticates itself via CRON_SECRET (see src/app/api/cron/daily/route.ts) — Vercel
+// Cron invocations carry no user session, so the normal session check doesn't apply here.
+const BEARER_AUTH_PATHS = ["/api/cron"];
 
 export async function middleware(request: NextRequest) {
+  if (BEARER_AUTH_PATHS.some((p) => request.nextUrl.pathname.startsWith(p))) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
