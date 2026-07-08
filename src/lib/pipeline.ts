@@ -5,25 +5,27 @@ import { reallocateFactoring } from "@/lib/factoring/reallocate";
 import { generateCashEvents } from "@/lib/factoring/cashEvents";
 import { reconcileSalesForecast, reconcilePurchaseForecast } from "@/lib/forecast/reconcile";
 
-// The full daily refresh: pull new/changed invoices, recompute factoring, then
-// reconcile forecasts against what just synced. Shared by the Vercel cron route and
-// the session-authenticated manual "Sync now" route so both stay in lockstep.
-export async function runDailyPipeline() {
+// Split into three phases — sync, factoring, reconcile — because running all of them in
+// a single request occasionally exceeded Vercel's function timeout (observed up to 69s
+// combined, hit a hard 60s FUNCTION_INVOCATION_TIMEOUT in production). Each phase alone
+// stays comfortably within budget. Used by both the CRON_SECRET-authenticated
+// /api/cron/* routes (staggered in vercel.json) and the session-authenticated routes
+// the manual "Sync now" button calls in sequence.
+export async function runSyncPhase() {
   const customerInvoices = await syncCustomerInvoices();
   const supplierInvoices = await syncSupplierInvoices();
+  return { customerInvoices, supplierInvoices };
+}
+
+export async function runFactoringPhase() {
   const paymentDelayStats = await computePaymentDelayStats();
   const reallocation = await reallocateFactoring();
   const cashEvents = await generateCashEvents();
+  return { paymentDelayStats, reallocation, cashEvents };
+}
+
+export async function runReconcilePhase() {
   const salesReconciled = await reconcileSalesForecast();
   const purchasesReconciled = await reconcilePurchaseForecast();
-
-  return {
-    customerInvoices,
-    supplierInvoices,
-    paymentDelayStats,
-    reallocation,
-    cashEvents,
-    salesReconciled,
-    purchasesReconciled,
-  };
+  return { salesReconciled, purchasesReconciled };
 }

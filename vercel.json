@@ -1,8 +1,16 @@
 {
   "crons": [
     {
-      "path": "/api/cron/daily",
+      "path": "/api/cron/sync",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/factoring",
+      "schedule": "15 4 * * *"
+    },
+    {
+      "path": "/api/cron/reconcile",
+      "schedule": "30 4 * * *"
     }
   ]
 }

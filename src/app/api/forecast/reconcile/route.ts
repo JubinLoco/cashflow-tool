@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { reconcileSalesForecast, reconcilePurchaseForecast } from "@/lib/forecast/reconcile";
+import { runReconcilePhase } from "@/lib/pipeline";
+
+export const maxDuration = 60;
 
 export async function GET() {
   try {
-    const sales = await reconcileSalesForecast();
-    const purchases = await reconcilePurchaseForecast();
-    return NextResponse.json({ sales, purchases });
+    return NextResponse.json(await runReconcilePhase());
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
