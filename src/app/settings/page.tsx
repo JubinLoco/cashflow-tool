@@ -7,6 +7,12 @@ type Settings = {
   danger_warning_threshold?: number;
   danger_bankruptcy_threshold?: number;
   tax_buffer_threshold?: number;
+  tax_pct_of_sales?: number;
+  tax_due_day?: number;
+  gross_margin_pct?: number;
+  foxess_share_pct?: number;
+  foxess_payment_days?: number;
+  other_supplier_payment_days?: number;
 };
 
 type FacilityLimits = {
@@ -129,7 +135,7 @@ export default function SettingsPage() {
   const visibleSuppliers = showUntaggedOnly ? suppliers.filter((s) => !s.category) : suppliers;
 
   return (
-    <main className="p-10 font-sans max-w-3xl mx-auto flex flex-col gap-10">
+    <main className="p-10 font-sans max-w-3xl w-full mx-auto flex flex-col gap-10">
       <h1 className="text-2xl font-semibold">Settings</h1>
       {saved && <p className="text-green-700 text-sm">Saved.</p>}
 
@@ -189,6 +195,52 @@ export default function SettingsPage() {
             </button>
           </form>
         )}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-1">Derived tax & material cost</h2>
+        <p className="text-xs text-zinc-500 mb-3 max-w-md">
+          Tax and material cost aren&apos;t entered separately — they&apos;re computed live from unmatched sales
+          forecast entries using these ratios, so changing a sales forecast automatically changes what it implies.
+        </p>
+        <form onSubmit={saveSettings} className="flex flex-col gap-2 text-sm max-w-xs">
+          <NumberField
+            label="Tax (% of previous month's sales)"
+            value={settings.tax_pct_of_sales}
+            step={0.01}
+            onChange={(v) => setSettings((s) => ({ ...s, tax_pct_of_sales: v }))}
+          />
+          <NumberField
+            label="Tax due day of month"
+            value={settings.tax_due_day}
+            onChange={(v) => setSettings((s) => ({ ...s, tax_due_day: v }))}
+          />
+          <NumberField
+            label="Gross margin (0-1)"
+            value={settings.gross_margin_pct}
+            step={0.01}
+            onChange={(v) => setSettings((s) => ({ ...s, gross_margin_pct: v }))}
+          />
+          <NumberField
+            label="FoxESS share of material cost (0-1)"
+            value={settings.foxess_share_pct}
+            step={0.01}
+            onChange={(v) => setSettings((s) => ({ ...s, foxess_share_pct: v }))}
+          />
+          <NumberField
+            label="FoxESS payment terms (days)"
+            value={settings.foxess_payment_days}
+            onChange={(v) => setSettings((s) => ({ ...s, foxess_payment_days: v }))}
+          />
+          <NumberField
+            label="Other supplier payment terms (days)"
+            value={settings.other_supplier_payment_days}
+            onChange={(v) => setSettings((s) => ({ ...s, other_supplier_payment_days: v }))}
+          />
+          <button type="submit" className="rounded bg-foreground text-background px-3 py-1.5 w-fit mt-2">
+            Save
+          </button>
+        </form>
       </section>
 
       <section>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import BalanceChart from "./BalanceChart";
 import ComparisonChart from "./ComparisonChart";
+import { formatSEK } from "@/lib/format";
 
 type LineItem = { amount: number; description: string };
 type ProjectionPoint = {
@@ -52,14 +53,14 @@ export default function DashboardPage() {
   const firstDanger = projection?.points.find((p) => p.level !== "ok");
 
   return (
-    <main className="p-10 font-sans max-w-5xl mx-auto">
+    <main className="p-10 font-sans max-w-[1800px] w-full mx-auto">
       <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <StatTile label="Starting balance" value={projection ? `${Math.round(projection.startingBalance).toLocaleString()} SEK` : "…"} />
+        <StatTile label="Starting balance" value={projection ? `${formatSEK(projection.startingBalance)} SEK` : "…"} />
         <StatTile
           label="Projected balance (end of horizon)"
-          value={projection ? `${Math.round(projection.points.at(-1)?.balance ?? 0).toLocaleString()} SEK` : "…"}
+          value={projection ? `${formatSEK(projection.points.at(-1)?.balance ?? 0)} SEK` : "…"}
         />
         <StatTile
           label="First danger date"

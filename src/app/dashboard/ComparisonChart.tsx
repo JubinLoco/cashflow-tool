@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { formatSEK } from "@/lib/format";
 
 type MonthlyComparison = { month: string; forecast: number; actual: number };
 
@@ -77,17 +78,17 @@ export default function ComparisonChart({ title, data }: { title: string; data: 
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="text-left border-b" style={{ borderColor: "var(--gridline)" }}>
-              <th className="py-1">Month</th>
-              <th className="py-1">Forecast</th>
-              <th className="py-1">Actual</th>
+              <th className="py-2 px-3">Month</th>
+              <th className="py-2 px-3">Forecast</th>
+              <th className="py-2 px-3">Actual</th>
             </tr>
           </thead>
           <tbody>
             {data.map((d) => (
               <tr key={d.month} className="border-b" style={{ borderColor: "var(--gridline)" }}>
-                <td className="py-1">{d.month}</td>
-                <td className="py-1">{d.forecast.toLocaleString()}</td>
-                <td className="py-1">{d.actual.toLocaleString()}</td>
+                <td className="py-2 px-3">{d.month}</td>
+                <td className="py-2 px-3">{formatSEK(d.forecast)}</td>
+                <td className="py-2 px-3">{formatSEK(d.actual)}</td>
               </tr>
             ))}
           </tbody>

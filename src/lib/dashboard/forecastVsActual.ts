@@ -1,10 +1,35 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows, type RangedResult } from "@/lib/supabase/fetchAll";
+import { loadDerivationSettings, deriveTaxFlows, deriveMaterialCostFlows } from "@/lib/dashboard/derivedForecast";
 
 export type MonthlyComparison = { month: string; forecast: number; actual: number };
 
 function monthKey(dateStr: string): string {
   return dateStr.slice(0, 7);
+}
+
+// Tax and material cost derived from unmatched sales forecast (see derivedForecast.ts) —
+// bucketed by the derived flow's own date, not the source sale's date, since a material
+// cost can land 30-55 days after the sale that generated it.
+async function derivedPurchaseTotals(
+  supabase: ReturnType<typeof createAdminClient>,
+  startDate: string,
+  endDate: string,
+): Promise<Map<string, number>> {
+  const salesForecast = await fetchAllRows<{ amount: number; probability: number; expected_date: string }>(
+    (from, to) =>
+      supabase.from("sales_forecast").select("amount, probability, expected_date").eq("status", "forecast").range(from, to),
+  );
+  const settings = await loadDerivationSettings(supabase);
+  const flows = [...deriveTaxFlows(salesForecast, settings), ...deriveMaterialCostFlows(salesForecast, settings)];
+
+  const totals = new Map<string, number>();
+  for (const flow of flows) {
+    if (flow.date < startDate || flow.date >= endDate) continue;
+    const key = monthKey(flow.date);
+    totals.set(key, (totals.get(key) ?? 0) + Math.abs(flow.amount));
+  }
+  return totals;
 }
 
 async function forecastTotals(
@@ -86,12 +111,14 @@ export async function computeForecastVsActual(monthsBack: number, monthsForward:
   const startDate = startMonth.toISOString().slice(0, 10);
   const endDate = endMonth.toISOString().slice(0, 10);
 
-  const [salesForecastTotals, actualSalesTotals, purchaseForecastTotals, actualPurchaseTotals] = await Promise.all([
-    forecastTotals(supabase, "sales_forecast", startDate, endDate),
-    actualSalesFromCashEvents(supabase, startDate, endDate),
-    forecastTotals(supabase, "purchase_forecast", startDate, endDate),
-    actualPurchasesFromInvoices(supabase, startDate, endDate),
-  ]);
+  const [salesForecastTotals, actualSalesTotals, purchaseForecastTotals, actualPurchaseTotals, derivedTotals] =
+    await Promise.all([
+      forecastTotals(supabase, "sales_forecast", startDate, endDate),
+      actualSalesFromCashEvents(supabase, startDate, endDate),
+      forecastTotals(supabase, "purchase_forecast", startDate, endDate),
+      actualPurchasesFromInvoices(supabase, startDate, endDate),
+      derivedPurchaseTotals(supabase, startDate, endDate),
+    ]);
 
   const months: string[] = [];
   let cursor = new Date(startMonth);
@@ -107,7 +134,7 @@ export async function computeForecastVsActual(monthsBack: number, monthsForward:
   }));
   const purchases: MonthlyComparison[] = months.map((m) => ({
     month: m,
-    forecast: purchaseForecastTotals.get(m) ?? 0,
+    forecast: (purchaseForecastTotals.get(m) ?? 0) + (derivedTotals.get(m) ?? 0),
     actual: actualPurchaseTotals.get(m) ?? 0,
   }));
 

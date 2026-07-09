@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
+import { loadDerivationSettings, deriveTaxFlows, deriveMaterialCostFlows } from "@/lib/dashboard/derivedForecast";
 
 export type DangerLevel = "ok" | "tax_buffer" | "warning" | "bankruptcy";
 
@@ -165,6 +166,18 @@ export async function computeProjection(
       expected * split.trancheBPct,
       `${f.description} — forecast 30%`,
     );
+  }
+
+  // Tax and material cost aren't separately entered — they're derived live from unmatched
+  // sales forecast entries, so changing a sales number automatically changes what it implies
+  // for tax and supplier cost without needing a manually-entered purchase forecast row kept
+  // in sync by hand.
+  const derivationSettings = await loadDerivationSettings(supabase);
+  for (const flow of deriveTaxFlows(salesForecast, derivationSettings)) {
+    addFlow(flow.date, flow.amount, flow.description);
+  }
+  for (const flow of deriveMaterialCostFlows(salesForecast, derivationSettings)) {
+    addFlow(flow.date, flow.amount, flow.description);
   }
 
   const purchaseForecast = await fetchAllRows<{ amount: number; expected_date: string; description: string }>(

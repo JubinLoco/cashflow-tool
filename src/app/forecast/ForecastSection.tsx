@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatSEK } from "@/lib/format";
 
 type ForecastRow = {
   id: string;
@@ -224,25 +225,25 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="text-left border-b">
-            <th className="py-1">Description</th>
-            <th className="py-1">Amount</th>
-            <th className="py-1">Date</th>
-            <th className="py-1">Status</th>
-            <th className="py-1" />
+            <th className="py-2 px-3">Description</th>
+            <th className="py-2 px-3">Amount</th>
+            <th className="py-2 px-3">Date</th>
+            <th className="py-2 px-3">Status</th>
+            <th className="py-2 px-3" />
           </tr>
         </thead>
         <tbody>
           {rows.map((row) =>
             editingId === row.id ? (
               <tr key={row.id} className="border-b">
-                <td className="py-1">
+                <td className="py-2 px-3">
                   <input
                     className="border rounded px-1 py-0.5 w-full"
                     value={editDescription}
                     onChange={(e) => setEditDescription(e.target.value)}
                   />
                 </td>
-                <td className="py-1">
+                <td className="py-2 px-3">
                   <input
                     className="border rounded px-1 py-0.5 w-24"
                     type="number"
@@ -250,7 +251,7 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
                     onChange={(e) => setEditAmount(e.target.value)}
                   />
                 </td>
-                <td className="py-1">
+                <td className="py-2 px-3">
                   <input
                     className="border rounded px-1 py-0.5"
                     type="date"
@@ -258,8 +259,8 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
                     onChange={(e) => setEditDate(e.target.value)}
                   />
                 </td>
-                <td className="py-1">{row.status}</td>
-                <td className="py-1 flex gap-2">
+                <td className="py-2 px-3">{row.status}</td>
+                <td className="py-2 px-3 flex gap-2">
                   <button
                     onClick={() => handleSaveEdit(row.id, Boolean(row.recurring_group_id))}
                     className="text-green-700 underline"
@@ -273,11 +274,11 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
               </tr>
             ) : (
               <tr key={row.id} className="border-b">
-                <td className="py-1">{row.description}</td>
-                <td className="py-1">{Number(row.amount).toLocaleString()}</td>
-                <td className="py-1">{row.expected_date}</td>
-                <td className="py-1">{row.status}</td>
-                <td className="py-1 flex gap-2">
+                <td className="py-2 px-3">{row.description}</td>
+                <td className="py-2 px-3">{formatSEK(row.amount)}</td>
+                <td className="py-2 px-3">{row.expected_date}</td>
+                <td className="py-2 px-3">{row.status}</td>
+                <td className="py-2 px-3 flex gap-2">
                   <button onClick={() => startEdit(row)} className="underline">
                     Edit
                   </button>
