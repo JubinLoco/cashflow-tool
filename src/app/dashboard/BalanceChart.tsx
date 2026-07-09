@@ -2,7 +2,22 @@
 
 import { useMemo, useRef, useState } from "react";
 
-type Point = { date: string; balance: number; level: string };
+type LineItem = { amount: number; description: string };
+type Point = {
+  date: string;
+  balance: number;
+  level: string;
+  inflow: number;
+  outflow: number;
+  inflowItems: LineItem[];
+  outflowItems: LineItem[];
+};
+
+function itemsDetail(items: LineItem[]): string {
+  if (items.length === 0) return "";
+  if (items.length === 1) return items[0].description;
+  return items.map((i) => `${i.description} (${i.amount.toLocaleString()})`).join("; ");
+}
 type Thresholds = { taxBuffer: number; warning: number; bankruptcy: number };
 
 const WIDTH = 800;
@@ -115,6 +130,10 @@ export default function BalanceChart({ points, thresholds }: { points: Point[]; 
             <thead>
               <tr className="text-left border-b" style={{ borderColor: "var(--gridline)" }}>
                 <th className="py-1">Date</th>
+                <th className="py-1">Cash in</th>
+                <th className="py-1">Detail</th>
+                <th className="py-1">Cash out</th>
+                <th className="py-1">Detail</th>
                 <th className="py-1">Balance</th>
                 <th className="py-1">Status</th>
               </tr>
@@ -122,7 +141,15 @@ export default function BalanceChart({ points, thresholds }: { points: Point[]; 
             <tbody>
               {points.map((p) => (
                 <tr key={p.date} className="border-b" style={{ borderColor: "var(--gridline)" }}>
-                  <td className="py-1">{p.date}</td>
+                  <td className="py-1 whitespace-nowrap">{p.date}</td>
+                  <td className="py-1">{p.inflow ? p.inflow.toLocaleString() : ""}</td>
+                  <td className="py-1" style={{ color: "var(--text-secondary)" }}>
+                    {itemsDetail(p.inflowItems)}
+                  </td>
+                  <td className="py-1">{p.outflow ? p.outflow.toLocaleString() : ""}</td>
+                  <td className="py-1" style={{ color: "var(--text-secondary)" }}>
+                    {itemsDetail(p.outflowItems)}
+                  </td>
                   <td className="py-1">{p.balance.toLocaleString()}</td>
                   <td className="py-1">{p.level}</td>
                 </tr>

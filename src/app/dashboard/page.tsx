@@ -4,7 +4,16 @@ import { useEffect, useState } from "react";
 import BalanceChart from "./BalanceChart";
 import ComparisonChart from "./ComparisonChart";
 
-type ProjectionPoint = { date: string; balance: number; inflow: number; outflow: number; level: string };
+type LineItem = { amount: number; description: string };
+type ProjectionPoint = {
+  date: string;
+  balance: number;
+  inflow: number;
+  outflow: number;
+  inflowItems: LineItem[];
+  outflowItems: LineItem[];
+  level: string;
+};
 type Projection = {
   points: ProjectionPoint[];
   thresholds: { taxBuffer: number; warning: number; bankruptcy: number };
