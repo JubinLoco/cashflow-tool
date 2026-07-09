@@ -42,11 +42,32 @@ export async function reallocateFactoring() {
       .range(from, to),
   );
 
+  // Real per-invoice eligibility reports from the factoring company (disputes,
+  // bankruptcy, rejected payment terms, etc.) override our own FIFO simulation for
+  // specific invoices — those reasons aren't something a pool-cap simulation can know.
+  const overrides = await fetchAllRows<{ fortnox_doc_number: string; treatment: string }>((from, to) =>
+    supabase.from("factoring_manual_overrides").select("fortnox_doc_number, treatment").range(from, to),
+  );
+  const overrideByDocNumber = new Map(overrides.map((o) => [o.fortnox_doc_number, o.treatment]));
+
   const customerUsed = new Map<string, number>();
   let poolUsed = 0;
   const updates: { id: string; fortnox_doc_number: string; eligible_amount: number; excluded_amount: number }[] = [];
 
   for (const inv of unpaid) {
+    const override = overrideByDocNumber.get(inv.fortnox_doc_number);
+    if (override) {
+      // Not run through the FIFO pool/customer caps at all — a manually confirmed
+      // exception doesn't consume (or free up) simulated capacity for other invoices.
+      updates.push({
+        id: inv.id,
+        fortnox_doc_number: inv.fortnox_doc_number,
+        eligible_amount: 0,
+        excluded_amount: override === "full_amount_on_payment" ? inv.total : 0,
+      });
+      continue;
+    }
+
     const customerKey = inv.customer_number ?? inv.fortnox_doc_number;
     const customerRemaining = customerCap - (customerUsed.get(customerKey) ?? 0);
     const poolRemaining = pool - poolUsed;

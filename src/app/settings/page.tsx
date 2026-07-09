@@ -19,14 +19,35 @@ type FacilityLimits = {
 
 type SupplierCategory = { supplier_number: string; supplier_name: string; category: string | null };
 
+type FactoringOverride = {
+  id: string;
+  fortnox_doc_number: string;
+  reason_code: string | null;
+  reason_description: string | null;
+  treatment: "exclude_entirely" | "full_amount_on_payment";
+  noted_date: string;
+};
+
 const CATEGORY_OPTIONS = ["rent", "salaries", "tax", "suppliers", "factoring_fee", "other"];
+
+const TREATMENT_LABEL: Record<string, string> = {
+  exclude_entirely: "Exclude entirely (not confident we'll collect it)",
+  full_amount_on_payment: "Include 100% when customer pays",
+};
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings>({});
   const [limits, setLimits] = useState<FacilityLimits | null>(null);
   const [suppliers, setSuppliers] = useState<SupplierCategory[]>([]);
+  const [overrides, setOverrides] = useState<FactoringOverride[]>([]);
   const [saved, setSaved] = useState(false);
   const [showUntaggedOnly, setShowUntaggedOnly] = useState(true);
+  const [newOverride, setNewOverride] = useState({
+    fortnox_doc_number: "",
+    reason_code: "",
+    reason_description: "",
+    treatment: "exclude_entirely" as FactoringOverride["treatment"],
+  });
 
   function load() {
     fetch("/api/settings")
@@ -38,6 +59,9 @@ export default function SettingsPage() {
     fetch("/api/supplier-categories")
       .then((r) => r.json())
       .then(setSuppliers);
+    fetch("/api/settings/factoring-overrides")
+      .then((r) => r.json())
+      .then(setOverrides);
   }
 
   useEffect(load, []);
@@ -77,6 +101,24 @@ export default function SettingsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ supplier_number, category }),
     });
+  }
+
+  async function addOverride(e: React.FormEvent) {
+    e.preventDefault();
+    await fetch("/api/settings/factoring-overrides", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newOverride),
+    });
+    setNewOverride({ fortnox_doc_number: "", reason_code: "", reason_description: "", treatment: "exclude_entirely" });
+    fetch("/api/settings/factoring-overrides")
+      .then((r) => r.json())
+      .then(setOverrides);
+  }
+
+  async function removeOverride(id: string) {
+    setOverrides((prev) => prev.filter((o) => o.id !== id));
+    await fetch(`/api/settings/factoring-overrides/${id}`, { method: "DELETE" });
   }
 
   function flashSaved() {
@@ -147,6 +189,92 @@ export default function SettingsPage() {
             </button>
           </form>
         )}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-1">Factoring exceptions</h2>
+        <p className="text-xs text-zinc-500 mb-3 max-w-md">
+          Invoices the factoring company has reported as not eligible (disputed, bankruptcy, rejected payment terms,
+          etc.) — overrides our own pool-cap estimate for that specific invoice.
+        </p>
+        <form onSubmit={addOverride} className="flex flex-wrap gap-2 text-sm mb-4 items-end">
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Fortnox invoice #</span>
+            <input
+              className="border rounded px-2 py-1 w-28"
+              value={newOverride.fortnox_doc_number}
+              onChange={(e) => setNewOverride((o) => ({ ...o, fortnox_doc_number: e.target.value }))}
+              required
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Reason code</span>
+            <input
+              className="border rounded px-2 py-1 w-20"
+              value={newOverride.reason_code}
+              onChange={(e) => setNewOverride((o) => ({ ...o, reason_code: e.target.value }))}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Reason</span>
+            <input
+              className="border rounded px-2 py-1 w-40"
+              value={newOverride.reason_description}
+              onChange={(e) => setNewOverride((o) => ({ ...o, reason_description: e.target.value }))}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Treatment</span>
+            <select
+              className="border rounded px-2 py-1"
+              value={newOverride.treatment}
+              onChange={(e) =>
+                setNewOverride((o) => ({ ...o, treatment: e.target.value as FactoringOverride["treatment"] }))
+              }
+            >
+              {Object.entries(TREATMENT_LABEL).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" className="rounded bg-foreground text-background px-3 py-1.5">
+            Add
+          </button>
+        </form>
+
+        <div className="max-h-64 overflow-y-auto text-sm">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="text-left border-b sticky top-0 bg-background">
+                <th className="py-1">Invoice #</th>
+                <th className="py-1">Reason</th>
+                <th className="py-1">Treatment</th>
+                <th className="py-1">Noted</th>
+                <th className="py-1" />
+              </tr>
+            </thead>
+            <tbody>
+              {overrides.map((o) => (
+                <tr key={o.id} className="border-b">
+                  <td className="py-1">{o.fortnox_doc_number}</td>
+                  <td className="py-1">
+                    {o.reason_code ? `${o.reason_code} — ` : ""}
+                    {o.reason_description}
+                  </td>
+                  <td className="py-1">{TREATMENT_LABEL[o.treatment] ?? o.treatment}</td>
+                  <td className="py-1">{o.noted_date}</td>
+                  <td className="py-1">
+                    <button onClick={() => removeOverride(o.id)} className="text-red-600 underline">
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section>
