@@ -34,6 +34,11 @@ type FactoringOverride = {
   noted_date: string;
 };
 
+type BusinessLineOverride = {
+  fortnox_doc_number: string;
+  business_line: "residential" | "gmax_ci" | "consultancy";
+};
+
 const CATEGORY_OPTIONS = ["rent", "salaries", "tax", "suppliers", "factoring_fee", "other"];
 
 const TREATMENT_LABEL: Record<string, string> = {
@@ -41,11 +46,18 @@ const TREATMENT_LABEL: Record<string, string> = {
   full_amount_on_payment: "Include 100% when customer pays",
 };
 
+const BUSINESS_LINE_LABEL: Record<string, string> = {
+  residential: "Residential",
+  gmax_ci: "C&I / G-Max",
+  consultancy: "Consultancy",
+};
+
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings>({});
   const [limits, setLimits] = useState<FacilityLimits | null>(null);
   const [suppliers, setSuppliers] = useState<SupplierCategory[]>([]);
   const [overrides, setOverrides] = useState<FactoringOverride[]>([]);
+  const [businessLineOverrides, setBusinessLineOverrides] = useState<BusinessLineOverride[]>([]);
   const [saved, setSaved] = useState(false);
   const [showUntaggedOnly, setShowUntaggedOnly] = useState(true);
   const [newOverride, setNewOverride] = useState({
@@ -53,6 +65,10 @@ export default function SettingsPage() {
     reason_code: "",
     reason_description: "",
     treatment: "exclude_entirely" as FactoringOverride["treatment"],
+  });
+  const [newBusinessLineOverride, setNewBusinessLineOverride] = useState({
+    fortnox_doc_number: "",
+    business_line: "residential" as BusinessLineOverride["business_line"],
   });
 
   function load() {
@@ -68,6 +84,9 @@ export default function SettingsPage() {
     fetch("/api/settings/factoring-overrides")
       .then((r) => r.json())
       .then(setOverrides);
+    fetch("/api/settings/business-line-overrides")
+      .then((r) => r.json())
+      .then(setBusinessLineOverrides);
   }
 
   useEffect(load, []);
@@ -125,6 +144,24 @@ export default function SettingsPage() {
   async function removeOverride(id: string) {
     setOverrides((prev) => prev.filter((o) => o.id !== id));
     await fetch(`/api/settings/factoring-overrides/${id}`, { method: "DELETE" });
+  }
+
+  async function addBusinessLineOverride(e: React.FormEvent) {
+    e.preventDefault();
+    await fetch("/api/settings/business-line-overrides", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newBusinessLineOverride),
+    });
+    setNewBusinessLineOverride({ fortnox_doc_number: "", business_line: "residential" });
+    fetch("/api/settings/business-line-overrides")
+      .then((r) => r.json())
+      .then(setBusinessLineOverrides);
+  }
+
+  async function removeBusinessLineOverride(fortnox_doc_number: string) {
+    setBusinessLineOverrides((prev) => prev.filter((o) => o.fortnox_doc_number !== fortnox_doc_number));
+    await fetch(`/api/settings/business-line-overrides/${fortnox_doc_number}`, { method: "DELETE" });
   }
 
   function flashSaved() {
@@ -319,6 +356,72 @@ export default function SettingsPage() {
                   <td className="py-1">{o.noted_date}</td>
                   <td className="py-1">
                     <button onClick={() => removeOverride(o.id)} className="text-red-600 underline">
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-1">Sales business-line overrides</h2>
+        <p className="text-xs text-zinc-500 mb-3 max-w-md">
+          Sales are auto-classified as Consultancy (article 105/41), else C&amp;I/G-Max
+          (≥300,000 SEK) or Residential. Override any specific invoice here.
+        </p>
+        <form onSubmit={addBusinessLineOverride} className="flex flex-wrap gap-2 text-sm mb-4 items-end">
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Fortnox invoice #</span>
+            <input
+              className="border rounded px-2 py-1 w-28"
+              value={newBusinessLineOverride.fortnox_doc_number}
+              onChange={(e) => setNewBusinessLineOverride((o) => ({ ...o, fortnox_doc_number: e.target.value }))}
+              required
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Business line</span>
+            <select
+              className="border rounded px-2 py-1"
+              value={newBusinessLineOverride.business_line}
+              onChange={(e) =>
+                setNewBusinessLineOverride((o) => ({
+                  ...o,
+                  business_line: e.target.value as BusinessLineOverride["business_line"],
+                }))
+              }
+            >
+              {Object.entries(BUSINESS_LINE_LABEL).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" className="rounded bg-foreground text-background px-3 py-1.5">
+            Add
+          </button>
+        </form>
+
+        <div className="max-h-64 overflow-y-auto text-sm">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="text-left border-b sticky top-0 bg-background">
+                <th className="py-1">Invoice #</th>
+                <th className="py-1">Business line</th>
+                <th className="py-1" />
+              </tr>
+            </thead>
+            <tbody>
+              {businessLineOverrides.map((o) => (
+                <tr key={o.fortnox_doc_number} className="border-b">
+                  <td className="py-1">{o.fortnox_doc_number}</td>
+                  <td className="py-1">{BUSINESS_LINE_LABEL[o.business_line] ?? o.business_line}</td>
+                  <td className="py-1">
+                    <button onClick={() => removeBusinessLineOverride(o.fortnox_doc_number)} className="text-red-600 underline">
                       Remove
                     </button>
                   </td>

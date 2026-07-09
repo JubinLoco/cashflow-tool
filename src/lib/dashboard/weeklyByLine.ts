@@ -1,0 +1,121 @@
+import { createAdminClient } from "@/lib/supabase/admin";
+import { fetchAllRows } from "@/lib/supabase/fetchAll";
+import { resolveBusinessLine, type BusinessLine } from "@/lib/sales/businessLine";
+
+export type WeeklyPoint = { week: string; forecast: number; real: number; grossProfit: number; marginPct: number };
+export type WeeklyByLine = { businessLine: BusinessLine; weeks: WeeklyPoint[] };
+
+const BUSINESS_LINES: BusinessLine[] = ["residential", "gmax_ci", "consultancy"];
+
+// ISO 8601 week: the week containing the year's first Thursday is week 1.
+function weekKey(dateStr: string): string {
+  const date = new Date(dateStr + "T00:00:00Z");
+  const day = (date.getUTCDay() + 6) % 7; // 0 = Monday
+  date.setUTCDate(date.getUTCDate() - day + 3); // nearest Thursday
+  const firstThursday = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+  const firstDay = (firstThursday.getUTCDay() + 6) % 7;
+  firstThursday.setUTCDate(firstThursday.getUTCDate() - firstDay + 3);
+  const weekNum = 1 + Math.round((date.getTime() - firstThursday.getTime()) / (7 * 24 * 3600 * 1000));
+  return `${date.getUTCFullYear()}-W${String(weekNum).padStart(2, "0")}`;
+}
+
+function mondayOf(date: Date): Date {
+  const d = new Date(date);
+  const day = (d.getUTCDay() + 6) % 7;
+  d.setUTCDate(d.getUTCDate() - day);
+  return d;
+}
+
+export async function computeWeeklyByLine(weeksBack: number, weeksForward: number): Promise<WeeklyByLine[]> {
+  const supabase = createAdminClient();
+  const today = new Date();
+  const startDate = new Date(today);
+  startDate.setUTCDate(startDate.getUTCDate() - weeksBack * 7);
+  const endDate = new Date(today);
+  endDate.setUTCDate(endDate.getUTCDate() + weeksForward * 7);
+  const startStr = startDate.toISOString().slice(0, 10);
+  const endStr = endDate.toISOString().slice(0, 10);
+
+  const [salesForecast, invoices, overrides] = await Promise.all([
+    fetchAllRows<{ amount: number; probability: number; expected_date: string; product_line: BusinessLine | null }>(
+      (from, to) =>
+        supabase
+          .from("sales_forecast")
+          .select("amount, probability, expected_date, product_line")
+          .eq("status", "forecast")
+          .gte("expected_date", startStr)
+          .lt("expected_date", endStr)
+          .range(from, to),
+    ),
+    fetchAllRows<{
+      fortnox_doc_number: string;
+      total: number;
+      net_total: number | null;
+      gross_profit: number | null;
+      has_consultancy_article: boolean | null;
+      invoice_date: string;
+    }>((from, to) =>
+      supabase
+        .from("customer_invoices")
+        .select("fortnox_doc_number, total, net_total, gross_profit, has_consultancy_article, invoice_date")
+        .gte("invoice_date", startStr)
+        .lt("invoice_date", endStr)
+        .range(from, to),
+    ),
+    fetchAllRows<{ fortnox_doc_number: string; business_line: BusinessLine }>((from, to) =>
+      supabase.from("sales_business_line_overrides").select("fortnox_doc_number, business_line").range(from, to),
+    ),
+  ]);
+
+  const overrideByDoc = new Map(overrides.map((o) => [o.fortnox_doc_number, o.business_line]));
+
+  const weeks: string[] = [];
+  const cursor = mondayOf(startDate);
+  const lastMonday = mondayOf(endDate);
+  while (cursor <= lastMonday) {
+    weeks.push(weekKey(cursor.toISOString().slice(0, 10)));
+    cursor.setUTCDate(cursor.getUTCDate() + 7);
+  }
+
+  const byLine = new Map<BusinessLine, Map<string, { forecast: number; real: number; netReal: number; grossProfit: number }>>();
+  for (const line of BUSINESS_LINES) {
+    byLine.set(line, new Map(weeks.map((w) => [w, { forecast: 0, real: 0, netReal: 0, grossProfit: 0 }])));
+  }
+
+  for (const row of salesForecast) {
+    const line = row.product_line && BUSINESS_LINES.includes(row.product_line) ? row.product_line : "residential";
+    const bucket = byLine.get(line)!.get(weekKey(row.expected_date));
+    if (bucket) bucket.forecast += row.amount * row.probability;
+  }
+
+  for (const inv of invoices) {
+    const line = resolveBusinessLine(
+      { total: inv.total, has_consultancy_article: inv.has_consultancy_article ?? false },
+      overrideByDoc.get(inv.fortnox_doc_number),
+    );
+    const bucket = byLine.get(line)!.get(weekKey(inv.invoice_date));
+    if (bucket) {
+      bucket.real += inv.total;
+      // Margin % must divide by the ex-VAT amount — ContributionValue (gross profit) is
+      // computed by Fortnox on an ex-VAT basis, so dividing by VAT-inclusive Total would
+      // understate margin by roughly the VAT rate. Falls back to Total for any invoice
+      // synced before net_total existed.
+      bucket.netReal += inv.net_total ?? inv.total;
+      bucket.grossProfit += inv.gross_profit ?? 0;
+    }
+  }
+
+  return BUSINESS_LINES.map((businessLine) => ({
+    businessLine,
+    weeks: weeks.map((week) => {
+      const point = byLine.get(businessLine)!.get(week)!;
+      return {
+        week,
+        forecast: point.forecast,
+        real: point.real,
+        grossProfit: point.grossProfit,
+        marginPct: point.netReal === 0 ? 0 : point.grossProfit / point.netReal,
+      };
+    }),
+  }));
+}

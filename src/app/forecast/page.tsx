@@ -13,7 +13,7 @@ export default function ForecastPage() {
             title="Sales forecast"
             apiBase="sales"
             categoryField="product_line"
-            categoryOptions={["gmax_ci", "residential"]}
+            categoryOptions={["gmax_ci", "residential", "consultancy"]}
           />
           <VerifyList apiBase="sales" />
         </div>

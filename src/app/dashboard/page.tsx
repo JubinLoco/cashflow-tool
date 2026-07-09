@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import BalanceChart from "./BalanceChart";
 import ComparisonChart from "./ComparisonChart";
+import WeeklyByLineTable from "./WeeklyByLineTable";
 import { formatSEK } from "@/lib/format";
 
 type LineItem = { amount: number; description: string };
@@ -21,6 +22,8 @@ type Projection = {
   startingBalance: number;
 };
 type MonthlyComparison = { month: string; forecast: number; actual: number };
+type WeeklyPoint = { week: string; forecast: number; real: number; grossProfit: number; marginPct: number };
+type WeeklyByLineData = { businessLine: string; weeks: WeeklyPoint[] };
 
 const LEVEL_LABEL: Record<string, string> = {
   ok: "Healthy",
@@ -34,6 +37,7 @@ export default function DashboardPage() {
   const [projection, setProjection] = useState<Projection | null>(null);
   const [sales, setSales] = useState<MonthlyComparison[]>([]);
   const [purchases, setPurchases] = useState<MonthlyComparison[]>([]);
+  const [weeklyByLine, setWeeklyByLine] = useState<WeeklyByLineData[]>([]);
 
   useEffect(() => {
     fetch(`/api/dashboard/projection?granularity=${granularity}`)
@@ -48,6 +52,12 @@ export default function DashboardPage() {
         setSales(d.sales);
         setPurchases(d.purchases);
       });
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/dashboard/weekly-by-line")
+      .then((r) => r.json())
+      .then(setWeeklyByLine);
   }, []);
 
   const firstDanger = projection?.points.find((p) => p.level !== "ok");
@@ -89,9 +99,14 @@ export default function DashboardPage() {
         {projection ? <BalanceChart points={projection.points} thresholds={projection.thresholds} /> : <p>Loading…</p>}
       </section>
 
-      <section className="grid md:grid-cols-2 gap-8">
+      <section className="grid md:grid-cols-2 gap-8 mb-10">
         <ComparisonChart title="Sales: forecast vs. actual" data={sales} />
         <ComparisonChart title="Purchases: forecast vs. actual" data={purchases} />
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-3">Weekly by business line</h2>
+        {weeklyByLine.length > 0 ? <WeeklyByLineTable data={weeklyByLine} /> : <p>Loading…</p>}
       </section>
     </main>
   );
