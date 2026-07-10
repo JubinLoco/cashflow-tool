@@ -19,18 +19,31 @@ type FortnoxInvoice = {
 // numbers — the list endpoint used by fortnoxPaginate above doesn't carry them.
 // ContributionValue (gross profit) is computed on the ex-VAT amount, so Net (also
 // ex-VAT) — not the VAT-inclusive Total — is the correct denominator for margin %.
+// Row-level Total/TotalExcludingVAT/ContributionValue come back as strings.
+type FortnoxInvoiceRow = { ArticleNumber: string; Total: string; TotalExcludingVAT: string; ContributionValue: string };
 type FortnoxInvoiceDetail = {
   ContributionValue: number;
   Net: number;
-  InvoiceRows: { ArticleNumber: string }[];
+  InvoiceRows: FortnoxInvoiceRow[];
 };
 
 type ExistingClassification = {
   fortnox_doc_number: string;
   gross_profit: number | null;
   net_total: number | null;
-  has_consultancy_article: boolean | null;
+  consultancy_total: number | null;
+  consultancy_net_total: number | null;
+  consultancy_gross_profit: number | null;
 };
+
+function sumConsultancyRows(rows: FortnoxInvoiceRow[]) {
+  const consultancyRows = rows.filter((row) => CONSULTANCY_ARTICLE_NUMBERS.has(row.ArticleNumber));
+  return {
+    total: consultancyRows.reduce((sum, row) => sum + Number(row.Total), 0),
+    netTotal: consultancyRows.reduce((sum, row) => sum + Number(row.TotalExcludingVAT), 0),
+    grossProfit: consultancyRows.reduce((sum, row) => sum + Number(row.ContributionValue), 0),
+  };
+}
 
 export async function syncCustomerInvoices() {
   const supabase = createAdminClient();
@@ -43,7 +56,10 @@ export async function syncCustomerInvoices() {
   // ships will detail-fetch the entire historical backlog once (run that manually, not
   // via cron, to stay clear of Vercel's 60s function timeout).
   const existing = await fetchAllRows<ExistingClassification>((from, to) =>
-    supabase.from("customer_invoices").select("fortnox_doc_number, gross_profit, net_total, has_consultancy_article").range(from, to),
+    supabase
+      .from("customer_invoices")
+      .select("fortnox_doc_number, gross_profit, net_total, consultancy_total, consultancy_net_total, consultancy_gross_profit")
+      .range(from, to),
   );
   const classified = new Map(existing.map((row) => [row.fortnox_doc_number, row]));
 
@@ -54,7 +70,7 @@ export async function syncCustomerInvoices() {
 
     const needsDetail = active.filter((inv) => {
       const prior = classified.get(inv.DocumentNumber);
-      return !prior || prior.gross_profit == null || prior.net_total == null;
+      return !prior || prior.gross_profit == null || prior.net_total == null || prior.consultancy_total == null;
     });
     const details = await fortnoxGetDetails<"Invoice", FortnoxInvoiceDetail>(
       needsDetail.map((inv) => `/invoices/${inv.DocumentNumber}`),
@@ -67,9 +83,7 @@ export async function syncCustomerInvoices() {
       const detail = detailByDoc.get(inv.DocumentNumber);
       const grossProfit = detail ? detail.ContributionValue : prior?.gross_profit ?? null;
       const netTotal = detail ? detail.Net : prior?.net_total ?? null;
-      const hasConsultancyArticle = detail
-        ? detail.InvoiceRows.some((row) => CONSULTANCY_ARTICLE_NUMBERS.has(row.ArticleNumber))
-        : prior?.has_consultancy_article ?? false;
+      const consultancy = detail ? sumConsultancyRows(detail.InvoiceRows) : null;
       return {
         fortnox_doc_number: inv.DocumentNumber,
         customer_number: inv.CustomerNumber,
@@ -81,7 +95,9 @@ export async function syncCustomerInvoices() {
         paid_date: inv.FinalPayDate,
         gross_profit: grossProfit,
         net_total: netTotal,
-        has_consultancy_article: hasConsultancyArticle,
+        consultancy_total: consultancy ? consultancy.total : prior?.consultancy_total ?? null,
+        consultancy_net_total: consultancy ? consultancy.netTotal : prior?.consultancy_net_total ?? null,
+        consultancy_gross_profit: consultancy ? consultancy.grossProfit : prior?.consultancy_gross_profit ?? null,
       };
     });
 

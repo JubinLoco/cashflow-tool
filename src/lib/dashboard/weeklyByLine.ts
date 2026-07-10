@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
-import { resolveBusinessLine, type BusinessLine } from "@/lib/sales/businessLine";
+import { splitByBusinessLine, type BusinessLine } from "@/lib/sales/businessLine";
 
 export type WeeklyPoint = { week: string; forecast: number; real: number; grossProfit: number; marginPct: number };
 export type WeeklyByLine = { businessLine: BusinessLine; weeks: WeeklyPoint[] };
@@ -52,12 +52,16 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
       total: number;
       net_total: number | null;
       gross_profit: number | null;
-      has_consultancy_article: boolean | null;
+      consultancy_total: number | null;
+      consultancy_net_total: number | null;
+      consultancy_gross_profit: number | null;
       invoice_date: string;
     }>((from, to) =>
       supabase
         .from("customer_invoices")
-        .select("fortnox_doc_number, total, net_total, gross_profit, has_consultancy_article, invoice_date")
+        .select(
+          "fortnox_doc_number, total, net_total, gross_profit, consultancy_total, consultancy_net_total, consultancy_gross_profit, invoice_date",
+        )
         .gte("invoice_date", startStr)
         .lt("invoice_date", endStr)
         .range(from, to),
@@ -89,19 +93,30 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
   }
 
   for (const inv of invoices) {
-    const line = resolveBusinessLine(
-      { total: inv.total, has_consultancy_article: inv.has_consultancy_article ?? false },
+    // An invoice can mix a consultancy line item with unrelated residential/C&I rows —
+    // split rather than moving the whole invoice to one line (see businessLine.ts).
+    const portions = splitByBusinessLine(
+      {
+        total: inv.total,
+        net_total: inv.net_total ?? inv.total,
+        gross_profit: inv.gross_profit ?? 0,
+        consultancy_total: inv.consultancy_total ?? 0,
+        consultancy_net_total: inv.consultancy_net_total ?? 0,
+        consultancy_gross_profit: inv.consultancy_gross_profit ?? 0,
+      },
       overrideByDoc.get(inv.fortnox_doc_number),
     );
-    const bucket = byLine.get(line)!.get(weekKey(inv.invoice_date));
-    if (bucket) {
-      bucket.real += inv.total;
-      // Margin % must divide by the ex-VAT amount — ContributionValue (gross profit) is
-      // computed by Fortnox on an ex-VAT basis, so dividing by VAT-inclusive Total would
-      // understate margin by roughly the VAT rate. Falls back to Total for any invoice
-      // synced before net_total existed.
-      bucket.netReal += inv.net_total ?? inv.total;
-      bucket.grossProfit += inv.gross_profit ?? 0;
+    const week = weekKey(inv.invoice_date);
+    for (const portion of portions) {
+      const bucket = byLine.get(portion.businessLine)!.get(week);
+      if (bucket) {
+        bucket.real += portion.total;
+        // Margin % must divide by the ex-VAT amount — ContributionValue (gross profit) is
+        // computed by Fortnox on an ex-VAT basis, so dividing by VAT-inclusive Total would
+        // understate margin by roughly the VAT rate.
+        bucket.netReal += portion.netTotal;
+        bucket.grossProfit += portion.grossProfit;
+      }
     }
   }
 
