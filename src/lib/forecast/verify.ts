@@ -9,6 +9,7 @@ export type VerificationRow = {
   amount: number;
   date: string;
   status: string;
+  recurringGroupId: string | null;
 };
 
 // Merges forecast entries with the real invoices they're compared against (same
@@ -29,10 +30,11 @@ export async function buildVerificationList(
     amount: number;
     expected_date: string;
     status: string;
+    recurring_group_id: string | null;
   }>((from, to) =>
     supabase
       .from(forecastTable)
-      .select("id, description, amount, expected_date, status")
+      .select("id, description, amount, expected_date, status, recurring_group_id")
       .gte("expected_date", startDate)
       .lt("expected_date", endDate)
       .range(from, to),
@@ -40,14 +42,16 @@ export async function buildVerificationList(
 
   const nameField = invoiceTable === "customer_invoices" ? "customer_name" : "supplier_name";
   const invoiceRows = await fetchAllRows<{
-    [key: string]: string | number | null;
+    [key: string]: string | number | boolean | null;
+    id: string;
     total: number;
     invoice_date: string;
     balance: number;
+    manual_paid: boolean | null;
   }>((from, to) =>
     supabase
       .from(invoiceTable)
-      .select(`${nameField}, total, invoice_date, balance`)
+      .select(`id, ${nameField}, total, invoice_date, balance, manual_paid`)
       .gte("invoice_date", startDate)
       .lt("invoice_date", endDate)
       .range(from, to),
@@ -68,7 +72,15 @@ export async function buildVerificationList(
     const flows = [...deriveTaxFlows(salesForecast, settings), ...deriveMaterialCostFlows(salesForecast, settings)];
     for (const flow of flows) {
       if (flow.date < startDate || flow.date >= endDate) continue;
-      derivedRows.push({ id: null, type: "forecast", description: flow.description, amount: Math.abs(flow.amount), date: flow.date, status: "derived" });
+      derivedRows.push({
+        id: null,
+        type: "forecast",
+        description: flow.description,
+        amount: Math.abs(flow.amount),
+        date: flow.date,
+        status: "derived",
+        recurringGroupId: null,
+      });
     }
   }
 
@@ -80,15 +92,19 @@ export async function buildVerificationList(
       amount: r.amount,
       date: r.expected_date,
       status: r.status,
+      recurringGroupId: r.recurring_group_id,
     })),
     ...derivedRows,
     ...invoiceRows.map((r) => ({
-      id: null,
+      id: r.id,
       type: "actual" as const,
       description: String(r[nameField] ?? "Unknown"),
       amount: r.total,
       date: r.invoice_date,
-      status: r.balance <= 0 ? "paid" : "open",
+      // manual_paid overrides the Fortnox-synced balance when set, for when the sync
+      // hasn't caught up yet — same reasoning as the forecast Drop/Match override.
+      status: (r.manual_paid ?? r.balance <= 0) ? "paid" : "open",
+      recurringGroupId: null,
     })),
   ];
 

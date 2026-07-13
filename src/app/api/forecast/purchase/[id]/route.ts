@@ -22,7 +22,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     amount?: number;
     expected_date?: string;
     category?: string;
-    status?: "dropped";
+    status?: "forecast" | "matched" | "dropped";
   };
 
   const extra = {
