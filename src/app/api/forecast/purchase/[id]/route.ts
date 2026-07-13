@@ -17,11 +17,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const scope = request.nextUrl.searchParams.get("scope") === "future" ? "future" : "single";
   const body = await request.json();
-  const { description, amount, expected_date, category } = body as {
+  const { description, amount, expected_date, category, status } = body as {
     description?: string;
     amount?: number;
     expected_date?: string;
     category?: string;
+    status?: "dropped";
+  };
+
+  const extra = {
+    ...(category !== undefined ? { category } : {}),
+    ...(status !== undefined ? { status } : {}),
   };
 
   try {
@@ -29,7 +35,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       description,
       amount,
       expected_date,
-      extra: category !== undefined ? { category } : undefined,
+      extra: Object.keys(extra).length > 0 ? extra : undefined,
     });
     return NextResponse.json({ ok: true });
   } catch (err) {

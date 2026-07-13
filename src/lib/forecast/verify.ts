@@ -1,7 +1,9 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
+import { loadDerivationSettings, deriveTaxFlows, deriveMaterialCostFlows } from "@/lib/dashboard/derivedForecast";
 
 export type VerificationRow = {
+  id: string | null;
   type: "forecast" | "actual";
   description: string;
   amount: number;
@@ -22,6 +24,7 @@ export async function buildVerificationList(
   const supabase = createAdminClient();
 
   const forecastRows = await fetchAllRows<{
+    id: string;
     description: string;
     amount: number;
     expected_date: string;
@@ -29,7 +32,7 @@ export async function buildVerificationList(
   }>((from, to) =>
     supabase
       .from(forecastTable)
-      .select("description, amount, expected_date, status")
+      .select("id, description, amount, expected_date, status")
       .gte("expected_date", startDate)
       .lt("expected_date", endDate)
       .range(from, to),
@@ -50,15 +53,37 @@ export async function buildVerificationList(
       .range(from, to),
   );
 
+  // The purchase side also has tax/material cost derived live from sales_forecast (see
+  // derivedForecast.ts) — never stored as purchase_forecast rows, so without this they're
+  // invisible here even though they're real projected outflows. A derived flow's date can
+  // land well after the sale that produced it (up to the FoxESS payment term), so pull all
+  // still-open sales forecast rows regardless of date and filter the resulting flows by date,
+  // not the other way around.
+  const derivedRows: VerificationRow[] = [];
+  if (forecastTable === "purchase_forecast") {
+    const salesForecast = await fetchAllRows<{ amount: number; probability: number; expected_date: string }>((from, to) =>
+      supabase.from("sales_forecast").select("amount, probability, expected_date").eq("status", "forecast").range(from, to),
+    );
+    const settings = await loadDerivationSettings(supabase);
+    const flows = [...deriveTaxFlows(salesForecast, settings), ...deriveMaterialCostFlows(salesForecast, settings)];
+    for (const flow of flows) {
+      if (flow.date < startDate || flow.date >= endDate) continue;
+      derivedRows.push({ id: null, type: "forecast", description: flow.description, amount: Math.abs(flow.amount), date: flow.date, status: "derived" });
+    }
+  }
+
   const combined: VerificationRow[] = [
     ...forecastRows.map((r) => ({
+      id: r.id,
       type: "forecast" as const,
       description: r.description,
       amount: r.amount,
       date: r.expected_date,
       status: r.status,
     })),
+    ...derivedRows,
     ...invoiceRows.map((r) => ({
+      id: null,
       type: "actual" as const,
       description: String(r[nameField] ?? "Unknown"),
       amount: r.total,
