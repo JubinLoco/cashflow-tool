@@ -7,7 +7,13 @@ export type VerificationRow = {
   type: "forecast" | "actual";
   description: string;
   amount: number;
+  // The date the table sorts and is primarily compared by — invoice_date for sales (a
+  // sales forecast predicts when the sale/invoice happens), payment date (paid_date once
+  // settled, else due_date) for purchases (a purchase forecast predicts when we pay).
   date: string;
+  // The *other* date, informational only, actual rows only: payment date for sales,
+  // invoice_date for purchases.
+  secondaryDate: string | null;
   status: string;
   recurringGroupId: string | null;
 };
@@ -46,12 +52,14 @@ export async function buildVerificationList(
     id: string;
     total: number;
     invoice_date: string;
+    due_date: string;
+    paid_date: string | null;
     balance: number;
     manual_paid: boolean | null;
   }>((from, to) =>
     supabase
       .from(invoiceTable)
-      .select(`id, ${nameField}, total, invoice_date, balance, manual_paid`)
+      .select(`id, ${nameField}, total, invoice_date, due_date, paid_date, balance, manual_paid`)
       .gte("invoice_date", startDate)
       .lt("invoice_date", endDate)
       .range(from, to),
@@ -78,11 +86,14 @@ export async function buildVerificationList(
         description: flow.description,
         amount: Math.abs(flow.amount),
         date: flow.date,
+        secondaryDate: null,
         status: "derived",
         recurringGroupId: null,
       });
     }
   }
+
+  const isSales = invoiceTable === "customer_invoices";
 
   const combined: VerificationRow[] = [
     ...forecastRows.map((r) => ({
@@ -91,21 +102,26 @@ export async function buildVerificationList(
       description: r.description,
       amount: r.amount,
       date: r.expected_date,
+      secondaryDate: null,
       status: r.status,
       recurringGroupId: r.recurring_group_id,
     })),
     ...derivedRows,
-    ...invoiceRows.map((r) => ({
-      id: r.id,
-      type: "actual" as const,
-      description: String(r[nameField] ?? "Unknown"),
-      amount: r.total,
-      date: r.invoice_date,
-      // manual_paid overrides the Fortnox-synced balance when set, for when the sync
-      // hasn't caught up yet — same reasoning as the forecast Drop/Match override.
-      status: (r.manual_paid ?? r.balance <= 0) ? "paid" : "open",
-      recurringGroupId: null,
-    })),
+    ...invoiceRows.map((r) => {
+      const paymentDate = r.paid_date ?? r.due_date;
+      return {
+        id: r.id,
+        type: "actual" as const,
+        description: String(r[nameField] ?? "Unknown"),
+        amount: r.total,
+        date: isSales ? r.invoice_date : paymentDate,
+        secondaryDate: isSales ? paymentDate : r.invoice_date,
+        // manual_paid overrides the Fortnox-synced balance when set, for when the sync
+        // hasn't caught up yet — same reasoning as the forecast Drop/Match override.
+        status: (r.manual_paid ?? r.balance <= 0) ? "paid" : "open",
+        recurringGroupId: null,
+      };
+    }),
   ];
 
   combined.sort((a, b) => a.date.localeCompare(b.date));

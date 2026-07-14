@@ -9,6 +9,7 @@ type VerificationRow = {
   description: string;
   amount: number;
   date: string;
+  secondaryDate: string | null;
   status: string;
   recurringGroupId: string | null;
 };
@@ -16,6 +17,18 @@ type VerificationRow = {
 const INVOICE_ENDPOINT: Record<"sales" | "purchase", "customer-invoices" | "supplier-invoices"> = {
   sales: "customer-invoices",
   purchase: "supplier-invoices",
+};
+
+// A sales forecast predicts when the sale/invoice happens, so the primary column and sort
+// key is invoice date there; a purchase forecast predicts when we pay, so it's payment
+// date for purchases. The secondary column is the other one, informational only.
+const PRIMARY_DATE_LABEL: Record<"sales" | "purchase", string> = {
+  sales: "Invoice date",
+  purchase: "Payment date",
+};
+const SECONDARY_DATE_LABEL: Record<"sales" | "purchase", string> = {
+  sales: "Payment date",
+  purchase: "Invoice date",
 };
 
 export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales" | "purchase"; refreshSignal?: number }) {
@@ -120,7 +133,8 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                 <th className="py-2 px-3">Type</th>
                 <th className="py-2 px-3">Description</th>
                 <th className="py-2 px-3">Amount</th>
-                <th className="py-2 px-3">Date</th>
+                <th className="py-2 px-3">{PRIMARY_DATE_LABEL[apiBase]}</th>
+                <th className="py-2 px-3">{SECONDARY_DATE_LABEL[apiBase]}</th>
                 <th className="py-2 px-3">Status</th>
                 <th className="py-2 px-3" />
               </tr>
@@ -150,6 +164,7 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                     <td className="py-2 px-3">
                       <input className="border rounded px-1 py-0.5" type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
                     </td>
+                    <td className="py-2 px-3 text-zinc-500">—</td>
                     <td className="py-2 px-3">{row.status}</td>
                     <td className="py-2 px-3 flex gap-2">
                       <button onClick={() => handleSaveEdit(row.id!, Boolean(row.recurringGroupId))} className="text-green-700 underline">
@@ -174,6 +189,7 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                     <td className="py-2 px-3">{row.description}</td>
                     <td className="py-2 px-3">{formatSEK(row.amount)}</td>
                     <td className="py-2 px-3">{row.date}</td>
+                    <td className="py-2 px-3">{row.secondaryDate ?? "—"}</td>
                     <td className="py-2 px-3">{row.status}</td>
                     <td className="py-2 px-3 flex gap-2">
                       {row.type === "forecast" && row.status === "forecast" && row.id && (
