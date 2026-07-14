@@ -1,5 +1,6 @@
 import { syncCustomerInvoices } from "@/lib/sync/customerInvoices";
 import { syncSupplierInvoices } from "@/lib/sync/supplierInvoices";
+import { syncFortnoxAccounts, syncFortnoxVouchers } from "@/lib/sync/ledger";
 import { computePaymentDelayStats } from "@/lib/factoring/paymentDelayStats";
 import { reallocateFactoring } from "@/lib/factoring/reallocate";
 import { generateCashEvents } from "@/lib/factoring/cashEvents";
@@ -19,6 +20,16 @@ export async function runSyncPhase() {
   await getValidAccessToken();
   const [customerInvoices, supplierInvoices] = await Promise.all([syncCustomerInvoices(), syncSupplierInvoices()]);
   return { customerInvoices, supplierInvoices };
+}
+
+// Own phase, separate from runSyncPhase — ledger data (every journal line, not just AP/AR
+// documents) is much larger than invoices, and the invoice sync phase is already
+// timeout-sensitive (that's why it's split out from factoring/reconcile in the first place).
+export async function runLedgerSyncPhase() {
+  await getValidAccessToken();
+  const accounts = await syncFortnoxAccounts();
+  const vouchers = await syncFortnoxVouchers();
+  return { accounts, vouchers };
 }
 
 export async function runFactoringPhase() {

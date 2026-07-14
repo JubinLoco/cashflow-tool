@@ -4,6 +4,7 @@ import { useState } from "react";
 
 const PHASES = [
   { url: "/api/sync", label: "Pulling invoices from Fortnox…" },
+  { url: "/api/ledger/sync", label: "Pulling ledger accounts and vouchers from Fortnox…" },
   { url: "/api/factoring/recompute", label: "Recomputing factoring and cash events…" },
   { url: "/api/forecast/reconcile", label: "Reconciling forecasts against invoices…" },
 ];

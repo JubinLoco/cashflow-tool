@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import BalanceChart from "./BalanceChart";
 import ComparisonChart from "./ComparisonChart";
 import WeeklyByLineTable from "./WeeklyByLineTable";
+import MonthlyPnlTable from "./MonthlyPnlTable";
 import { formatSEK } from "@/lib/format";
 
 type LineItem = { amount: number; description: string };
@@ -24,6 +25,8 @@ type Projection = {
 type MonthlyComparison = { month: string; forecast: number; actual: number };
 type WeeklyPoint = { week: string; forecast: number; real: number; grossProfit: number; marginPct: number };
 type WeeklyByLineData = { businessLine: string; weeks: WeeklyPoint[] };
+type PnlFigures = { turnover: number; cogs: number; grossProfit: number; opex: number; companyProfit: number };
+type MonthlyPnlRow = { month: string; real: PnlFigures; budget: PnlFigures; equity: number };
 
 const LEVEL_LABEL: Record<string, string> = {
   ok: "Healthy",
@@ -38,6 +41,7 @@ export default function DashboardPage() {
   const [sales, setSales] = useState<MonthlyComparison[]>([]);
   const [purchases, setPurchases] = useState<MonthlyComparison[]>([]);
   const [weeklyByLine, setWeeklyByLine] = useState<WeeklyByLineData[]>([]);
+  const [monthlyPnl, setMonthlyPnl] = useState<MonthlyPnlRow[]>([]);
 
   useEffect(() => {
     fetch(`/api/dashboard/projection?granularity=${granularity}`)
@@ -58,6 +62,12 @@ export default function DashboardPage() {
     fetch("/api/dashboard/weekly-by-line")
       .then((r) => r.json())
       .then(setWeeklyByLine);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/dashboard/monthly-pnl")
+      .then((r) => r.json())
+      .then(setMonthlyPnl);
   }, []);
 
   const firstDanger = projection?.points.find((p) => p.level !== "ok");
@@ -104,9 +114,14 @@ export default function DashboardPage() {
         <ComparisonChart title="Purchases: forecast vs. actual" data={purchases} />
       </section>
 
-      <section>
+      <section className="mb-10">
         <h2 className="text-lg font-semibold mb-3">Weekly by business line</h2>
         {weeklyByLine.length > 0 ? <WeeklyByLineTable data={weeklyByLine} /> : <p>Loading…</p>}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-3">Monthly P&amp;L and equity</h2>
+        {monthlyPnl.length > 0 ? <MonthlyPnlTable data={monthlyPnl} /> : <p>Loading…</p>}
       </section>
     </main>
   );

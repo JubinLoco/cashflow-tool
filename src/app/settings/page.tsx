@@ -13,6 +13,7 @@ type Settings = {
   foxess_share_pct?: number;
   foxess_payment_days?: number;
   other_supplier_payment_days?: number;
+  starting_equity?: number;
 };
 
 type FacilityLimits = {
@@ -39,6 +40,8 @@ type BusinessLineOverride = {
   business_line: "residential" | "gmax_ci" | "consultancy";
 };
 
+type MonthlyBudget = { month: string; turnover: number; cogs: number; opex: number };
+
 const CATEGORY_OPTIONS = ["rent", "salaries", "tax", "suppliers", "factoring_fee", "other"];
 
 const TREATMENT_LABEL: Record<string, string> = {
@@ -58,6 +61,8 @@ export default function SettingsPage() {
   const [suppliers, setSuppliers] = useState<SupplierCategory[]>([]);
   const [overrides, setOverrides] = useState<FactoringOverride[]>([]);
   const [businessLineOverrides, setBusinessLineOverrides] = useState<BusinessLineOverride[]>([]);
+  const [monthlyBudget, setMonthlyBudget] = useState<MonthlyBudget[]>([]);
+  const [newBudgetMonth, setNewBudgetMonth] = useState("");
   const [saved, setSaved] = useState(false);
   const [showUntaggedOnly, setShowUntaggedOnly] = useState(true);
   const [newOverride, setNewOverride] = useState({
@@ -87,6 +92,9 @@ export default function SettingsPage() {
     fetch("/api/settings/business-line-overrides")
       .then((r) => r.json())
       .then(setBusinessLineOverrides);
+    fetch("/api/settings/monthly-budget")
+      .then((r) => r.json())
+      .then(setMonthlyBudget);
   }
 
   useEffect(load, []);
@@ -164,6 +172,34 @@ export default function SettingsPage() {
     await fetch(`/api/settings/business-line-overrides/${fortnox_doc_number}`, { method: "DELETE" });
   }
 
+  function updateBudgetField(month: string, field: "turnover" | "cogs" | "opex", value: number) {
+    setMonthlyBudget((prev) => prev.map((b) => (b.month === month ? { ...b, [field]: value } : b)));
+  }
+
+  async function saveBudgetRow(row: MonthlyBudget) {
+    await fetch("/api/settings/monthly-budget", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(row),
+    });
+    flashSaved();
+  }
+
+  async function addBudgetMonth(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newBudgetMonth || monthlyBudget.some((b) => b.month.startsWith(newBudgetMonth))) return;
+    const row = { month: `${newBudgetMonth}-01`, turnover: 0, cogs: 0, opex: 0 };
+    await fetch("/api/settings/monthly-budget", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(row),
+    });
+    setNewBudgetMonth("");
+    fetch("/api/settings/monthly-budget")
+      .then((r) => r.json())
+      .then(setMonthlyBudget);
+  }
+
   function flashSaved() {
     setSaved(true);
     setTimeout(() => setSaved(false), 1500);
@@ -198,6 +234,11 @@ export default function SettingsPage() {
             label="Bankruptcy threshold (SEK)"
             value={settings.danger_bankruptcy_threshold}
             onChange={(v) => setSettings((s) => ({ ...s, danger_bankruptcy_threshold: v }))}
+          />
+          <NumberField
+            label="Starting equity (SEK, as of the earliest ledger month)"
+            value={settings.starting_equity}
+            onChange={(v) => setSettings((s) => ({ ...s, starting_equity: v }))}
           />
           <button type="submit" className="rounded bg-foreground text-background px-3 py-1.5 w-fit mt-2">
             Save
@@ -423,6 +464,79 @@ export default function SettingsPage() {
                   <td className="py-1">
                     <button onClick={() => removeBusinessLineOverride(o.fortnox_doc_number)} className="text-red-600 underline">
                       Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-1">Monthly budget</h2>
+        <p className="text-xs text-zinc-500 mb-3 max-w-md">
+          Compared against real ledger figures on the dashboard&apos;s monthly P&amp;L. Gross profit and company
+          profit are derived automatically — just enter turnover, cost of goods, and opex.
+        </p>
+        <form onSubmit={addBudgetMonth} className="flex flex-wrap gap-2 text-sm mb-4 items-end">
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Month</span>
+            <input
+              className="border rounded px-2 py-1"
+              type="month"
+              value={newBudgetMonth}
+              onChange={(e) => setNewBudgetMonth(e.target.value)}
+              required
+            />
+          </label>
+          <button type="submit" className="rounded bg-foreground text-background px-3 py-1.5">
+            Add
+          </button>
+        </form>
+
+        <div className="max-h-96 overflow-y-auto text-sm">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="text-left border-b sticky top-0 bg-background">
+                <th className="py-1">Month</th>
+                <th className="py-1">Turnover</th>
+                <th className="py-1">COGS</th>
+                <th className="py-1">Opex</th>
+                <th className="py-1" />
+              </tr>
+            </thead>
+            <tbody>
+              {monthlyBudget.map((b) => (
+                <tr key={b.month} className="border-b">
+                  <td className="py-1">{b.month.slice(0, 7)}</td>
+                  <td className="py-1">
+                    <input
+                      className="border rounded px-1 py-0.5 w-24"
+                      type="number"
+                      value={b.turnover}
+                      onChange={(e) => updateBudgetField(b.month, "turnover", Number(e.target.value))}
+                    />
+                  </td>
+                  <td className="py-1">
+                    <input
+                      className="border rounded px-1 py-0.5 w-24"
+                      type="number"
+                      value={b.cogs}
+                      onChange={(e) => updateBudgetField(b.month, "cogs", Number(e.target.value))}
+                    />
+                  </td>
+                  <td className="py-1">
+                    <input
+                      className="border rounded px-1 py-0.5 w-24"
+                      type="number"
+                      value={b.opex}
+                      onChange={(e) => updateBudgetField(b.month, "opex", Number(e.target.value))}
+                    />
+                  </td>
+                  <td className="py-1">
+                    <button onClick={() => saveBudgetRow(b)} className="text-green-700 underline">
+                      Save
                     </button>
                   </td>
                 </tr>
