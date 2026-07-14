@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 
 const FORTNOX_AUTH_URL = "https://apps.fortnox.se/oauth-v1/auth";
-const SCOPES = "invoice supplierinvoice customer supplier";
+// bookkeeping added for Track 2 (ledger sync — Vouchers/Accounts for the monthly P&L).
+const SCOPES = "invoice supplierinvoice customer supplier bookkeeping";
 
 export async function GET() {
   const state = randomBytes(16).toString("hex");
