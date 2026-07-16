@@ -39,14 +39,29 @@ async function forecastTotals(
   endDate: string,
 ): Promise<Map<string, number>> {
   type Row = { expected_date: string; amount: number };
-  const rows = await fetchAllRows<Row>((from, to) =>
-    supabase
-      .from(table)
-      .select("expected_date, amount")
-      .gte("expected_date", startDate)
-      .lt("expected_date", endDate)
-      .range(from, to),
-  );
+  // Dropped rows are flagged wrong/duplicate and must never count toward a forecast
+  // total (see weeklyByLine.ts for the same rule) — matched rows still count here since
+  // this chart is a forecast-vs-actual comparison, same reasoning as weeklyByLine.
+  const rows =
+    table === "sales_forecast"
+      ? await fetchAllRows<Row>((from, to) =>
+          supabase
+            .from("sales_forecast")
+            .select("expected_date, amount")
+            .neq("status", "dropped")
+            .gte("expected_date", startDate)
+            .lt("expected_date", endDate)
+            .range(from, to),
+        )
+      : await fetchAllRows<Row>((from, to) =>
+          supabase
+            .from("purchase_forecast")
+            .select("expected_date, amount")
+            .neq("status", "dropped")
+            .gte("expected_date", startDate)
+            .lt("expected_date", endDate)
+            .range(from, to),
+        );
   const totals = new Map<string, number>();
   for (const row of rows) {
     const key = monthKey(row.expected_date);
