@@ -1,10 +1,14 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
+import { loadFactoringLimits } from "@/lib/factoring/limits";
+import { simulatePromotions, type InvoiceForPromotion } from "@/lib/factoring/poolPromotion";
 
 const INSERT_BATCH_SIZE = 1000;
 
 type InvoiceForCashEvents = {
   id: string;
+  fortnox_doc_number: string;
+  customer_number: string | null;
   invoice_date: string;
   due_date: string;
   balance: number;
@@ -57,9 +61,26 @@ export async function generateCashEvents() {
   const invoices = await fetchAllRows<InvoiceForCashEvents>((from, to) =>
     supabase
       .from("customer_invoices")
-      .select("id, invoice_date, due_date, balance, paid_date, eligible_amount, excluded_amount")
+      .select("id, fortnox_doc_number, customer_number, invoice_date, due_date, balance, paid_date, eligible_amount, excluded_amount")
       .range(from, to),
   );
+
+  // Excluded amounts aren't permanently excluded — as currently-eligible invoices settle
+  // and free up pool/customer capacity, the next excluded invoice in FIFO order should get
+  // promoted into the 70/30 split sooner than its own due date. Manual overrides neither
+  // consume nor free simulated capacity, so they're excluded from the simulation entirely
+  // (their excluded_amount below is left untouched, same as reallocateFactoring()).
+  const overrides = await fetchAllRows<{ fortnox_doc_number: string }>((from, to) =>
+    supabase.from("factoring_manual_overrides").select("fortnox_doc_number").range(from, to),
+  );
+  const overrideDocNumbers = new Set(overrides.map((o) => o.fortnox_doc_number));
+
+  const limits = await loadFactoringLimits(supabase);
+  const unpaidForSimulation: InvoiceForPromotion[] = invoices.filter(
+    (inv) => inv.balance > 0 && !overrideDocNumbers.has(inv.fortnox_doc_number),
+  );
+  const today = new Date().toISOString().slice(0, 10);
+  const promotions = simulatePromotions(unpaidForSimulation, limits, avgDelay, today);
 
   const events: CashEventRow[] = [];
 
@@ -85,13 +106,45 @@ export async function generateCashEvents() {
       });
     }
     if (inv.excluded_amount > 0) {
-      events.push({
-        source_invoice_id: inv.id,
-        tranche: "c",
-        amount: round2(inv.excluded_amount),
-        event_date: settlementDate,
-        is_estimated: isEstimated,
-      });
+      const tranches = promotions.get(inv.id);
+      if (tranches && tranches.length > 0) {
+        let promotedTotal = 0;
+        for (const tranche of tranches) {
+          promotedTotal += tranche.amount;
+          events.push({
+            source_invoice_id: inv.id,
+            tranche: "a",
+            amount: round2(tranche.amount * rules.tranche_a_pct),
+            event_date: tranche.date,
+            is_estimated: true,
+          });
+          events.push({
+            source_invoice_id: inv.id,
+            tranche: "b",
+            amount: round2(tranche.amount * rules.tranche_b_pct * (1 - rules.tranche_b_fee_pct)),
+            event_date: tranche.date > settlementDate ? tranche.date : settlementDate,
+            is_estimated: true,
+          });
+        }
+        const remainder = inv.excluded_amount - promotedTotal;
+        if (remainder > 0) {
+          events.push({
+            source_invoice_id: inv.id,
+            tranche: "c",
+            amount: round2(remainder),
+            event_date: settlementDate,
+            is_estimated: isEstimated,
+          });
+        }
+      } else {
+        events.push({
+          source_invoice_id: inv.id,
+          tranche: "c",
+          amount: round2(inv.excluded_amount),
+          event_date: settlementDate,
+          is_estimated: isEstimated,
+        });
+      }
     }
   }
 

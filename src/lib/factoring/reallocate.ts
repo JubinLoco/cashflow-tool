@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
+import { loadFactoringLimits } from "@/lib/factoring/limits";
 
 const UPDATE_BATCH_SIZE = 500;
 
@@ -16,21 +17,8 @@ type InvoiceForAllocation = {
 // invoices get paid off and free up capacity.
 export async function reallocateFactoring() {
   const supabase = createAdminClient();
-  const today = new Date().toISOString().slice(0, 10);
 
-  const { data: limitsRows, error: limitsError } = await supabase
-    .from("factoring_facility_limits")
-    .select("*")
-    .lte("effective_from", today)
-    .order("effective_from", { ascending: false })
-    .limit(1);
-  if (limitsError) throw new Error(`Failed to load facility limits: ${limitsError.message}`);
-  const limits = limitsRows?.[0];
-  if (!limits) throw new Error("No factoring_facility_limits row found");
-
-  const pool = limits.total_eligible_credit;
-  const invoiceCap = pool * limits.invoice_cap_pct;
-  const customerCap = pool * limits.customer_cap_pct;
+  const { pool, invoiceCap, customerCap } = await loadFactoringLimits(supabase);
 
   const unpaid = await fetchAllRows<InvoiceForAllocation>((from, to) =>
     supabase
