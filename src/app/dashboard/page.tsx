@@ -23,7 +23,7 @@ type Projection = {
   startingBalance: number;
 };
 type MonthlyComparison = { month: string; forecast: number; actual: number };
-type WeeklyPoint = { week: string; forecast: number; real: number; grossProfit: number; marginPct: number };
+type WeeklyPoint = { week: string; forecast: number; forecastProfit: number; real: number; grossProfit: number; marginPct: number };
 type WeeklyByLineData = { businessLine: string; weeks: WeeklyPoint[] };
 type PnlFigures = { turnover: number; cogs: number; grossProfit: number; opex: number; companyProfit: number };
 type MonthlyPnlRow = { month: string; real: PnlFigures; budget: PnlFigures; equity: number };

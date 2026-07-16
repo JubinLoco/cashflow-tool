@@ -14,18 +14,19 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { description, product_line, amount, probability, dateInput } = body as {
+  const { description, product_line, amount, probability, expected_margin_pct, dateInput } = body as {
     description: string;
-    product_line: "gmax_ci" | "residential";
+    product_line: "gmax_ci" | "residential" | "consultancy";
     amount: number;
     probability?: number;
+    expected_margin_pct?: number | null;
     dateInput: DateInput;
   };
 
   try {
     const rows = await createForecastEntries(
       "sales_forecast",
-      { description, product_line, amount, probability: probability ?? 1.0 },
+      { description, product_line, amount, probability: probability ?? 1.0, expected_margin_pct: expected_margin_pct ?? null },
       dateInput,
     );
     return NextResponse.json(rows);

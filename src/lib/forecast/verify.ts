@@ -16,6 +16,9 @@ export type VerificationRow = {
   secondaryDate: string | null;
   status: string;
   recurringGroupId: string | null;
+  // Sales forecast rows only — null means "use the global gross_margin_pct default"
+  // (see weeklyByLine.ts). Always null for purchase forecast, derived, and actual rows.
+  expectedMarginPct: number | null;
 };
 
 // Merges forecast entries with the real invoices they're compared against (same
@@ -30,6 +33,10 @@ export async function buildVerificationList(
 ): Promise<VerificationRow[]> {
   const supabase = createAdminClient();
 
+  const isSales = invoiceTable === "customer_invoices";
+
+  // expected_margin_pct only exists on sales_forecast — select it conditionally rather
+  // than assuming the column on both tables.
   const forecastRows = await fetchAllRows<{
     id: string;
     description: string;
@@ -37,10 +44,15 @@ export async function buildVerificationList(
     expected_date: string;
     status: string;
     recurring_group_id: string | null;
+    expected_margin_pct?: number | null;
   }>((from, to) =>
     supabase
       .from(forecastTable)
-      .select("id, description, amount, expected_date, status, recurring_group_id")
+      .select(
+        isSales
+          ? "id, description, amount, expected_date, status, recurring_group_id, expected_margin_pct"
+          : "id, description, amount, expected_date, status, recurring_group_id",
+      )
       .gte("expected_date", startDate)
       .lt("expected_date", endDate)
       .range(from, to),
@@ -89,11 +101,10 @@ export async function buildVerificationList(
         secondaryDate: null,
         status: "derived",
         recurringGroupId: null,
+        expectedMarginPct: null,
       });
     }
   }
-
-  const isSales = invoiceTable === "customer_invoices";
 
   const combined: VerificationRow[] = [
     ...forecastRows.map((r) => ({
@@ -105,6 +116,7 @@ export async function buildVerificationList(
       secondaryDate: null,
       status: r.status,
       recurringGroupId: r.recurring_group_id,
+      expectedMarginPct: r.expected_margin_pct ?? null,
     })),
     ...derivedRows,
     ...invoiceRows.map((r) => {
@@ -120,6 +132,7 @@ export async function buildVerificationList(
         // hasn't caught up yet — same reasoning as the forecast Drop/Match override.
         status: (r.manual_paid ?? r.balance <= 0) ? "paid" : "open",
         recurringGroupId: null,
+        expectedMarginPct: null,
       };
     }),
   ];

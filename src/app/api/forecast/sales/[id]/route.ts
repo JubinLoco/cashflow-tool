@@ -17,16 +17,18 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const scope = request.nextUrl.searchParams.get("scope") === "future" ? "future" : "single";
   const body = await request.json();
-  const { description, amount, expected_date, product_line, status } = body as {
+  const { description, amount, expected_date, product_line, expected_margin_pct, status } = body as {
     description?: string;
     amount?: number;
     expected_date?: string;
     product_line?: "gmax_ci" | "residential" | "consultancy";
+    expected_margin_pct?: number | null;
     status?: "forecast" | "matched" | "dropped";
   };
 
   const extra = {
     ...(product_line !== undefined ? { product_line } : {}),
+    ...(expected_margin_pct !== undefined ? { expected_margin_pct } : {}),
     ...(status !== undefined ? { status } : {}),
   };
 

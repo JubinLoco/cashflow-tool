@@ -14,6 +14,7 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(categoryOptions?.[0] ?? "");
   const [amount, setAmount] = useState("");
+  const [marginPct, setMarginPct] = useState("");
   const [isRecurring, setIsRecurring] = useState(false);
   const [date, setDate] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -37,6 +38,7 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
       amount: Number(amount),
       dateInput,
       [categoryField]: category,
+      ...(apiBase === "sales" && marginPct !== "" ? { expected_margin_pct: Number(marginPct) / 100 } : {}),
     };
 
     const res = await fetch(`/api/forecast/${apiBase}`, {
@@ -53,6 +55,7 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
 
     setDescription("");
     setAmount("");
+    setMarginPct("");
     setDate("");
     setStartDate("");
     setEndDate("");
@@ -95,6 +98,16 @@ export default function ForecastSection({ title, apiBase, categoryField, categor
           onChange={(e) => setAmount(e.target.value)}
           required
         />
+        {apiBase === "sales" && (
+          <input
+            className="border rounded px-2 py-1"
+            type="number"
+            step={0.1}
+            placeholder="Expected margin % (optional)"
+            value={marginPct}
+            onChange={(e) => setMarginPct(e.target.value)}
+          />
+        )}
 
         <label className="flex items-center gap-2">
           <input type="checkbox" checked={isRecurring} onChange={(e) => setIsRecurring(e.target.checked)} />

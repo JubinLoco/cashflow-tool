@@ -2,7 +2,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
 import { splitByBusinessLine, type BusinessLine } from "@/lib/sales/businessLine";
 
-export type WeeklyPoint = { week: string; forecast: number; real: number; grossProfit: number; marginPct: number };
+export type WeeklyPoint = {
+  week: string;
+  forecast: number;
+  forecastProfit: number;
+  real: number;
+  grossProfit: number;
+  marginPct: number;
+};
 export type WeeklyByLine = { businessLine: BusinessLine; weeks: WeeklyPoint[] };
 
 const BUSINESS_LINES: BusinessLine[] = ["residential", "gmax_ci", "consultancy"];
@@ -36,16 +43,25 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
   const startStr = startDate.toISOString().slice(0, 10);
   const endStr = endDate.toISOString().slice(0, 10);
 
-  const [salesForecast, invoices, overrides] = await Promise.all([
-    fetchAllRows<{ amount: number; probability: number; expected_date: string; product_line: BusinessLine | null }>(
-      (from, to) =>
-        supabase
-          .from("sales_forecast")
-          .select("amount, probability, expected_date, product_line")
-          .eq("status", "forecast")
-          .gte("expected_date", startStr)
-          .lt("expected_date", endStr)
-          .range(from, to),
+  const [salesForecast, invoices, overrides, marginSetting] = await Promise.all([
+    // Unlike the cashflow projection (which must drop a row the moment it's matched, to
+    // avoid double-counting it alongside the real invoice), this view is a trend/accuracy
+    // comparison — a matched row is a forecast that came true, still worth showing against
+    // Real for that week. Only "dropped" (flagged wrong/duplicate) is excluded.
+    fetchAllRows<{
+      amount: number;
+      probability: number;
+      expected_date: string;
+      product_line: BusinessLine | null;
+      expected_margin_pct: number | null;
+    }>((from, to) =>
+      supabase
+        .from("sales_forecast")
+        .select("amount, probability, expected_date, product_line, expected_margin_pct")
+        .neq("status", "dropped")
+        .gte("expected_date", startStr)
+        .lt("expected_date", endStr)
+        .range(from, to),
     ),
     fetchAllRows<{
       fortnox_doc_number: string;
@@ -69,9 +85,11 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
     fetchAllRows<{ fortnox_doc_number: string; business_line: BusinessLine }>((from, to) =>
       supabase.from("sales_business_line_overrides").select("fortnox_doc_number, business_line").range(from, to),
     ),
+    supabase.from("settings").select("value").eq("key", "gross_margin_pct").maybeSingle(),
   ]);
 
   const overrideByDoc = new Map(overrides.map((o) => [o.fortnox_doc_number, o.business_line]));
+  const defaultMarginPct = Number(marginSetting.data?.value ?? 0.15);
 
   const weeks: string[] = [];
   const cursor = mondayOf(startDate);
@@ -81,15 +99,24 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
     cursor.setUTCDate(cursor.getUTCDate() + 7);
   }
 
-  const byLine = new Map<BusinessLine, Map<string, { forecast: number; real: number; netReal: number; grossProfit: number }>>();
+  const byLine = new Map<
+    BusinessLine,
+    Map<string, { forecast: number; forecastProfit: number; real: number; netReal: number; grossProfit: number }>
+  >();
   for (const line of BUSINESS_LINES) {
-    byLine.set(line, new Map(weeks.map((w) => [w, { forecast: 0, real: 0, netReal: 0, grossProfit: 0 }])));
+    byLine.set(line, new Map(weeks.map((w) => [w, { forecast: 0, forecastProfit: 0, real: 0, netReal: 0, grossProfit: 0 }])));
   }
 
   for (const row of salesForecast) {
     const line = row.product_line && BUSINESS_LINES.includes(row.product_line) ? row.product_line : "residential";
     const bucket = byLine.get(line)!.get(weekKey(row.expected_date));
-    if (bucket) bucket.forecast += row.amount * row.probability;
+    if (bucket) {
+      const expected = row.amount * row.probability;
+      bucket.forecast += expected;
+      // A deal-specific margin overrides the global default (see ForecastSection's
+      // optional "Expected margin %" field) — most forecast rows don't set one.
+      bucket.forecastProfit += expected * (row.expected_margin_pct ?? defaultMarginPct);
+    }
   }
 
   for (const inv of invoices) {
@@ -127,6 +154,7 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
       return {
         week,
         forecast: point.forecast,
+        forecastProfit: point.forecastProfit,
         real: point.real,
         grossProfit: point.grossProfit,
         marginPct: point.netReal === 0 ? 0 : point.grossProfit / point.netReal,

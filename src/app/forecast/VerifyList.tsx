@@ -12,6 +12,7 @@ type VerificationRow = {
   secondaryDate: string | null;
   status: string;
   recurringGroupId: string | null;
+  expectedMarginPct: number | null;
 };
 
 const INVOICE_ENDPOINT: Record<"sales" | "purchase", "customer-invoices" | "supplier-invoices"> = {
@@ -38,6 +39,7 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState("");
   const [editDate, setEditDate] = useState("");
+  const [editMarginPct, setEditMarginPct] = useState("");
 
   function load() {
     fetch(`/api/forecast/${apiBase}/verify`)
@@ -70,9 +72,13 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
     setEditDescription(row.description);
     setEditAmount(String(row.amount));
     setEditDate(row.date);
+    setEditMarginPct(row.expectedMarginPct != null ? String(row.expectedMarginPct * 100) : "");
   }
 
   async function handleSaveEdit(id: string, hasSeries: boolean) {
+    const marginFields =
+      apiBase === "sales" ? { expected_margin_pct: editMarginPct === "" ? null : Number(editMarginPct) / 100 } : {};
+
     const applyToFuture =
       hasSeries &&
       confirm(
@@ -88,13 +94,13 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
       await fetch(`/api/forecast/${apiBase}/${id}?scope=future`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description: editDescription, amount: Number(editAmount) }),
+        body: JSON.stringify({ description: editDescription, amount: Number(editAmount), ...marginFields }),
       });
     } else {
       await fetch(`/api/forecast/${apiBase}/${id}?scope=single`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description: editDescription, amount: Number(editAmount), expected_date: editDate }),
+        body: JSON.stringify({ description: editDescription, amount: Number(editAmount), expected_date: editDate, ...marginFields }),
       });
     }
 
@@ -135,6 +141,7 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                 <th className="py-2 px-3">Amount</th>
                 <th className="py-2 px-3">{PRIMARY_DATE_LABEL[apiBase]}</th>
                 <th className="py-2 px-3">{SECONDARY_DATE_LABEL[apiBase]}</th>
+                {apiBase === "sales" && <th className="py-2 px-3">Margin %</th>}
                 <th className="py-2 px-3">Status</th>
                 <th className="py-2 px-3" />
               </tr>
@@ -165,6 +172,18 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                       <input className="border rounded px-1 py-0.5" type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
                     </td>
                     <td className="py-2 px-3 text-zinc-500">—</td>
+                    {apiBase === "sales" && (
+                      <td className="py-2 px-3">
+                        <input
+                          className="border rounded px-1 py-0.5 w-16"
+                          type="number"
+                          step={0.1}
+                          placeholder="—"
+                          value={editMarginPct}
+                          onChange={(e) => setEditMarginPct(e.target.value)}
+                        />
+                      </td>
+                    )}
                     <td className="py-2 px-3">{row.status}</td>
                     <td className="py-2 px-3 flex gap-2">
                       <button onClick={() => handleSaveEdit(row.id!, Boolean(row.recurringGroupId))} className="text-green-700 underline">
@@ -190,6 +209,9 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                     <td className="py-2 px-3">{formatSEK(row.amount)}</td>
                     <td className="py-2 px-3">{row.date}</td>
                     <td className="py-2 px-3">{row.secondaryDate ?? "—"}</td>
+                    {apiBase === "sales" && (
+                      <td className="py-2 px-3">{row.expectedMarginPct != null ? `${(row.expectedMarginPct * 100).toFixed(1)}%` : "—"}</td>
+                    )}
                     <td className="py-2 px-3">{row.status}</td>
                     <td className="py-2 px-3 flex gap-2">
                       {row.type === "forecast" && row.status === "forecast" && row.id && (

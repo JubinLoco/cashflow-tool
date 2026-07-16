@@ -3,7 +3,7 @@
 import { Fragment } from "react";
 import { formatSEK } from "@/lib/format";
 
-type WeeklyPoint = { week: string; forecast: number; real: number; grossProfit: number; marginPct: number };
+type WeeklyPoint = { week: string; forecast: number; forecastProfit: number; real: number; grossProfit: number; marginPct: number };
 type WeeklyByLine = { businessLine: string; weeks: WeeklyPoint[] };
 
 const LINE_LABEL: Record<string, string> = {
@@ -48,7 +48,7 @@ export default function WeeklyByLineTable({ data }: { data: WeeklyByLine[] }) {
                 Week
               </th>
               {data.map((line) => (
-                <th key={line.businessLine} className="py-2 px-3 text-center border-l" colSpan={4} style={{ borderColor: "var(--gridline)" }}>
+                <th key={line.businessLine} className="py-2 px-3 text-center border-l" colSpan={5} style={{ borderColor: "var(--gridline)" }}>
                   {LINE_LABEL[line.businessLine] ?? line.businessLine}
                 </th>
               ))}
@@ -59,6 +59,7 @@ export default function WeeklyByLineTable({ data }: { data: WeeklyByLine[] }) {
                   <th className="py-2 px-3 border-l" style={{ borderColor: "var(--gridline)" }}>
                     Forecast
                   </th>
+                  <th className="py-2 px-3">Forecast profit</th>
                   <th className="py-2 px-3">Real</th>
                   <th className="py-2 px-3">Margin %</th>
                   <th className="py-2 px-3">Gross profit</th>
@@ -79,6 +80,7 @@ export default function WeeklyByLineTable({ data }: { data: WeeklyByLine[] }) {
                       <td className="py-2 px-3 border-l" style={{ borderColor: "var(--gridline)" }}>
                         {formatSEK(point.forecast)}
                       </td>
+                      <td className="py-2 px-3">{point.forecast === 0 ? "—" : formatSEK(point.forecastProfit)}</td>
                       <td className="py-2 px-3">{formatSEK(point.real)}</td>
                       <td className="py-2 px-3">{point.real === 0 ? "—" : formatPct(point.marginPct)}</td>
                       <td className="py-2 px-3">{point.real === 0 ? "—" : formatSEK(point.grossProfit)}</td>
