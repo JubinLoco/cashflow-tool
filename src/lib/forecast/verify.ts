@@ -37,7 +37,11 @@ export async function buildVerificationList(
 
   // expected_margin_pct only exists on sales_forecast — select it conditionally rather
   // than assuming the column on both tables.
-  const forecastRows = await fetchAllRows<{
+  // Split by table (rather than a ternary select() string on the shared forecastTable
+  // union) because Supabase's typed query builder parses the select string at the type
+  // level against whichever table from() resolves to — a ternary between two different
+  // literal strings on a unioned builder blows up type inference.
+  type ForecastRow = {
     id: string;
     description: string;
     amount: number;
@@ -45,18 +49,24 @@ export async function buildVerificationList(
     status: string;
     recurring_group_id: string | null;
     expected_margin_pct?: number | null;
-  }>((from, to) =>
-    supabase
-      .from(forecastTable)
-      .select(
-        isSales
-          ? "id, description, amount, expected_date, status, recurring_group_id, expected_margin_pct"
-          : "id, description, amount, expected_date, status, recurring_group_id",
+  };
+  const forecastRows: ForecastRow[] = isSales
+    ? await fetchAllRows<ForecastRow>((from, to) =>
+        supabase
+          .from("sales_forecast")
+          .select("id, description, amount, expected_date, status, recurring_group_id, expected_margin_pct")
+          .gte("expected_date", startDate)
+          .lt("expected_date", endDate)
+          .range(from, to),
       )
-      .gte("expected_date", startDate)
-      .lt("expected_date", endDate)
-      .range(from, to),
-  );
+    : await fetchAllRows<ForecastRow>((from, to) =>
+        supabase
+          .from("purchase_forecast")
+          .select("id, description, amount, expected_date, status, recurring_group_id")
+          .gte("expected_date", startDate)
+          .lt("expected_date", endDate)
+          .range(from, to),
+      );
 
   const nameField = invoiceTable === "customer_invoices" ? "customer_name" : "supplier_name";
   const invoiceRows = await fetchAllRows<{
