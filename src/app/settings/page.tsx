@@ -10,6 +10,7 @@ type Settings = {
   tax_pct_of_sales?: number;
   tax_due_day?: number;
   gross_margin_pct?: number;
+  vat_rate?: number;
   foxess_share_pct?: number;
   foxess_payment_days?: number;
   other_supplier_payment_days?: number;
@@ -298,6 +299,12 @@ export default function SettingsPage() {
             value={settings.gross_margin_pct}
             step={0.01}
             onChange={(v) => setSettings((s) => ({ ...s, gross_margin_pct: v }))}
+          />
+          <NumberField
+            label="VAT rate on sales (0-1)"
+            value={settings.vat_rate}
+            step={0.01}
+            onChange={(v) => setSettings((s) => ({ ...s, vat_rate: v }))}
           />
           <NumberField
             label="FoxESS share of material cost (0-1)"

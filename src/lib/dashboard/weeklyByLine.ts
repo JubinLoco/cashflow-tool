@@ -43,7 +43,7 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
   const startStr = startDate.toISOString().slice(0, 10);
   const endStr = endDate.toISOString().slice(0, 10);
 
-  const [salesForecast, invoices, overrides, marginSetting] = await Promise.all([
+  const [salesForecast, invoices, overrides, marginSetting, vatSetting] = await Promise.all([
     // Unlike the cashflow projection (which must drop a row the moment it's matched, to
     // avoid double-counting it alongside the real invoice), this view is a trend/accuracy
     // comparison — a matched row is a forecast that came true, still worth showing against
@@ -86,10 +86,15 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
       supabase.from("sales_business_line_overrides").select("fortnox_doc_number, business_line").range(from, to),
     ),
     supabase.from("settings").select("value").eq("key", "gross_margin_pct").maybeSingle(),
+    supabase.from("settings").select("value").eq("key", "vat_rate").maybeSingle(),
   ]);
 
   const overrideByDoc = new Map(overrides.map((o) => [o.fortnox_doc_number, o.business_line]));
   const defaultMarginPct = Number(marginSetting.data?.value ?? 0.15);
+  // sales_forecast.amount is entered VAT-inclusive (matching customer_invoices.total), so
+  // convert to ex-VAT here — this view reports everything excl. VAT, unlike the cashflow
+  // projection which uses the VAT-inclusive amount since that's the cash that actually moves.
+  const vatRate = Number(vatSetting.data?.value ?? 0.25);
 
   const weeks: string[] = [];
   const cursor = mondayOf(startDate);
@@ -99,19 +104,16 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
     cursor.setUTCDate(cursor.getUTCDate() + 7);
   }
 
-  const byLine = new Map<
-    BusinessLine,
-    Map<string, { forecast: number; forecastProfit: number; real: number; netReal: number; grossProfit: number }>
-  >();
+  const byLine = new Map<BusinessLine, Map<string, { forecast: number; forecastProfit: number; real: number; grossProfit: number }>>();
   for (const line of BUSINESS_LINES) {
-    byLine.set(line, new Map(weeks.map((w) => [w, { forecast: 0, forecastProfit: 0, real: 0, netReal: 0, grossProfit: 0 }])));
+    byLine.set(line, new Map(weeks.map((w) => [w, { forecast: 0, forecastProfit: 0, real: 0, grossProfit: 0 }])));
   }
 
   for (const row of salesForecast) {
     const line = row.product_line && BUSINESS_LINES.includes(row.product_line) ? row.product_line : "residential";
     const bucket = byLine.get(line)!.get(weekKey(row.expected_date));
     if (bucket) {
-      const expected = row.amount * row.probability;
+      const expected = (row.amount * row.probability) / (1 + vatRate);
       bucket.forecast += expected;
       // A deal-specific margin overrides the global default (see ForecastSection's
       // optional "Expected margin %" field) — most forecast rows don't set one.
@@ -137,11 +139,11 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
     for (const portion of portions) {
       const bucket = byLine.get(portion.businessLine)!.get(week);
       if (bucket) {
-        bucket.real += portion.total;
-        // Margin % must divide by the ex-VAT amount — ContributionValue (gross profit) is
-        // computed by Fortnox on an ex-VAT basis, so dividing by VAT-inclusive Total would
-        // understate margin by roughly the VAT rate.
-        bucket.netReal += portion.netTotal;
+        // Real is reported ex-VAT here (unlike the cashflow projection, which uses the
+        // VAT-inclusive Total since that's the cash that actually moves) — netTotal is also
+        // the correct denominator for margin %, since Fortnox computes ContributionValue
+        // (gross profit) on an ex-VAT basis.
+        bucket.real += portion.netTotal;
         bucket.grossProfit += portion.grossProfit;
       }
     }
@@ -157,7 +159,7 @@ export async function computeWeeklyByLine(weeksBack: number, weeksForward: numbe
         forecastProfit: point.forecastProfit,
         real: point.real,
         grossProfit: point.grossProfit,
-        marginPct: point.netReal === 0 ? 0 : point.grossProfit / point.netReal,
+        marginPct: point.real === 0 ? 0 : point.grossProfit / point.real,
       };
     }),
   }));
