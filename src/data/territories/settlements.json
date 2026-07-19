@@ -1,0 +1,772 @@
+[
+  {
+    "customerNumber": "125",
+    "name": "Swedala Tak AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 7363187.0,
+    "marginPct": 15.29,
+    "monthsWithData": 12,
+    "tier": "metropolis"
+  },
+  {
+    "customerNumber": "223",
+    "name": "Helios El & Solkraft AB",
+    "province": "Stockholm",
+    "city": "Rönninge",
+    "trailing12moTurnover": 3507736.0,
+    "marginPct": 4.98,
+    "monthsWithData": 6,
+    "tier": "city"
+  },
+  {
+    "customerNumber": "126",
+    "name": "Solled Energy AB",
+    "province": "Dalarna",
+    "city": "FALUN",
+    "trailing12moTurnover": 3249566.0,
+    "marginPct": 14.64,
+    "monthsWithData": 12,
+    "tier": "metropolis"
+  },
+  {
+    "customerNumber": "243",
+    "name": "Wattnord Installation AB",
+    "province": "Västra Götaland",
+    "city": "Göteborg",
+    "trailing12moTurnover": 2560918.0,
+    "marginPct": 4.19,
+    "monthsWithData": 3,
+    "tier": "city"
+  },
+  {
+    "customerNumber": "110",
+    "name": "Solcella Värmdö AB",
+    "province": "Stockholm",
+    "city": "Gustavsberg",
+    "trailing12moTurnover": 2367703.0,
+    "marginPct": 15.28,
+    "monthsWithData": 9,
+    "tier": "metropolis"
+  },
+  {
+    "customerNumber": "142",
+    "name": "Wermlands Solpaneler AB",
+    "province": "Värmland",
+    "city": "Karlstad",
+    "trailing12moTurnover": 2088531.0,
+    "marginPct": 21.11,
+    "monthsWithData": 8,
+    "tier": "metropolis"
+  },
+  {
+    "customerNumber": "230",
+    "name": "Bröderman Holding AB",
+    "province": "Dalarna",
+    "city": "Grycksbo",
+    "trailing12moTurnover": 1737755.0,
+    "marginPct": 18.31,
+    "monthsWithData": 1,
+    "tier": "metropolis"
+  },
+  {
+    "customerNumber": "261",
+    "name": "Skånesol AB",
+    "province": "Skåne",
+    "city": "Åhus",
+    "trailing12moTurnover": 1342386.0,
+    "marginPct": 5.87,
+    "monthsWithData": 2,
+    "tier": "town"
+  },
+  {
+    "customerNumber": "30",
+    "name": "Brion Solenergi AB",
+    "province": "Västra Götaland",
+    "city": "Mölndal",
+    "trailing12moTurnover": 1333050.0,
+    "marginPct": 25.8,
+    "monthsWithData": 5,
+    "tier": "town"
+  },
+  {
+    "customerNumber": "206",
+    "name": "Efrigge i Sverige AB",
+    "province": "Västmanland",
+    "city": "VÄSTERÅS",
+    "trailing12moTurnover": 1209412.0,
+    "marginPct": 18.5,
+    "monthsWithData": 6,
+    "tier": "town"
+  },
+  {
+    "customerNumber": "75",
+    "name": "Sol och tak Dalarna AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 1067756.0,
+    "marginPct": 15.85,
+    "monthsWithData": 6,
+    "tier": "town"
+  },
+  {
+    "customerNumber": "201",
+    "name": "Jämtland Norrland Solar AB",
+    "province": "Jämtland",
+    "city": "Brunflo",
+    "trailing12moTurnover": 730258.0,
+    "marginPct": 9.23,
+    "monthsWithData": 9,
+    "tier": "mid_village"
+  },
+  {
+    "customerNumber": "162",
+    "name": "EITAB Produktion AB",
+    "province": "Västmanland",
+    "city": "Norberg",
+    "trailing12moTurnover": 674644.0,
+    "marginPct": 12.08,
+    "monthsWithData": 3,
+    "tier": "mid_village"
+  },
+  {
+    "customerNumber": "215",
+    "name": "Energikraft i Gävle AB",
+    "province": "Gävleborg",
+    "city": "Gävle",
+    "trailing12moTurnover": 608014.0,
+    "marginPct": 8.15,
+    "monthsWithData": 5,
+    "tier": "mid_village"
+  },
+  {
+    "customerNumber": "212",
+    "name": "Swedish Energy Ventures AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 607707.0,
+    "marginPct": 14.74,
+    "monthsWithData": 3,
+    "tier": "mid_village"
+  },
+  {
+    "customerNumber": "210",
+    "name": "PLW Energihus AB",
+    "province": "Östergötland",
+    "city": "LINKÖPING",
+    "trailing12moTurnover": 565856.0,
+    "marginPct": 11.43,
+    "monthsWithData": 10,
+    "tier": "mid_village"
+  },
+  {
+    "customerNumber": "258",
+    "name": "Alltema i Linköping AB",
+    "province": "Östergötland",
+    "city": "Linköping",
+    "trailing12moTurnover": 563750.0,
+    "marginPct": 10.94,
+    "monthsWithData": 1,
+    "tier": "mid_village"
+  },
+  {
+    "customerNumber": "127",
+    "name": "Powermove Elinstallationer AB",
+    "province": "Dalarna",
+    "city": "FALUN",
+    "trailing12moTurnover": 507469.0,
+    "marginPct": 12.65,
+    "monthsWithData": 7,
+    "tier": "mid_village"
+  },
+  {
+    "customerNumber": "256",
+    "name": "Granviken Teknik AB",
+    "province": "Värmland",
+    "city": "Karlstad",
+    "trailing12moTurnover": 445001.0,
+    "marginPct": 14.45,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "255",
+    "name": "Tuna El & Automation AB",
+    "province": "Västmanland",
+    "city": "Västerås",
+    "trailing12moTurnover": 434734.0,
+    "marginPct": 7.59,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "128",
+    "name": "Solid Vind & Sol Sverige AB",
+    "province": "Skåne",
+    "city": "Ängelholm",
+    "trailing12moTurnover": 428125.0,
+    "marginPct": 80.0,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "232",
+    "name": "Enwell AB",
+    "province": "Stockholm",
+    "city": "Stockholm",
+    "trailing12moTurnover": 409998.0,
+    "marginPct": 10.17,
+    "monthsWithData": 5,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "189",
+    "name": "Solar Energy Group Sweden AB",
+    "province": "Gävleborg",
+    "city": "Gävle",
+    "trailing12moTurnover": 364226.0,
+    "marginPct": 14.75,
+    "monthsWithData": 7,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "251",
+    "name": "Skapande Gruppen Umeå AB",
+    "province": "Västerbotten",
+    "city": "UMEÅ",
+    "trailing12moTurnover": 349058.0,
+    "marginPct": 11.41,
+    "monthsWithData": 5,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "226",
+    "name": "Stey AB",
+    "province": "Stockholm",
+    "city": "Bromma",
+    "trailing12moTurnover": 329476.0,
+    "marginPct": 12.52,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "184",
+    "name": "FoxESS Germany GmbH",
+    "province": "",
+    "city": "Wiesbaden",
+    "trailing12moTurnover": 294987.0,
+    "marginPct": 80.0,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "164",
+    "name": "Grönborgs Sol AB",
+    "province": "Västernorrland",
+    "city": "Sundsvall",
+    "trailing12moTurnover": 294779.0,
+    "marginPct": 25.47,
+    "monthsWithData": 4,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "224",
+    "name": "Norra Dalarnas Eltjänst AB",
+    "province": "Dalarna",
+    "city": "Våmhus",
+    "trailing12moTurnover": 256464.0,
+    "marginPct": 11.71,
+    "monthsWithData": 4,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "244",
+    "name": "Elfirman Kalmar-Öland AB",
+    "province": "Kalmar",
+    "city": "Färjestaden",
+    "trailing12moTurnover": 251117.0,
+    "marginPct": 13.57,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "52",
+    "name": "Elinstallationer i dalarna AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 221722.0,
+    "marginPct": 10.02,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "242",
+    "name": "RR EL i Helsingborg AB",
+    "province": "Skåne",
+    "city": "Helsingborg",
+    "trailing12moTurnover": 203410.0,
+    "marginPct": 13.33,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "71",
+    "name": "NF's Elservice i Värmland AB",
+    "province": "Värmland",
+    "city": "Karlstad",
+    "trailing12moTurnover": 202996.0,
+    "marginPct": 14.22,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "99",
+    "name": "Snickarbröder i Gagnef AB",
+    "province": "Dalarna",
+    "city": "Mockfjärd",
+    "trailing12moTurnover": 199160.0,
+    "marginPct": 21.94,
+    "monthsWithData": 4,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "197",
+    "name": " Greenwatt AB",
+    "province": "Gävleborg",
+    "city": "Hudiksvall",
+    "trailing12moTurnover": 165825.0,
+    "marginPct": 8.48,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "254",
+    "name": "Linds & Källmans AB",
+    "province": "Jönköping",
+    "city": "Tranås",
+    "trailing12moTurnover": 142769.0,
+    "marginPct": 10.53,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "263",
+    "name": "Bodestorp El AB",
+    "province": "Skåne",
+    "city": "Rydebäck",
+    "trailing12moTurnover": 131411.0,
+    "marginPct": 8.96,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "117",
+    "name": "Jämtsol Energi AB",
+    "province": "Jämtland",
+    "city": "Östersund",
+    "trailing12moTurnover": 131380.0,
+    "marginPct": 2.89,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "252",
+    "name": "Gästrike Takmontage AB",
+    "province": "Gävleborg",
+    "city": "Kungsgården",
+    "trailing12moTurnover": 128520.0,
+    "marginPct": 5.19,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "237",
+    "name": "Mjäryds Elmontage Aktiebolag",
+    "province": "Kronoberg",
+    "city": "Strömsnäsbruk",
+    "trailing12moTurnover": 125661.0,
+    "marginPct": 3.69,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "227",
+    "name": "Christiansen El & Fastighet AB",
+    "province": "Stockholm",
+    "city": "TUMBA",
+    "trailing12moTurnover": 115457.0,
+    "marginPct": 21.1,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "250",
+    "name": "Business Development in Sweden AB",
+    "province": "Västra Götaland",
+    "city": "Mölndal",
+    "trailing12moTurnover": 110660.0,
+    "marginPct": 14.68,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "234",
+    "name": "Arvik bygg AB",
+    "province": "Stockholm",
+    "city": "Bro",
+    "trailing12moTurnover": 95718.0,
+    "marginPct": 15.62,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "225",
+    "name": "CES Elservice AB",
+    "province": "Stockholm",
+    "city": "Huddinge",
+    "trailing12moTurnover": 93535.0,
+    "marginPct": 25.45,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "239",
+    "name": "Elsanda AB",
+    "province": "Södermanland",
+    "city": "Strängnäs",
+    "trailing12moTurnover": 88658.0,
+    "marginPct": 4.94,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "171",
+    "name": "Solar Energy Group Sweden AB",
+    "province": "Gävleborg",
+    "city": "Gävle",
+    "trailing12moTurnover": 88482.0,
+    "marginPct": 12.57,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "36",
+    "name": "SolarHome",
+    "province": "Dalarna",
+    "city": "Gustafs",
+    "trailing12moTurnover": 66781.0,
+    "marginPct": 8.62,
+    "monthsWithData": 5,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "241",
+    "name": "Torbjörn Heinmert",
+    "province": "",
+    "city": "Lönashult",
+    "trailing12moTurnover": 66473.0,
+    "marginPct": 9.81,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "228",
+    "name": "ENP ENTREPRENAD AB",
+    "province": "Stockholm",
+    "city": "Bromma",
+    "trailing12moTurnover": 61499.0,
+    "marginPct": 21.12,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "262",
+    "name": "El-Man Elektiska i Värnamo AB",
+    "province": "Jönköping",
+    "city": "Värnamo",
+    "trailing12moTurnover": 60313.0,
+    "marginPct": 7.97,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "260",
+    "name": "Abelto Elektroservice Kommanditbolag ",
+    "province": "Blekinge",
+    "city": "Olofström",
+    "trailing12moTurnover": 53123.0,
+    "marginPct": 19.92,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "104",
+    "name": "Vikarbyns elektriker",
+    "province": "Dalarna",
+    "city": "Vikarbyn",
+    "trailing12moTurnover": 43460.0,
+    "marginPct": 0.27,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "135",
+    "name": "Solar Tech Gävle AB",
+    "province": "Gävleborg",
+    "city": "GÄVLE",
+    "trailing12moTurnover": 40653.0,
+    "marginPct": 7.41,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "240",
+    "name": "CH Mälardalen Fastighet AB",
+    "province": "Västmanland",
+    "city": "Västerås",
+    "trailing12moTurnover": 36115.0,
+    "marginPct": 1.97,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "236",
+    "name": "Enköpings Solteknik AB",
+    "province": "Uppsala",
+    "city": "Enköping",
+    "trailing12moTurnover": 28855.0,
+    "marginPct": 12.04,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "208",
+    "name": "Solxperten Stockholm AB",
+    "province": "Stockholm",
+    "city": "Stockholm",
+    "trailing12moTurnover": 28200.0,
+    "marginPct": 8.9,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "200",
+    "name": "Bröderman EL",
+    "province": "Dalarna",
+    "city": "Gryksbo",
+    "trailing12moTurnover": 22449.0,
+    "marginPct": 2.11,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "92",
+    "name": "Lektus El & Energi AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 21399.0,
+    "marginPct": 10.35,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "188",
+    "name": "Andreas Aichele",
+    "province": "Dalarna",
+    "city": "Falun",
+    "trailing12moTurnover": 19500.0,
+    "marginPct": 80.0,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "247",
+    "name": "HT Englund AB",
+    "province": "Dalarna",
+    "city": "Dala-Järna",
+    "trailing12moTurnover": 18976.0,
+    "marginPct": 8.0,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "153",
+    "name": "Solfrigge AB",
+    "province": "Västmanland",
+    "city": "Västerås",
+    "trailing12moTurnover": 17548.0,
+    "marginPct": 3.3,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "174",
+    "name": "FOXESS NETHERLANDS B.V.",
+    "province": "",
+    "city": "RV Venlo",
+    "trailing12moTurnover": 16000.0,
+    "marginPct": 100.0,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "259",
+    "name": "Hustell AB",
+    "province": "Dalarna",
+    "city": "LUDVIKA",
+    "trailing12moTurnover": 15681.0,
+    "marginPct": 11.78,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "193",
+    "name": "Sallén Elektriska Aktiebolag",
+    "province": "Uppsala",
+    "city": "Uppsala",
+    "trailing12moTurnover": 14895.0,
+    "marginPct": 9.05,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "173",
+    "name": "Beito Amiro AB",
+    "province": "Stockholm",
+    "city": "Södertälje",
+    "trailing12moTurnover": 13138.0,
+    "marginPct": 1.9,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "12",
+    "name": "Solfamiljen AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 12738.0,
+    "marginPct": 13.73,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "204",
+    "name": "Tobias Schictelbein",
+    "province": "",
+    "city": "",
+    "trailing12moTurnover": 10741.0,
+    "marginPct": 5.17,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "172",
+    "name": "Pejt AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 8683.0,
+    "marginPct": 8.19,
+    "monthsWithData": 3,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "257",
+    "name": "Henningsons Elektriska AB",
+    "province": "Dalarna",
+    "city": "Falun",
+    "trailing12moTurnover": 7998.0,
+    "marginPct": 21.54,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "143",
+    "name": "Tak & Bygg i Falun AB",
+    "province": "Dalarna",
+    "city": "Falun",
+    "trailing12moTurnover": 7974.0,
+    "marginPct": 10.74,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "221",
+    "name": "Jones EL Service i Idre AB",
+    "province": "Dalarna",
+    "city": "Idre",
+    "trailing12moTurnover": 4605.0,
+    "marginPct": 6.85,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "190",
+    "name": "Rådbjers El AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 3732.0,
+    "marginPct": 13.91,
+    "monthsWithData": 2,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "253",
+    "name": "Olofsson’s Elinstallationer AB",
+    "province": "Dalarna",
+    "city": "Smedjebacken",
+    "trailing12moTurnover": 3061.0,
+    "marginPct": 23.42,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "245",
+    "name": "Berggrens el i Råda AB",
+    "province": "Värmland",
+    "city": "Hagfors",
+    "trailing12moTurnover": 2656.0,
+    "marginPct": 23.53,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "202",
+    "name": "Evolt Energy AB",
+    "province": "Dalarna",
+    "city": "Borlänge",
+    "trailing12moTurnover": 1903.0,
+    "marginPct": 21.13,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "238",
+    "name": "Tak & Sol Malmö AB",
+    "province": "Skåne",
+    "city": "Malmö",
+    "trailing12moTurnover": 1606.0,
+    "marginPct": 11.21,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "229",
+    "name": "Köpings Elektriska AB",
+    "province": "Västmanland",
+    "city": "Köping",
+    "trailing12moTurnover": 655.0,
+    "marginPct": 12.32,
+    "monthsWithData": 1,
+    "tier": "village"
+  },
+  {
+    "customerNumber": "235",
+    "name": "Mälarhöjdens Tak & Sol AB",
+    "province": "Stockholm",
+    "city": "Stockholm",
+    "trailing12moTurnover": 0.0,
+    "marginPct": null,
+    "monthsWithData": 2,
+    "tier": "unknown"
+  }
+]

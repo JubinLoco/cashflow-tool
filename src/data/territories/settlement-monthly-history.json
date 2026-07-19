@@ -1,0 +1,2806 @@
+{
+ "197": [
+  {
+   "yearMonth": "2025-03",
+   "turnover": 17488.0,
+   "marginPct": 11.76
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 35360.0,
+   "marginPct": 5.93
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 84666.0,
+   "marginPct": 7.97
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 56078.0,
+   "marginPct": 10.63
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 25081.0,
+   "marginPct": 5.4
+  }
+ ],
+ "260": [
+  {
+   "yearMonth": "2026-06",
+   "turnover": 53123.0,
+   "marginPct": 19.92
+  }
+ ],
+ "258": [
+  {
+   "yearMonth": "2026-05",
+   "turnover": 563750.0,
+   "marginPct": 10.94
+  }
+ ],
+ "188": [
+  {
+   "yearMonth": "2024-12",
+   "turnover": 1950.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 1950.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 1950.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 7800.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 9750.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 9750.0,
+   "marginPct": 80.0
+  }
+ ],
+ "234": [
+  {
+   "yearMonth": "2025-11",
+   "turnover": 95718.0,
+   "marginPct": 15.62
+  }
+ ],
+ "173": [
+  {
+   "yearMonth": "2024-08",
+   "turnover": 95250.0,
+   "marginPct": 8.63
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 13138.0,
+   "marginPct": 1.9
+  }
+ ],
+ "245": [
+  {
+   "yearMonth": "2026-03",
+   "turnover": 2656.0,
+   "marginPct": 23.53
+  }
+ ],
+ "263": [
+  {
+   "yearMonth": "2026-06",
+   "turnover": 131411.0,
+   "marginPct": 8.96
+  }
+ ],
+ "30": [
+  {
+   "yearMonth": "2021-07",
+   "turnover": 59481.0,
+   "marginPct": 12.24
+  },
+  {
+   "yearMonth": "2021-12",
+   "turnover": 7500.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2022-05",
+   "turnover": 76715.0,
+   "marginPct": 70.47
+  },
+  {
+   "yearMonth": "2022-08",
+   "turnover": 84125.0,
+   "marginPct": 15.48
+  },
+  {
+   "yearMonth": "2022-09",
+   "turnover": 83026.0,
+   "marginPct": 24.0
+  },
+  {
+   "yearMonth": "2022-10",
+   "turnover": 51078.0,
+   "marginPct": 24.0
+  },
+  {
+   "yearMonth": "2022-11",
+   "turnover": 142932.0,
+   "marginPct": 12.77
+  },
+  {
+   "yearMonth": "2022-12",
+   "turnover": 9867.0,
+   "marginPct": 24.0
+  },
+  {
+   "yearMonth": "2023-01",
+   "turnover": 34336.0,
+   "marginPct": 9.34
+  },
+  {
+   "yearMonth": "2023-02",
+   "turnover": 31454.0,
+   "marginPct": 22.68
+  },
+  {
+   "yearMonth": "2023-03",
+   "turnover": 84959.0,
+   "marginPct": 23.51
+  },
+  {
+   "yearMonth": "2023-04",
+   "turnover": 4745365.0,
+   "marginPct": 6.03
+  },
+  {
+   "yearMonth": "2023-05",
+   "turnover": -61776.0,
+   "marginPct": 24.0
+  },
+  {
+   "yearMonth": "2023-06",
+   "turnover": 158135.0,
+   "marginPct": 69.92
+  },
+  {
+   "yearMonth": "2023-07",
+   "turnover": 1345500.0,
+   "marginPct": -14.68
+  },
+  {
+   "yearMonth": "2023-08",
+   "turnover": 7134.0,
+   "marginPct": 24.0
+  },
+  {
+   "yearMonth": "2023-09",
+   "turnover": 317698.0,
+   "marginPct": 887.79
+  },
+  {
+   "yearMonth": "2023-10",
+   "turnover": 488572.0,
+   "marginPct": -12.31
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 64123.0,
+   "marginPct": 5.22
+  },
+  {
+   "yearMonth": "2024-01",
+   "turnover": 481479.0,
+   "marginPct": -7.5
+  },
+  {
+   "yearMonth": "2024-02",
+   "turnover": 728660.0,
+   "marginPct": 868.95
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 63338.0,
+   "marginPct": -47.93
+  },
+  {
+   "yearMonth": "2024-06",
+   "turnover": 27255.0,
+   "marginPct": 8.93
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 7496.0,
+   "marginPct": 39.49
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 86366.0,
+   "marginPct": 2.05
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 49953.0,
+   "marginPct": 3.8
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 67500.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 614124.0,
+   "marginPct": 42.35
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 253675.0,
+   "marginPct": 8.05
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 61012.0,
+   "marginPct": 8.52
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 336739.0,
+   "marginPct": 1.26
+  }
+ ],
+ "200": [
+  {
+   "yearMonth": "2026-06",
+   "turnover": 22449.0,
+   "marginPct": 2.11
+  }
+ ],
+ "230": [
+  {
+   "yearMonth": "2025-10",
+   "turnover": 1737755.0,
+   "marginPct": 18.31
+  }
+ ],
+ "250": [
+  {
+   "yearMonth": "2026-06",
+   "turnover": 110660.0,
+   "marginPct": 14.68
+  }
+ ],
+ "225": [
+  {
+   "yearMonth": "2025-08",
+   "turnover": 93535.0,
+   "marginPct": 25.45
+  }
+ ],
+ "240": [
+  {
+   "yearMonth": "2026-01",
+   "turnover": 23450.0,
+   "marginPct": 3.0
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 12665.0,
+   "marginPct": 0.07
+  }
+ ],
+ "227": [
+  {
+   "yearMonth": "2025-09",
+   "turnover": 115457.0,
+   "marginPct": 21.1
+  }
+ ],
+ "206": [
+  {
+   "yearMonth": "2025-05",
+   "turnover": 157177.0,
+   "marginPct": 25.22
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 2216.0,
+   "marginPct": 12.2
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 119308.0,
+   "marginPct": 26.28
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 284653.0,
+   "marginPct": 21.34
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 248278.0,
+   "marginPct": 16.19
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 495887.0,
+   "marginPct": 18.78
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 5624.0,
+   "marginPct": 20.25
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 172935.0,
+   "marginPct": 16.27
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 2035.0,
+   "marginPct": 20.82
+  }
+ ],
+ "162": [
+  {
+   "yearMonth": "2024-05",
+   "turnover": 103216.0,
+   "marginPct": 22.77
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 195391.0,
+   "marginPct": 7.44
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 107768.0,
+   "marginPct": 10.62
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 98177.0,
+   "marginPct": 23.35
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 170005.0,
+   "marginPct": 10.84
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 245567.0,
+   "marginPct": 12.26
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 352204.0,
+   "marginPct": 11.51
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 76873.0,
+   "marginPct": 14.14
+  }
+ ],
+ "262": [
+  {
+   "yearMonth": "2026-06",
+   "turnover": 60313.0,
+   "marginPct": 7.97
+  }
+ ],
+ "244": [
+  {
+   "yearMonth": "2026-03",
+   "turnover": 81810.0,
+   "marginPct": 13.77
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 102684.0,
+   "marginPct": 13.84
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 66623.0,
+   "marginPct": 12.91
+  }
+ ],
+ "52": [
+  {
+   "yearMonth": "2022-04",
+   "turnover": 49270.0,
+   "marginPct": 16.38
+  },
+  {
+   "yearMonth": "2022-05",
+   "turnover": 342305.0,
+   "marginPct": 16.49
+  },
+  {
+   "yearMonth": "2024-02",
+   "turnover": 5274.0,
+   "marginPct": 34.6
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 139224.0,
+   "marginPct": 5.72
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 82498.0,
+   "marginPct": 17.29
+  }
+ ],
+ "239": [
+  {
+   "yearMonth": "2025-12",
+   "turnover": 41654.0,
+   "marginPct": 3.74
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 35441.0,
+   "marginPct": 7.62
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 11563.0,
+   "marginPct": 1.05
+  }
+ ],
+ "215": [
+  {
+   "yearMonth": "2025-06",
+   "turnover": 73560.0,
+   "marginPct": 18.66
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 143905.0,
+   "marginPct": 12.24
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 80030.0,
+   "marginPct": -2.66
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 127373.0,
+   "marginPct": 9.35
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 192075.0,
+   "marginPct": 8.53
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 64631.0,
+   "marginPct": 8.96
+  }
+ ],
+ "236": [
+  {
+   "yearMonth": "2025-12",
+   "turnover": 28855.0,
+   "marginPct": 12.04
+  }
+ ],
+ "228": [
+  {
+   "yearMonth": "2025-09",
+   "turnover": 61499.0,
+   "marginPct": 21.12
+  }
+ ],
+ "232": [
+  {
+   "yearMonth": "2025-11",
+   "turnover": 134102.0,
+   "marginPct": 14.27
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 28048.0,
+   "marginPct": 5.22
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 0.0,
+   "marginPct": null
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 81241.0,
+   "marginPct": 6.65
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 166607.0,
+   "marginPct": 9.49
+  }
+ ],
+ "202": [
+  {
+   "yearMonth": "2025-05",
+   "turnover": 550081.0,
+   "marginPct": 16.19
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": -550081.0,
+   "marginPct": 15.96
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 1903.0,
+   "marginPct": 21.13
+  }
+ ],
+ "184": [
+  {
+   "yearMonth": "2024-10",
+   "turnover": 56919.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 85264.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 37695.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 109692.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 119116.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 140565.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 116727.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 37695.0,
+   "marginPct": 80.0
+  }
+ ],
+ "174": [
+  {
+   "yearMonth": "2024-09",
+   "turnover": 0.0,
+   "marginPct": null
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 16000.0,
+   "marginPct": 100.0
+  }
+ ],
+ "252": [
+  {
+   "yearMonth": "2026-04",
+   "turnover": 122271.0,
+   "marginPct": 4.42
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 6249.0,
+   "marginPct": 20.15
+  }
+ ],
+ "256": [
+  {
+   "yearMonth": "2026-05",
+   "turnover": 155347.0,
+   "marginPct": 15.33
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 212281.0,
+   "marginPct": 14.49
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 77373.0,
+   "marginPct": 12.56
+  }
+ ],
+ "164": [
+  {
+   "yearMonth": "2024-05",
+   "turnover": 57848.0,
+   "marginPct": -0.14
+  },
+  {
+   "yearMonth": "2024-06",
+   "turnover": 413779.0,
+   "marginPct": 3.09
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 327236.0,
+   "marginPct": 5.81
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 443657.0,
+   "marginPct": 7.96
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 195206.0,
+   "marginPct": 6.35
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 264135.0,
+   "marginPct": 5.78
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 835930.0,
+   "marginPct": 4.62
+  },
+  {
+   "yearMonth": "2024-12",
+   "turnover": 689138.0,
+   "marginPct": 7.41
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 354652.0,
+   "marginPct": 8.85
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 849194.0,
+   "marginPct": 12.85
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 1259454.0,
+   "marginPct": 15.13
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 889188.0,
+   "marginPct": 10.05
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 504237.0,
+   "marginPct": 11.7
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 437581.0,
+   "marginPct": 10.57
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 61224.0,
+   "marginPct": 6.26
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 41354.0,
+   "marginPct": 14.57
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 35498.0,
+   "marginPct": 24.33
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 158403.0,
+   "marginPct": 15.12
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 59524.0,
+   "marginPct": 61.3
+  }
+ ],
+ "223": [
+  {
+   "yearMonth": "2025-08",
+   "turnover": 595938.0,
+   "marginPct": 4.55
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 1001593.0,
+   "marginPct": 4.69
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 1427395.0,
+   "marginPct": 5.09
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 461391.0,
+   "marginPct": 5.68
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 15500.0,
+   "marginPct": 8.75
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 5919.0,
+   "marginPct": 9.63
+  }
+ ],
+ "257": [
+  {
+   "yearMonth": "2026-05",
+   "turnover": 7998.0,
+   "marginPct": 21.54
+  }
+ ],
+ "247": [
+  {
+   "yearMonth": "2026-03",
+   "turnover": 13478.0,
+   "marginPct": 7.08
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 5498.0,
+   "marginPct": 10.26
+  }
+ ],
+ "259": [
+  {
+   "yearMonth": "2026-05",
+   "turnover": 15681.0,
+   "marginPct": 11.78
+  }
+ ],
+ "201": [
+  {
+   "yearMonth": "2025-04",
+   "turnover": 53951.0,
+   "marginPct": 10.72
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 285428.0,
+   "marginPct": 10.2
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 213242.0,
+   "marginPct": 10.75
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 172480.0,
+   "marginPct": 9.82
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 227194.0,
+   "marginPct": 10.57
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 1716.0,
+   "marginPct": 15.44
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 19910.0,
+   "marginPct": 9.74
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 126159.0,
+   "marginPct": 10.31
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 58264.0,
+   "marginPct": 11.05
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 115060.0,
+   "marginPct": 8.59
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 18249.0,
+   "marginPct": 7.92
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 48134.0,
+   "marginPct": 7.65
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 115572.0,
+   "marginPct": 5.83
+  }
+ ],
+ "117": [
+  {
+   "yearMonth": "2024-12",
+   "turnover": 654030.0,
+   "marginPct": 11.89
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 131380.0,
+   "marginPct": 2.89
+  }
+ ],
+ "221": [
+  {
+   "yearMonth": "2025-08",
+   "turnover": 4605.0,
+   "marginPct": 6.85
+  }
+ ],
+ "229": [
+  {
+   "yearMonth": "2025-10",
+   "turnover": 655.0,
+   "marginPct": 12.32
+  }
+ ],
+ "92": [
+  {
+   "yearMonth": "2025-11",
+   "turnover": 19749.0,
+   "marginPct": 10.13
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 1650.0,
+   "marginPct": 13.07
+  }
+ ],
+ "254": [
+  {
+   "yearMonth": "2026-03",
+   "turnover": 77922.0,
+   "marginPct": 11.32
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 64847.0,
+   "marginPct": 9.59
+  }
+ ],
+ "235": [
+  {
+   "yearMonth": "2025-11",
+   "turnover": 159370.0,
+   "marginPct": 20.86
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": -159370.0,
+   "marginPct": 20.86
+  }
+ ],
+ "237": [
+  {
+   "yearMonth": "2025-12",
+   "turnover": 125661.0,
+   "marginPct": 3.69
+  }
+ ],
+ "71": [
+  {
+   "yearMonth": "2023-09",
+   "turnover": 9403.0,
+   "marginPct": 30.88
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 355.0,
+   "marginPct": 21.07
+  },
+  {
+   "yearMonth": "2023-12",
+   "turnover": 17777.0,
+   "marginPct": 8.74
+  },
+  {
+   "yearMonth": "2024-02",
+   "turnover": 3148.0,
+   "marginPct": 10.42
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 12948.0,
+   "marginPct": 12.9
+  },
+  {
+   "yearMonth": "2024-06",
+   "turnover": 1675.0,
+   "marginPct": -48.84
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 25328.0,
+   "marginPct": 20.31
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 8757.0,
+   "marginPct": -49.93
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 85623.0,
+   "marginPct": 13.66
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 117373.0,
+   "marginPct": 14.64
+  }
+ ],
+ "224": [
+  {
+   "yearMonth": "2025-09",
+   "turnover": 98319.0,
+   "marginPct": 9.78
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 32301.0,
+   "marginPct": 6.48
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 33874.0,
+   "marginPct": 15.97
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 91970.0,
+   "marginPct": 14.05
+  }
+ ],
+ "253": [
+  {
+   "yearMonth": "2026-04",
+   "turnover": 3061.0,
+   "marginPct": 23.42
+  }
+ ],
+ "172": [
+  {
+   "yearMonth": "2024-08",
+   "turnover": 693.0,
+   "marginPct": -13.47
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 235.0,
+   "marginPct": 13.31
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 31038.0,
+   "marginPct": 8.78
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 691.0,
+   "marginPct": 6.56
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 1086.0,
+   "marginPct": 9.48
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 6861.0,
+   "marginPct": 7.63
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 736.0,
+   "marginPct": 11.52
+  }
+ ],
+ "210": [
+  {
+   "yearMonth": "2025-05",
+   "turnover": 76426.0,
+   "marginPct": 1.88
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 15343.0,
+   "marginPct": 7.4
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 6620.0,
+   "marginPct": 7.33
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 27156.0,
+   "marginPct": 8.43
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 15793.0,
+   "marginPct": 8.27
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 8843.0,
+   "marginPct": 7.3
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 6642.0,
+   "marginPct": 9.54
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 80685.0,
+   "marginPct": 11.21
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 201687.0,
+   "marginPct": 10.84
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 129120.0,
+   "marginPct": 13.76
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 51245.0,
+   "marginPct": 14.3
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 38065.0,
+   "marginPct": 8.73
+  }
+ ],
+ "127": [
+  {
+   "yearMonth": "2023-12",
+   "turnover": 0.0,
+   "marginPct": null
+  },
+  {
+   "yearMonth": "2024-01",
+   "turnover": 5749.0,
+   "marginPct": 14.21
+  },
+  {
+   "yearMonth": "2024-02",
+   "turnover": 7506.0,
+   "marginPct": 9.55
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 105044.0,
+   "marginPct": 8.88
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 5463.0,
+   "marginPct": 8.03
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 102781.0,
+   "marginPct": 10.64
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 11416.0,
+   "marginPct": 5.14
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 113827.0,
+   "marginPct": 6.53
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 203117.0,
+   "marginPct": 16.86
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 113287.0,
+   "marginPct": 23.26
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 1749.0,
+   "marginPct": 16.64
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 51075.0,
+   "marginPct": 29.69
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 1249.0,
+   "marginPct": -573.34
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 105935.0,
+   "marginPct": 1.09
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 31057.0,
+   "marginPct": -18.79
+  }
+ ],
+ "190": [
+  {
+   "yearMonth": "2025-06",
+   "turnover": 69249.0,
+   "marginPct": 30.19
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 187957.0,
+   "marginPct": 21.09
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 2097.0,
+   "marginPct": 14.64
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 1635.0,
+   "marginPct": 12.97
+  }
+ ],
+ "242": [
+  {
+   "yearMonth": "2026-02",
+   "turnover": 50746.0,
+   "marginPct": 11.25
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 152664.0,
+   "marginPct": 14.02
+  }
+ ],
+ "193": [
+  {
+   "yearMonth": "2026-02",
+   "turnover": 14895.0,
+   "marginPct": 9.05
+  }
+ ],
+ "261": [
+  {
+   "yearMonth": "2026-06",
+   "turnover": 635072.0,
+   "marginPct": 5.07
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 707314.0,
+   "marginPct": 6.59
+  }
+ ],
+ "251": [
+  {
+   "yearMonth": "2026-03",
+   "turnover": 7324.0,
+   "marginPct": 17.9
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 79528.0,
+   "marginPct": 9.34
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 123536.0,
+   "marginPct": 9.49
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 74047.0,
+   "marginPct": 14.11
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 64623.0,
+   "marginPct": 13.79
+  }
+ ],
+ "99": [
+  {
+   "yearMonth": "2023-03",
+   "turnover": 310459.0,
+   "marginPct": 14.81
+  },
+  {
+   "yearMonth": "2023-04",
+   "turnover": 48812.0,
+   "marginPct": 16.17
+  },
+  {
+   "yearMonth": "2023-06",
+   "turnover": 74526.0,
+   "marginPct": 17.8
+  },
+  {
+   "yearMonth": "2023-07",
+   "turnover": 169061.0,
+   "marginPct": 15.96
+  },
+  {
+   "yearMonth": "2023-10",
+   "turnover": 63288.0,
+   "marginPct": 7.23
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 69606.0,
+   "marginPct": -22.84
+  },
+  {
+   "yearMonth": "2023-12",
+   "turnover": -1421.0,
+   "marginPct": 24.0
+  },
+  {
+   "yearMonth": "2024-02",
+   "turnover": 82885.0,
+   "marginPct": 14.95
+  },
+  {
+   "yearMonth": "2024-03",
+   "turnover": 8198.0,
+   "marginPct": -2.28
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 259045.0,
+   "marginPct": 14.81
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 403043.0,
+   "marginPct": 13.42
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 12680.0,
+   "marginPct": 4.52
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 57928.0,
+   "marginPct": 9.74
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 316390.0,
+   "marginPct": 10.52
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 5479.0,
+   "marginPct": 12.94
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 28353.0,
+   "marginPct": 21.77
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 106339.0,
+   "marginPct": 26.36
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 23749.0,
+   "marginPct": 23.22
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 13275.0,
+   "marginPct": 17.57
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 55797.0,
+   "marginPct": 14.0
+  }
+ ],
+ "75": [
+  {
+   "yearMonth": "2022-06",
+   "turnover": 97076.0,
+   "marginPct": 17.28
+  },
+  {
+   "yearMonth": "2022-07",
+   "turnover": 17195.0,
+   "marginPct": 15.79
+  },
+  {
+   "yearMonth": "2022-08",
+   "turnover": 183008.0,
+   "marginPct": 7.92
+  },
+  {
+   "yearMonth": "2022-09",
+   "turnover": 89811.0,
+   "marginPct": 13.47
+  },
+  {
+   "yearMonth": "2022-10",
+   "turnover": 454995.0,
+   "marginPct": 15.15
+  },
+  {
+   "yearMonth": "2022-11",
+   "turnover": 461748.0,
+   "marginPct": 16.14
+  },
+  {
+   "yearMonth": "2022-12",
+   "turnover": 95490.0,
+   "marginPct": 16.61
+  },
+  {
+   "yearMonth": "2023-01",
+   "turnover": 530558.0,
+   "marginPct": 17.33
+  },
+  {
+   "yearMonth": "2023-02",
+   "turnover": 701805.0,
+   "marginPct": 18.94
+  },
+  {
+   "yearMonth": "2023-03",
+   "turnover": 1019296.0,
+   "marginPct": 14.74
+  },
+  {
+   "yearMonth": "2023-04",
+   "turnover": 642920.0,
+   "marginPct": 19.01
+  },
+  {
+   "yearMonth": "2023-05",
+   "turnover": 728207.0,
+   "marginPct": 15.93
+  },
+  {
+   "yearMonth": "2023-06",
+   "turnover": 877959.0,
+   "marginPct": 18.61
+  },
+  {
+   "yearMonth": "2023-07",
+   "turnover": 214142.0,
+   "marginPct": 18.15
+  },
+  {
+   "yearMonth": "2023-08",
+   "turnover": 375878.0,
+   "marginPct": 14.86
+  },
+  {
+   "yearMonth": "2023-09",
+   "turnover": 577799.0,
+   "marginPct": 13.3
+  },
+  {
+   "yearMonth": "2023-10",
+   "turnover": 516416.0,
+   "marginPct": 12.36
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 529708.0,
+   "marginPct": 9.93
+  },
+  {
+   "yearMonth": "2023-12",
+   "turnover": 226347.0,
+   "marginPct": 10.88
+  },
+  {
+   "yearMonth": "2024-01",
+   "turnover": 694703.0,
+   "marginPct": 10.97
+  },
+  {
+   "yearMonth": "2024-02",
+   "turnover": 541160.0,
+   "marginPct": 11.71
+  },
+  {
+   "yearMonth": "2024-03",
+   "turnover": 144388.0,
+   "marginPct": 0.7
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 262756.0,
+   "marginPct": 16.68
+  },
+  {
+   "yearMonth": "2024-05",
+   "turnover": 225815.0,
+   "marginPct": 15.09
+  },
+  {
+   "yearMonth": "2024-06",
+   "turnover": 334766.0,
+   "marginPct": 12.09
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 50184.0,
+   "marginPct": 16.22
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 74232.0,
+   "marginPct": 17.22
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 316968.0,
+   "marginPct": 11.62
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 375470.0,
+   "marginPct": 13.11
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 161733.0,
+   "marginPct": 12.25
+  },
+  {
+   "yearMonth": "2024-12",
+   "turnover": 25235.0,
+   "marginPct": 11.15
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 45427.0,
+   "marginPct": 14.46
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 148061.0,
+   "marginPct": 18.48
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 363141.0,
+   "marginPct": 17.64
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 195996.0,
+   "marginPct": 15.93
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 722471.0,
+   "marginPct": 19.68
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 82257.0,
+   "marginPct": 18.17
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 144596.0,
+   "marginPct": 20.82
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 143122.0,
+   "marginPct": 18.11
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 122975.0,
+   "marginPct": 22.79
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 89997.0,
+   "marginPct": 23.81
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 154401.0,
+   "marginPct": 15.41
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 313730.0,
+   "marginPct": 12.34
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 243531.0,
+   "marginPct": 12.87
+  }
+ ],
+ "189": [
+  {
+   "yearMonth": "2024-12",
+   "turnover": 22345.0,
+   "marginPct": 13.22
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 48038.0,
+   "marginPct": 11.13
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 253569.0,
+   "marginPct": 17.11
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 507405.0,
+   "marginPct": 21.29
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 0.0,
+   "marginPct": null
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 51874.0,
+   "marginPct": 17.68
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 3250.0,
+   "marginPct": 0.0
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 19459.0,
+   "marginPct": 27.33
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 3124.0,
+   "marginPct": -13.72
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 34389.0,
+   "marginPct": 22.38
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 44006.0,
+   "marginPct": 14.35
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 218953.0,
+   "marginPct": 11.8
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 41045.0,
+   "marginPct": 21.88
+  }
+ ],
+ "171": [
+  {
+   "yearMonth": "2025-10",
+   "turnover": 34999.0,
+   "marginPct": 25.73
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 26749.0,
+   "marginPct": 1.49
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 26734.0,
+   "marginPct": 6.43
+  }
+ ],
+ "135": [
+  {
+   "yearMonth": "2023-12",
+   "turnover": 112405.0,
+   "marginPct": 5.24
+  },
+  {
+   "yearMonth": "2024-01",
+   "turnover": 9371.0,
+   "marginPct": 9.92
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 1859.0,
+   "marginPct": 16.56
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 10351.0,
+   "marginPct": 2.83
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 13158.0,
+   "marginPct": 3.72
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 17144.0,
+   "marginPct": 12.99
+  }
+ ],
+ "36": [
+  {
+   "yearMonth": "2021-09",
+   "turnover": 54519.0,
+   "marginPct": 9.45
+  },
+  {
+   "yearMonth": "2021-10",
+   "turnover": 14402.0,
+   "marginPct": 21.62
+  },
+  {
+   "yearMonth": "2021-12",
+   "turnover": -14402.0,
+   "marginPct": 13.41
+  },
+  {
+   "yearMonth": "2022-01",
+   "turnover": 182589.0,
+   "marginPct": 7.39
+  },
+  {
+   "yearMonth": "2022-02",
+   "turnover": 23954.0,
+   "marginPct": -11.69
+  },
+  {
+   "yearMonth": "2022-03",
+   "turnover": 117327.0,
+   "marginPct": 13.64
+  },
+  {
+   "yearMonth": "2022-04",
+   "turnover": 33132.0,
+   "marginPct": 13.12
+  },
+  {
+   "yearMonth": "2022-05",
+   "turnover": 162916.0,
+   "marginPct": 14.05
+  },
+  {
+   "yearMonth": "2022-06",
+   "turnover": 117130.0,
+   "marginPct": 5.65
+  },
+  {
+   "yearMonth": "2022-07",
+   "turnover": 180471.0,
+   "marginPct": 16.6
+  },
+  {
+   "yearMonth": "2022-08",
+   "turnover": 9826.0,
+   "marginPct": 26.87
+  },
+  {
+   "yearMonth": "2022-09",
+   "turnover": 137938.0,
+   "marginPct": 13.18
+  },
+  {
+   "yearMonth": "2022-10",
+   "turnover": 268671.0,
+   "marginPct": 11.28
+  },
+  {
+   "yearMonth": "2022-11",
+   "turnover": 113064.0,
+   "marginPct": 12.5
+  },
+  {
+   "yearMonth": "2022-12",
+   "turnover": 324.0,
+   "marginPct": 23.39
+  },
+  {
+   "yearMonth": "2023-01",
+   "turnover": 344519.0,
+   "marginPct": 15.13
+  },
+  {
+   "yearMonth": "2023-02",
+   "turnover": 124907.0,
+   "marginPct": 15.7
+  },
+  {
+   "yearMonth": "2023-03",
+   "turnover": 4141.0,
+   "marginPct": 29.58
+  },
+  {
+   "yearMonth": "2023-04",
+   "turnover": 97399.0,
+   "marginPct": 16.26
+  },
+  {
+   "yearMonth": "2023-05",
+   "turnover": 124378.0,
+   "marginPct": 8.58
+  },
+  {
+   "yearMonth": "2023-06",
+   "turnover": 92898.0,
+   "marginPct": 47.94
+  },
+  {
+   "yearMonth": "2023-07",
+   "turnover": 17096.0,
+   "marginPct": 15.12
+  },
+  {
+   "yearMonth": "2023-10",
+   "turnover": 90120.0,
+   "marginPct": 7.96
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 14238.0,
+   "marginPct": 15.55
+  },
+  {
+   "yearMonth": "2023-12",
+   "turnover": 29250.0,
+   "marginPct": -14.52
+  },
+  {
+   "yearMonth": "2024-01",
+   "turnover": -4556.0,
+   "marginPct": 24.0
+  },
+  {
+   "yearMonth": "2024-02",
+   "turnover": 12850.0,
+   "marginPct": 18.79
+  },
+  {
+   "yearMonth": "2024-03",
+   "turnover": 9612.0,
+   "marginPct": 19.71
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 98749.0,
+   "marginPct": -1.42
+  },
+  {
+   "yearMonth": "2024-05",
+   "turnover": 22576.0,
+   "marginPct": 23.27
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 66766.0,
+   "marginPct": -20.85
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 30606.0,
+   "marginPct": 4.46
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 493.0,
+   "marginPct": 2.52
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 19562.0,
+   "marginPct": 10.33
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 30305.0,
+   "marginPct": 7.03
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 78.0,
+   "marginPct": -2.09
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 16343.0,
+   "marginPct": 9.74
+  }
+ ],
+ "110": [
+  {
+   "yearMonth": "2023-05",
+   "turnover": 144236.0,
+   "marginPct": 17.71
+  },
+  {
+   "yearMonth": "2023-06",
+   "turnover": 153220.0,
+   "marginPct": 8.89
+  },
+  {
+   "yearMonth": "2023-10",
+   "turnover": 105303.0,
+   "marginPct": 17.7
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 41469.0,
+   "marginPct": 20.64
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 195865.0,
+   "marginPct": 8.87
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 119504.0,
+   "marginPct": 9.76
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 637704.0,
+   "marginPct": 12.87
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 362590.0,
+   "marginPct": 8.32
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 134270.0,
+   "marginPct": 6.01
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 1974.0,
+   "marginPct": 6.53
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 39576.0,
+   "marginPct": 5.74
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 108676.0,
+   "marginPct": 21.2
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 255603.0,
+   "marginPct": 19.27
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 229716.0,
+   "marginPct": 26.16
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 99213.0,
+   "marginPct": 17.89
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 179683.0,
+   "marginPct": 21.69
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 109528.0,
+   "marginPct": 18.06
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 23736.0,
+   "marginPct": 16.92
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 153698.0,
+   "marginPct": 13.76
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 167664.0,
+   "marginPct": 19.59
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 164956.0,
+   "marginPct": 15.27
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 313827.0,
+   "marginPct": 12.32
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 146967.0,
+   "marginPct": 15.34
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 375580.0,
+   "marginPct": 16.23
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 584926.0,
+   "marginPct": 14.76
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 436349.0,
+   "marginPct": 16.06
+  }
+ ],
+ "12": [
+  {
+   "yearMonth": "2021-02",
+   "turnover": 978.0,
+   "marginPct": 5.51
+  },
+  {
+   "yearMonth": "2021-06",
+   "turnover": 514.0,
+   "marginPct": 19.38
+  },
+  {
+   "yearMonth": "2022-02",
+   "turnover": 29185.0,
+   "marginPct": 2.23
+  },
+  {
+   "yearMonth": "2022-04",
+   "turnover": 258206.0,
+   "marginPct": 12.81
+  },
+  {
+   "yearMonth": "2022-05",
+   "turnover": 219305.0,
+   "marginPct": 13.46
+  },
+  {
+   "yearMonth": "2022-06",
+   "turnover": 1909.0,
+   "marginPct": 23.79
+  },
+  {
+   "yearMonth": "2022-07",
+   "turnover": 48635.0,
+   "marginPct": 13.33
+  },
+  {
+   "yearMonth": "2022-08",
+   "turnover": 306895.0,
+   "marginPct": 14.99
+  },
+  {
+   "yearMonth": "2022-09",
+   "turnover": 492092.0,
+   "marginPct": 15.84
+  },
+  {
+   "yearMonth": "2022-10",
+   "turnover": 395715.0,
+   "marginPct": 14.03
+  },
+  {
+   "yearMonth": "2022-11",
+   "turnover": 1221716.0,
+   "marginPct": 12.59
+  },
+  {
+   "yearMonth": "2022-12",
+   "turnover": 1145974.0,
+   "marginPct": 13.39
+  },
+  {
+   "yearMonth": "2023-01",
+   "turnover": 773281.0,
+   "marginPct": 15.73
+  },
+  {
+   "yearMonth": "2023-02",
+   "turnover": 664154.0,
+   "marginPct": 14.13
+  },
+  {
+   "yearMonth": "2023-03",
+   "turnover": 1684446.0,
+   "marginPct": 19.83
+  },
+  {
+   "yearMonth": "2023-04",
+   "turnover": 270760.0,
+   "marginPct": 17.2
+  },
+  {
+   "yearMonth": "2023-05",
+   "turnover": 1049032.0,
+   "marginPct": 14.23
+  },
+  {
+   "yearMonth": "2023-06",
+   "turnover": 440470.0,
+   "marginPct": 14.0
+  },
+  {
+   "yearMonth": "2023-07",
+   "turnover": 85427.0,
+   "marginPct": 11.88
+  },
+  {
+   "yearMonth": "2023-08",
+   "turnover": 124740.0,
+   "marginPct": 20.3
+  },
+  {
+   "yearMonth": "2023-09",
+   "turnover": 120911.0,
+   "marginPct": 4.05
+  },
+  {
+   "yearMonth": "2023-10",
+   "turnover": 37060.0,
+   "marginPct": 18.05
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 47413.0,
+   "marginPct": 20.45
+  },
+  {
+   "yearMonth": "2023-12",
+   "turnover": 19196.0,
+   "marginPct": 11.15
+  },
+  {
+   "yearMonth": "2024-03",
+   "turnover": 10854.0,
+   "marginPct": 9.62
+  },
+  {
+   "yearMonth": "2024-05",
+   "turnover": 19519.0,
+   "marginPct": 19.84
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 24849.0,
+   "marginPct": 17.6
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": -569.0,
+   "marginPct": 953.85
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 48739.0,
+   "marginPct": 18.46
+  },
+  {
+   "yearMonth": "2024-12",
+   "turnover": 12824.0,
+   "marginPct": -2.02
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 12738.0,
+   "marginPct": 13.73
+  }
+ ],
+ "153": [
+  {
+   "yearMonth": "2024-04",
+   "turnover": 28584.0,
+   "marginPct": 20.14
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 11404.0,
+   "marginPct": 12.78
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 17548.0,
+   "marginPct": 3.3
+  }
+ ],
+ "128": [
+  {
+   "yearMonth": "2023-10",
+   "turnover": 56998.0,
+   "marginPct": 3.6
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 4809375.0,
+   "marginPct": 32.07
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 2668750.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 1712500.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 25000.0,
+   "marginPct": 80.0
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 428125.0,
+   "marginPct": 80.0
+  }
+ ],
+ "126": [
+  {
+   "yearMonth": "2023-10",
+   "turnover": 11862.0,
+   "marginPct": 2.67
+  },
+  {
+   "yearMonth": "2023-11",
+   "turnover": 167685.0,
+   "marginPct": 12.36
+  },
+  {
+   "yearMonth": "2024-03",
+   "turnover": 176816.0,
+   "marginPct": 15.56
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 241611.0,
+   "marginPct": 15.0
+  },
+  {
+   "yearMonth": "2024-05",
+   "turnover": 123490.0,
+   "marginPct": 4.24
+  },
+  {
+   "yearMonth": "2024-06",
+   "turnover": 71515.0,
+   "marginPct": 13.11
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 377358.0,
+   "marginPct": 15.38
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 592780.0,
+   "marginPct": 12.89
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 146208.0,
+   "marginPct": 8.23
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 90777.0,
+   "marginPct": 8.76
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 52108.0,
+   "marginPct": 9.27
+  },
+  {
+   "yearMonth": "2024-12",
+   "turnover": 154787.0,
+   "marginPct": 8.97
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 130324.0,
+   "marginPct": 10.68
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 218856.0,
+   "marginPct": 16.99
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 345004.0,
+   "marginPct": 19.35
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 551999.0,
+   "marginPct": 30.71
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 528975.0,
+   "marginPct": 24.56
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 371511.0,
+   "marginPct": 27.14
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 308633.0,
+   "marginPct": 26.59
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 8473.0,
+   "marginPct": 18.93
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 558085.0,
+   "marginPct": 17.13
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 345008.0,
+   "marginPct": 9.65
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 304098.0,
+   "marginPct": 19.07
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 199581.0,
+   "marginPct": 19.62
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 113136.0,
+   "marginPct": 20.03
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 4859.0,
+   "marginPct": -11.69
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 389947.0,
+   "marginPct": 14.56
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 572761.0,
+   "marginPct": 13.86
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 377165.0,
+   "marginPct": 11.35
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 296080.0,
+   "marginPct": 12.02
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 80373.0,
+   "marginPct": 14.23
+  }
+ ],
+ "208": [
+  {
+   "yearMonth": "2025-05",
+   "turnover": 12233.0,
+   "marginPct": 3.58
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 23987.0,
+   "marginPct": 8.98
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 4213.0,
+   "marginPct": 8.45
+  }
+ ],
+ "226": [
+  {
+   "yearMonth": "2025-08",
+   "turnover": 97086.0,
+   "marginPct": 17.55
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 216391.0,
+   "marginPct": 10.42
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 15999.0,
+   "marginPct": 10.42
+  }
+ ],
+ "125": [
+  {
+   "yearMonth": "2024-01",
+   "turnover": 23255.0,
+   "marginPct": 6.56
+  },
+  {
+   "yearMonth": "2024-03",
+   "turnover": 211982.0,
+   "marginPct": 12.07
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 740213.0,
+   "marginPct": 12.69
+  },
+  {
+   "yearMonth": "2024-05",
+   "turnover": 531080.0,
+   "marginPct": 18.98
+  },
+  {
+   "yearMonth": "2024-06",
+   "turnover": 635296.0,
+   "marginPct": 14.17
+  },
+  {
+   "yearMonth": "2024-07",
+   "turnover": 600545.0,
+   "marginPct": 12.6
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 397080.0,
+   "marginPct": 12.6
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 660729.0,
+   "marginPct": 10.96
+  },
+  {
+   "yearMonth": "2024-10",
+   "turnover": 715476.0,
+   "marginPct": 11.68
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 589793.0,
+   "marginPct": 13.37
+  },
+  {
+   "yearMonth": "2024-12",
+   "turnover": 532245.0,
+   "marginPct": 13.16
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 299353.0,
+   "marginPct": 12.82
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 352644.0,
+   "marginPct": 13.41
+  },
+  {
+   "yearMonth": "2025-03",
+   "turnover": 355220.0,
+   "marginPct": 15.92
+  },
+  {
+   "yearMonth": "2025-04",
+   "turnover": 693187.0,
+   "marginPct": 22.65
+  },
+  {
+   "yearMonth": "2025-05",
+   "turnover": 146121.0,
+   "marginPct": 12.89
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 919584.0,
+   "marginPct": 20.0
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 271941.0,
+   "marginPct": 16.67
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 123660.0,
+   "marginPct": 16.61
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 634474.0,
+   "marginPct": 19.21
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 547239.0,
+   "marginPct": 21.37
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 404697.0,
+   "marginPct": 15.51
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 593140.0,
+   "marginPct": 17.26
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 647455.0,
+   "marginPct": 17.11
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 572602.0,
+   "marginPct": 17.4
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 888669.0,
+   "marginPct": 11.82
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 773683.0,
+   "marginPct": 14.31
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 804717.0,
+   "marginPct": 11.61
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 1006654.0,
+   "marginPct": 12.68
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 366197.0,
+   "marginPct": 14.67
+  }
+ ],
+ "212": [
+  {
+   "yearMonth": "2025-06",
+   "turnover": 785093.0,
+   "marginPct": 15.97
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 112533.0,
+   "marginPct": 15.94
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 328591.0,
+   "marginPct": 15.13
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 277293.0,
+   "marginPct": 14.3
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 1823.0,
+   "marginPct": 9.98
+  }
+ ],
+ "143": [
+  {
+   "yearMonth": "2026-06",
+   "turnover": 7974.0,
+   "marginPct": 10.74
+  }
+ ],
+ "238": [
+  {
+   "yearMonth": "2025-12",
+   "turnover": 1606.0,
+   "marginPct": 11.21
+  }
+ ],
+ "204": [
+  {
+   "yearMonth": "2025-05",
+   "turnover": 8063.0,
+   "marginPct": 16.54
+  },
+  {
+   "yearMonth": "2026-04",
+   "turnover": 10741.0,
+   "marginPct": 5.17
+  }
+ ],
+ "241": [
+  {
+   "yearMonth": "2025-12",
+   "turnover": 66473.0,
+   "marginPct": 9.81
+  }
+ ],
+ "255": [
+  {
+   "yearMonth": "2026-04",
+   "turnover": 242038.0,
+   "marginPct": 6.52
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 408.0,
+   "marginPct": 4.0
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 192288.0,
+   "marginPct": 8.94
+  }
+ ],
+ "104": [
+  {
+   "yearMonth": "2023-03",
+   "turnover": 21291.0,
+   "marginPct": 8.84
+  },
+  {
+   "yearMonth": "2023-06",
+   "turnover": 18087.0,
+   "marginPct": -2.71
+  },
+  {
+   "yearMonth": "2023-08",
+   "turnover": 85011.0,
+   "marginPct": 10.93
+  },
+  {
+   "yearMonth": "2023-09",
+   "turnover": 118605.0,
+   "marginPct": 14.46
+  },
+  {
+   "yearMonth": "2024-01",
+   "turnover": 8501.0,
+   "marginPct": 3.05
+  },
+  {
+   "yearMonth": "2024-04",
+   "turnover": 2849.0,
+   "marginPct": -92.33
+  },
+  {
+   "yearMonth": "2024-05",
+   "turnover": 1028.0,
+   "marginPct": 13.14
+  },
+  {
+   "yearMonth": "2024-08",
+   "turnover": 1250.0,
+   "marginPct": 96.7
+  },
+  {
+   "yearMonth": "2024-09",
+   "turnover": 9953.0,
+   "marginPct": 13.51
+  },
+  {
+   "yearMonth": "2024-11",
+   "turnover": 247.0,
+   "marginPct": 11.01
+  },
+  {
+   "yearMonth": "2025-01",
+   "turnover": 12274.0,
+   "marginPct": 0.04
+  },
+  {
+   "yearMonth": "2025-02",
+   "turnover": 26821.0,
+   "marginPct": 7.27
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 1829.0,
+   "marginPct": 10.28
+  },
+  {
+   "yearMonth": "2026-05",
+   "turnover": 952.0,
+   "marginPct": 3.3
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 42508.0,
+   "marginPct": 0.2
+  }
+ ],
+ "243": [
+  {
+   "yearMonth": "2026-03",
+   "turnover": 183074.0,
+   "marginPct": -14.37
+  },
+  {
+   "yearMonth": "2026-06",
+   "turnover": 2091411.0,
+   "marginPct": 5.21
+  },
+  {
+   "yearMonth": "2026-07",
+   "turnover": 286433.0,
+   "marginPct": 8.56
+  }
+ ],
+ "142": [
+  {
+   "yearMonth": "2025-04",
+   "turnover": 64383.0,
+   "marginPct": 13.43
+  },
+  {
+   "yearMonth": "2025-06",
+   "turnover": 64495.0,
+   "marginPct": 23.31
+  },
+  {
+   "yearMonth": "2025-07",
+   "turnover": 83435.0,
+   "marginPct": 20.57
+  },
+  {
+   "yearMonth": "2025-08",
+   "turnover": 86123.0,
+   "marginPct": 20.98
+  },
+  {
+   "yearMonth": "2025-09",
+   "turnover": 693963.0,
+   "marginPct": 19.36
+  },
+  {
+   "yearMonth": "2025-10",
+   "turnover": 10371.0,
+   "marginPct": 17.24
+  },
+  {
+   "yearMonth": "2025-11",
+   "turnover": 521476.0,
+   "marginPct": 22.35
+  },
+  {
+   "yearMonth": "2025-12",
+   "turnover": 15814.0,
+   "marginPct": 27.24
+  },
+  {
+   "yearMonth": "2026-01",
+   "turnover": 527199.0,
+   "marginPct": 23.49
+  },
+  {
+   "yearMonth": "2026-02",
+   "turnover": 133572.0,
+   "marginPct": 20.41
+  },
+  {
+   "yearMonth": "2026-03",
+   "turnover": 100013.0,
+   "marginPct": 14.68
+  }
+ ]
+}

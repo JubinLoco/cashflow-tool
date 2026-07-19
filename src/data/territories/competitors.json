@@ -1,0 +1,154 @@
+{
+  "player": {
+    "id": "dseg",
+    "name": "DSEG"
+  },
+  "empires": [
+    {
+      "id": "aprilice",
+      "displayName": "Aprilice",
+      "legalNote": "Aprilice AB, 70% owned by Elektroskandia Sverige AB (itself wholly owned by Sonepar, rebranding to 'Sonepar Sverige'). Tracked as a single entity under the Aprilice brand per DSEG's call.",
+      "status": "active",
+      "revenueEstimateSEK": 923000000,
+      "revenueYear": 2024,
+      "revenueTrend": "declining (-37% YoY)",
+      "hq": "Sollentuna",
+      "province": "Stockholm",
+      "productFocus": ["solar"],
+      "confidence": "medium-high"
+    },
+    {
+      "id": "kp_energy",
+      "displayName": "KP Energy",
+      "legalNote": "KP Sverige AB, owned by OKQ8 Solar Holding AB (part of OKQ8).",
+      "status": "active",
+      "revenueEstimateSEK": 394300000,
+      "revenueYear": "FY2025 (Mar-Feb)",
+      "revenueTrend": "declining sharply (from 849M FY24 to 394M FY25; headcount 101->67)",
+      "hq": "Vasteras",
+      "province": "Västmanland",
+      "productFocus": ["solar", "battery", "ev_charger"],
+      "confidence": "high"
+    },
+    {
+      "id": "krannich_solar",
+      "displayName": "Krannich Solar AB",
+      "legalNote": "Swedish subsidiary of Krannich Solar GmbH & Co. KG (Germany, family-owned).",
+      "status": "exited",
+      "statusNote": "Marked exited/quit Swedish market per DSEG's direct read of the market. Note: registry data (allabolag.se) showed FY2024 revenue ~370M SEK, +42% YoY, which conflicts with this call -- flagged for awareness, DSEG's read takes precedence.",
+      "hq": "Taby",
+      "province": "Stockholm",
+      "productFocus": ["solar", "battery", "ev_charger"],
+      "confidence": "conflicting -- see statusNote"
+    },
+    {
+      "id": "senergia",
+      "displayName": "Senergia",
+      "legalNote": "Senergia AB, part of Senergia Nordic AB. Independent, minority stake held by Investment AB Oresund.",
+      "status": "active",
+      "revenueEstimateSEK": 691000000,
+      "revenueYear": 2024,
+      "revenueTrend": "volatile (1.53B in 2023 after 97% growth, then -55% to 691M in 2024)",
+      "hq": "Stockholm",
+      "province": "Stockholm",
+      "productFocus": ["solar", "battery", "ev_charger"],
+      "confidence": "high"
+    },
+    {
+      "id": "energygroup",
+      "displayName": "Energygroup",
+      "legalNote": "Energy Group AES AB, independent/founder-led, HQ Forshaga (Varmland) with a Stockholm sales office.",
+      "status": "active",
+      "revenueEstimateSEK": 43000000,
+      "revenueYear": 2025,
+      "revenueTrend": "growing, battery-storage led (registry figures inconsistent with company's own growth narrative -- flagged, small player either way)",
+      "hq": "Forshaga",
+      "province": "Värmland",
+      "productFocus": ["battery", "solar", "ev_charger"],
+      "confidence": "medium (data inconsistency noted)"
+    },
+    {
+      "id": "ahlsell",
+      "displayName": "Ahlsell",
+      "legalNote": "Ahlsell Sverige AB, CVC Capital Partners-owned. Absorbed Solelgrossisten (solar/EV/battery specialist wholesaler) fully into its electrical division as of Nov 2024 -- Solelgrossisten no longer tracked as a separate brand.",
+      "status": "passive",
+      "statusNote": "Currently low/passive activity in the solar category per DSEG's read, despite owning the former Solelgrossisten business.",
+      "revenueEstimateSEK": 29400000000,
+      "revenueYear": 2024,
+      "revenueTrend": "group revenue declining (-3.5%); solar/EV/battery sub-segment not separately reported",
+      "hq": "Stockholm",
+      "province": "Stockholm",
+      "productFocus": ["general_electrical", "solar", "battery", "ev_charger"],
+      "confidence": "high on structure, low on solar-specific performance"
+    },
+    {
+      "id": "rexel",
+      "displayName": "Rexel",
+      "legalNote": "Rexel Sverige AB, subsidiary of Rexel S.A. (France, Euronext Paris). Exited direct ownership of EV-charging infrastructure (transferred to Wattif EV Sweden, 2024-2025) but still sells EV charging hardware.",
+      "status": "active",
+      "revenueEstimateSEK": 6636000000,
+      "revenueYear": 2024,
+      "revenueTrend": "declining (-7.1% YoY, net loss)",
+      "hq": "Alvsjo, Stockholm",
+      "province": "Stockholm",
+      "productFocus": ["general_electrical", "solar", "ev_charger_hardware", "battery"],
+      "confidence": "high"
+    },
+    {
+      "id": "parkys",
+      "displayName": "Parkys",
+      "legalNote": "Parkys Solar AB, family-owned (Boershult Holding AB / Wahlberg family). NOTE: unrelated to 'Parkys Solcellsinstallationer AB' (bankrupt Jan 2026, different parent -- do not conflate).",
+      "status": "active",
+      "revenueEstimateSEK": 48600000,
+      "revenueYear": 2025,
+      "revenueTrend": "recovering from a 73% collapse in 2024, still unprofitable",
+      "hq": "Sandhult (Boras)",
+      "province": "Västra Götaland",
+      "productFocus": ["solar", "battery"],
+      "confidence": "medium"
+    },
+    {
+      "id": "solar_sverige",
+      "displayName": "Solar Sverige AB",
+      "legalNote": "Part of the Danish-listed Solar Group. Newly added to DSEG's competitor list.",
+      "status": "active",
+      "revenueEstimateSEK": 3400000000,
+      "revenueYear": 2024,
+      "revenueTrend": "growing, actively expanding into solar/battery/EV (new Kumla logistics center, 2026)",
+      "hq": "Goteborg",
+      "province": "Västra Götaland",
+      "productFocus": ["general_electrical", "solar", "battery", "ev_charger"],
+      "confidence": "medium"
+    },
+    {
+      "id": "sesol",
+      "displayName": "Sesol",
+      "legalNote": "Was an installer/EPC (not a distributor) -- included historically per DSEG's original list, tracked here as a fallen entity.",
+      "status": "bankrupt",
+      "statusNote": "Declared bankrupt 17 March 2026 after a failed reconstruction; inventory and customer list absorbed by Svea Solar.",
+      "hq": "Jonkoping",
+      "province": "Jönköping",
+      "productFocus": ["solar", "battery", "ev_charger"],
+      "confidence": "high"
+    }
+  ],
+  "disintermediation_threats": {
+    "description": "Not tracked as empires competing for settlements. Modeled as a board-wide adverse effect (like Catan's robber) that erodes addressable market share for ALL distributor players, including DSEG -- rather than a defeatable competitor.",
+    "members": [
+      {
+        "id": "svea_solar",
+        "displayName": "SveaSolar",
+        "legalNote": "Installer/EPC roll-up, PE-backed (Altor). Imports/installs in-house, ~50,000 residential customers.",
+        "status": "active",
+        "confidence": "high"
+      },
+      {
+        "id": "1komma5",
+        "displayName": "1Komma5° Sverige",
+        "legalNote": "German-owned installer roll-up (acquired Cellsolar). Buys battery cells direct from BYD at group scale; opening its Heartbeat AI platform to third-party installers.",
+        "status": "active",
+        "confidence": "high"
+      }
+    ]
+  }
+}

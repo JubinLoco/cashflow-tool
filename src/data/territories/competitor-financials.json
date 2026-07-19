@@ -1,0 +1,100 @@
+[
+  {
+    "id": "dseg",
+    "displayName": "DSEG (us)",
+    "isPlayer": true,
+    "years": [
+      { "year": 2020, "revenueSEK": 1508032, "profitSEK": 392413, "confidence": "verified (Fortnox); partial year, Oct-Dec only", "isPartial": true },
+      { "year": 2021, "revenueSEK": 17813068, "profitSEK": 3024837, "confidence": "verified (Fortnox)" },
+      { "year": 2022, "revenueSEK": 73022932, "profitSEK": 21326292, "confidence": "verified (Fortnox)" },
+      { "year": 2023, "revenueSEK": 85271099, "profitSEK": 16342664, "confidence": "verified (Fortnox)" },
+      { "year": 2024, "revenueSEK": 38441193, "profitSEK": 14818266, "confidence": "verified (Fortnox)" },
+      { "year": 2025, "revenueSEK": 36394175, "profitSEK": 6117172, "confidence": "verified (Fortnox)" },
+      { "year": 2026, "revenueSEK": 22671152, "profitSEK": 2804708, "confidence": "verified (Fortnox); partial year, Jan-Jul only", "isPartial": true }
+    ]
+  },
+  {
+    "id": "aprilice",
+    "displayName": "Aprilice",
+    "years": [
+      { "year": 2022, "revenueSEK": 1100000000, "profitSEK": null, "confidence": "uncertain (single deal-era press figure)" },
+      { "year": 2023, "revenueSEK": 1465000000, "profitSEK": null, "confidence": "derived from 2024's cited -37% YoY decline, not directly sourced" },
+      { "year": 2024, "revenueSEK": 922700000, "profitSEK": -9800000, "confidence": "verified (allabolag.se/hitta.se)" }
+    ]
+  },
+  {
+    "id": "kp_energy",
+    "displayName": "KP Energy",
+    "years": [
+      { "year": 2023, "revenueSEK": 960400000, "profitSEK": null, "confidence": "verified (fiscal year Mar-Feb)" },
+      { "year": 2024, "revenueSEK": 849300000, "profitSEK": 37200000, "confidence": "verified (fiscal year Mar-Feb)" },
+      { "year": 2025, "revenueSEK": 394300000, "profitSEK": -71500000, "confidence": "verified (fiscal year Mar-Feb)" }
+    ]
+  },
+  {
+    "id": "krannich_solar",
+    "displayName": "Krannich Solar AB",
+    "years": [
+      { "year": 2023, "revenueSEK": 260000000, "profitSEK": null, "confidence": "derived from 2024's cited +42.2% YoY growth, not directly sourced" },
+      { "year": 2024, "revenueSEK": 370000000, "profitSEK": -46900000, "confidence": "verified (allabolag.se, single-sourced)" }
+    ]
+  },
+  {
+    "id": "senergia",
+    "displayName": "Senergia",
+    "years": [
+      { "year": 2022, "revenueSEK": 776000000, "profitSEK": null, "confidence": "verified (allabolag.se, corroborated by Investment AB Oresund reporting)" },
+      { "year": 2023, "revenueSEK": 1530000000, "profitSEK": null, "confidence": "verified (+97% YoY growth)" },
+      { "year": 2024, "revenueSEK": 691000000, "profitSEK": null, "confidence": "verified revenue; net loss confirmed but exact amount not captured" }
+    ]
+  },
+  {
+    "id": "energygroup",
+    "displayName": "Energygroup",
+    "years": [
+      { "year": 2024, "revenueSEK": 21300000, "profitSEK": null, "confidence": "uncertain -- derived figure conflicts with a separate source citing only +1.4% growth that year" },
+      { "year": 2025, "revenueSEK": 43080000, "profitSEK": 2320000, "confidence": "verified (merinfo.se/allabolag-sourced)" }
+    ]
+  },
+  {
+    "id": "ahlsell",
+    "displayName": "Ahlsell",
+    "years": [
+      { "year": 2023, "revenueSEK": 30470000000, "profitSEK": null, "confidence": "derived from 2024's cited -3.5% YoY decline, not directly sourced" },
+      { "year": 2024, "revenueSEK": 29400000000, "profitSEK": null, "confidence": "verified GROUP-WIDE revenue -- not solar/EV/battery-specific, Ahlsell doesn't break that segment out" }
+    ]
+  },
+  {
+    "id": "rexel",
+    "displayName": "Rexel",
+    "years": [
+      { "year": 2022, "revenueSEK": 7122000000, "profitSEK": null, "confidence": "uncertain (single search-indexed figure)" },
+      { "year": 2024, "revenueSEK": 6636000000, "profitSEK": -25100000, "confidence": "verified (allabolag.se); Swedish subsidiary only, general electrical wholesaler with solar/EV as one category among many" }
+    ]
+  },
+  {
+    "id": "parkys",
+    "displayName": "Parkys",
+    "years": [
+      { "year": 2022, "revenueSEK": 66800000, "profitSEK": 7200000, "confidence": "verified (Boras Tidning/allabolag)" },
+      { "year": 2023, "revenueSEK": 120700000, "profitSEK": 11000000, "confidence": "verified (Boras Tidning/allabolag)" },
+      { "year": 2024, "revenueSEK": 32000000, "profitSEK": -320000, "confidence": "verified (syna.se)" },
+      { "year": 2025, "revenueSEK": 48600000, "profitSEK": -3300000, "confidence": "profit derived from a cited -6.7% margin, not a direct figure" }
+    ]
+  },
+  {
+    "id": "solar_sverige",
+    "displayName": "Solar Sverige AB",
+    "years": [
+      { "year": 2024, "revenueSEK": 3400000000, "profitSEK": null, "confidence": "single data point found; no multi-year trend or profit figure available yet" }
+    ]
+  },
+  {
+    "id": "sesol",
+    "displayName": "Sesol (fallen)",
+    "years": [
+      { "year": 2023, "revenueSEK": 2500000000, "profitSEK": null, "confidence": "approximate (range cited was 2.5-3.0bn SEK, boom year)" },
+      { "year": 2024, "revenueSEK": 724000000, "profitSEK": -613000000, "confidence": "revenue verified; profit figure is EBITDA, not net profit (per Soltech investor release)" }
+    ]
+  }
+]

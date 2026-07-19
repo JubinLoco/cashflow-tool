@@ -3,6 +3,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Territories (merged-in map/settlements feature) surface tokens */
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+
+  --panel-surface: #fcfcfb;
+  --panel-border: rgba(11, 11, 11, 0.1);
+
+  --map-surface: #fcfcfb;
+  --map-border: #e1e0d9;
 }
 
 @theme inline {
@@ -16,6 +26,15 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+
+    --panel-surface: #1a1a19;
+    --panel-border: rgba(255, 255, 255, 0.1);
+
+    --map-surface: #1a1a19;
+    --map-border: #2c2c2a;
   }
 }
 

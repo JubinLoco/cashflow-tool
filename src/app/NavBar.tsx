@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Role } from "@/lib/auth/role";
@@ -18,9 +19,9 @@ export default function NavBar({ role }: { role: Role }) {
     <nav className="flex gap-4 items-center p-4 border-b text-sm">
       {role === "admin" ? (
         <>
-          <a className="underline" href="/">
+          <Link className="underline" href="/">
             Home
-          </a>
+          </Link>
           <a className="underline" href="/forecast">
             Forecast
           </a>
@@ -30,11 +31,19 @@ export default function NavBar({ role }: { role: Role }) {
           <a className="underline" href="/settings">
             Settings
           </a>
+          <a className="underline" href="/territories">
+            Territories
+          </a>
         </>
       ) : (
-        <a className="underline" href="/dashboard/weekly">
-          Home
-        </a>
+        <>
+          <a className="underline" href="/dashboard/weekly">
+            Home
+          </a>
+          <a className="underline" href="/territories">
+            Territories
+          </a>
+        </>
       )}
       <button onClick={handleSignOut} className="underline ml-auto">
         Sign out

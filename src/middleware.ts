@@ -10,8 +10,20 @@ const BEARER_AUTH_PATHS = ["/api/cron"];
 // Deny-by-default for any non-admin role: list what sales CAN reach rather than
 // enumerating admin-only paths, so a new route added later doesn't silently stay open
 // to sales just because nobody remembered to add it to a blocklist.
-const SALES_ALLOWED = ["/dashboard/weekly", "/api/dashboard/weekly-by-line", "/login"];
+const SALES_ALLOWED = [
+  "/dashboard/weekly",
+  "/api/dashboard/weekly-by-line",
+  "/login",
+  "/territories/rules",
+  "/territories/trends",
+];
+// "/territories" (the map) must match ONLY exactly -- it's a textual prefix of
+// "/territories/settlements" (admin-only), so it can't go through the prefix-matching
+// list above without also opening settlements via pathname.startsWith(p + "/").
+const SALES_ALLOWED_EXACT = ["/territories"];
+
 function isSalesAllowed(pathname: string): boolean {
+  if (SALES_ALLOWED_EXACT.includes(pathname)) return true;
   return SALES_ALLOWED.some((p) => pathname === p || pathname.startsWith(p + "/"));
 }
 
