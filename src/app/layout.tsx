@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./NavBar";
 import { createClient } from "@/lib/supabase/server";
+import { fetchRole } from "@/lib/auth/role";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export default async function RootLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const role = user ? await fetchRole(supabase, user.id) : null;
 
   return (
     <html
@@ -35,7 +37,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {user && <NavBar />}
+        {user && <NavBar role={role!} />}
         {children}
       </body>
     </html>

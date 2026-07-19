@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import type { Role } from "@/lib/auth/role";
 
-export default function NavBar() {
+export default function NavBar({ role }: { role: Role }) {
   const router = useRouter();
 
   async function handleSignOut() {
@@ -15,18 +16,26 @@ export default function NavBar() {
 
   return (
     <nav className="flex gap-4 items-center p-4 border-b text-sm">
-      <a className="underline" href="/">
-        Home
-      </a>
-      <a className="underline" href="/forecast">
-        Forecast
-      </a>
-      <a className="underline" href="/dashboard/cashflow">
-        Dashboard
-      </a>
-      <a className="underline" href="/settings">
-        Settings
-      </a>
+      {role === "admin" ? (
+        <>
+          <a className="underline" href="/">
+            Home
+          </a>
+          <a className="underline" href="/forecast">
+            Forecast
+          </a>
+          <a className="underline" href="/dashboard/cashflow">
+            Dashboard
+          </a>
+          <a className="underline" href="/settings">
+            Settings
+          </a>
+        </>
+      ) : (
+        <a className="underline" href="/dashboard/weekly">
+          Home
+        </a>
+      )}
       <button onClick={handleSignOut} className="underline ml-auto">
         Sign out
       </button>

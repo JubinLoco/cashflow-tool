@@ -43,6 +43,8 @@ type BusinessLineOverride = {
 
 type MonthlyBudget = { month: string; turnover: number; cogs: number; opex: number };
 
+type UserProfile = { id: string; email: string; role: "admin" | "sales" };
+
 const CATEGORY_OPTIONS = ["rent", "salaries", "tax", "suppliers", "factoring_fee", "other"];
 
 const TREATMENT_LABEL: Record<string, string> = {
@@ -63,6 +65,7 @@ export default function SettingsPage() {
   const [overrides, setOverrides] = useState<FactoringOverride[]>([]);
   const [businessLineOverrides, setBusinessLineOverrides] = useState<BusinessLineOverride[]>([]);
   const [monthlyBudget, setMonthlyBudget] = useState<MonthlyBudget[]>([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
   const [newBudgetMonth, setNewBudgetMonth] = useState("");
   const [saved, setSaved] = useState(false);
   const [showUntaggedOnly, setShowUntaggedOnly] = useState(true);
@@ -96,6 +99,9 @@ export default function SettingsPage() {
     fetch("/api/settings/monthly-budget")
       .then((r) => r.json())
       .then(setMonthlyBudget);
+    fetch("/api/settings/users")
+      .then((r) => r.json())
+      .then(setUsers);
   }
 
   useEffect(load, []);
@@ -135,6 +141,21 @@ export default function SettingsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ supplier_number, category }),
     });
+  }
+
+  async function updateUserRole(id: string, role: string) {
+    const previous = users;
+    setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, role: role as UserProfile["role"] } : u)));
+    const res = await fetch("/api/settings/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, role }),
+    });
+    if (!res.ok) {
+      const { error } = await res.json();
+      alert(error);
+      setUsers(previous);
+    }
   }
 
   async function addOverride(e: React.FormEvent) {
@@ -587,6 +608,37 @@ export default function SettingsPage() {
                           {opt}
                         </option>
                       ))}
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-3">Users & roles</h2>
+        <div className="max-h-96 overflow-y-auto text-sm">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="text-left border-b sticky top-0 bg-background">
+                <th className="py-1">Email</th>
+                <th className="py-1">Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id} className="border-b">
+                  <td className="py-1">{u.email}</td>
+                  <td className="py-1">
+                    <select
+                      className="border rounded px-1 py-0.5"
+                      value={u.role}
+                      onChange={(e) => updateUserRole(u.id, e.target.value)}
+                    >
+                      <option value="admin">admin</option>
+                      <option value="sales">sales</option>
                     </select>
                   </td>
                 </tr>
