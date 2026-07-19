@@ -21,7 +21,7 @@ export default function NavBar() {
       <a className="underline" href="/forecast">
         Forecast
       </a>
-      <a className="underline" href="/dashboard">
+      <a className="underline" href="/dashboard/cashflow">
         Dashboard
       </a>
       <a className="underline" href="/settings">
