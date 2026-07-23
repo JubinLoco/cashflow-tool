@@ -4,6 +4,9 @@ import { loadFactoringLimits } from "@/lib/factoring/limits";
 import { simulatePromotions, type InvoiceForPromotion } from "@/lib/factoring/poolPromotion";
 
 const INSERT_BATCH_SIZE = 1000;
+// Below this many historical paid invoices, a customer's own average is too noisy to
+// trust over the global figure (e.g. a single early/late payment would swing it wildly).
+const MIN_CUSTOMER_SAMPLE_SIZE = 3;
 
 type InvoiceForCashEvents = {
   id: string;
@@ -13,6 +16,7 @@ type InvoiceForCashEvents = {
   due_date: string;
   balance: number;
   paid_date: string | null;
+  manual_paid: boolean | null;
   eligible_amount: number;
   excluded_amount: number;
 };
@@ -58,10 +62,28 @@ export async function generateCashEvents() {
     .maybeSingle();
   const avgDelay = delayStats?.avg_days_due_to_paid ?? 0;
 
+  // Some customers pay reliably faster/slower than the company-wide average — use each
+  // customer's own history where there's enough of it, falling back to the global figure
+  // otherwise (new customers, or ones with too few paid invoices to trust their own average).
+  const { data: customerDelayRows } = await supabase
+    .from("customer_payment_delay_stats")
+    .select("customer_number, avg_days_due_to_paid, sample_size");
+  const customerDelay = new Map(
+    (customerDelayRows ?? [])
+      .filter((r) => r.sample_size >= MIN_CUSTOMER_SAMPLE_SIZE)
+      .map((r) => [r.customer_number, r.avg_days_due_to_paid]),
+  );
+  function delayFor(customerNumber: string | null): number {
+    if (customerNumber && customerDelay.has(customerNumber)) return customerDelay.get(customerNumber)!;
+    return avgDelay;
+  }
+
   const invoices = await fetchAllRows<InvoiceForCashEvents>((from, to) =>
     supabase
       .from("customer_invoices")
-      .select("id, fortnox_doc_number, customer_number, invoice_date, due_date, balance, paid_date, eligible_amount, excluded_amount")
+      .select(
+        "id, fortnox_doc_number, customer_number, invoice_date, due_date, balance, paid_date, manual_paid, eligible_amount, excluded_amount",
+      )
       .range(from, to),
   );
 
@@ -76,17 +98,29 @@ export async function generateCashEvents() {
   const overrideDocNumbers = new Set(overrides.map((o) => o.fortnox_doc_number));
 
   const limits = await loadFactoringLimits(supabase);
-  const unpaidForSimulation: InvoiceForPromotion[] = invoices.filter(
-    (inv) => inv.balance > 0 && !overrideDocNumbers.has(inv.fortnox_doc_number),
-  );
+  const unpaidForSimulation: InvoiceForPromotion[] = invoices
+    .filter((inv) => inv.balance > 0 && !overrideDocNumbers.has(inv.fortnox_doc_number))
+    .map((inv) => ({ ...inv, delayDays: delayFor(inv.customer_number) }));
   const today = new Date().toISOString().slice(0, 10);
-  const promotions = simulatePromotions(unpaidForSimulation, limits, avgDelay, today);
+  const promotions = simulatePromotions(unpaidForSimulation, limits, today);
 
   const events: CashEventRow[] = [];
 
   for (const inv of invoices) {
-    const isPaid = inv.balance <= 0 && Boolean(inv.paid_date);
-    const settlementDate = isPaid ? inv.paid_date! : addDays(inv.due_date, avgDelay);
+    // manual_paid overrides the Fortnox-synced balance/paid_date when set, for when the
+    // sync hasn't caught up yet — same reasoning as the Verify page's "Mark paid" toggle
+    // and the supplier-invoice side of the projection. There's no real paid_date to anchor
+    // on yet, so settle "today" rather than projecting it out at the estimated due date —
+    // this is a temporary stand-in: once Fortnox actually syncs a real paid_date, the next
+    // full recompute picks that up and this override becomes moot (manual_paid survives
+    // syncs, but `reallyPaid` then also becomes true, so the real date wins either way).
+    const reallyPaid = inv.balance <= 0 && Boolean(inv.paid_date);
+    const isPaid = reallyPaid || Boolean(inv.manual_paid);
+    const settlementDate = reallyPaid
+      ? inv.paid_date!
+      : inv.manual_paid
+        ? today
+        : addDays(inv.due_date, delayFor(inv.customer_number));
     const isEstimated = !isPaid;
 
     if (inv.eligible_amount > 0) {

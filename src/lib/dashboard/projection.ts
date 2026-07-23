@@ -131,9 +131,16 @@ export async function computeProjection(
     total: number;
     due_date: string;
     paid_date: string | null;
+    manual_paid: boolean | null;
     supplier_name: string;
-  }>((from, to) => supabase.from("supplier_invoices").select("total, due_date, paid_date, supplier_name").range(from, to));
+  }>((from, to) =>
+    supabase.from("supplier_invoices").select("total, due_date, paid_date, manual_paid, supplier_name").range(from, to),
+  );
   for (const inv of supplierInvoices) {
+    // manual_paid overrides the Fortnox-synced balance/paid_date when set, for when the
+    // sync hasn't caught up yet — same reasoning as the Verify page's "Mark paid" toggle.
+    // Already paid means it shouldn't show as a pending outflow at all.
+    if (inv.manual_paid) continue;
     const date = inv.paid_date ?? inv.due_date;
     addFlow(date, -inv.total, inv.supplier_name);
   }

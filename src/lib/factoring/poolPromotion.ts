@@ -8,6 +8,9 @@ export type InvoiceForPromotion = {
   due_date: string;
   eligible_amount: number;
   excluded_amount: number;
+  // Per-customer average due-to-paid delay when available, else the global fallback —
+  // resolved by the caller (cashEvents.ts) since it's the one with access to both stats.
+  delayDays: number;
 };
 
 export type Promotion = { amount: number; date: string };
@@ -27,7 +30,6 @@ function addDays(dateStr: string, days: number): string {
 export function simulatePromotions(
   unpaidInvoices: InvoiceForPromotion[],
   limits: FactoringLimits,
-  avgDelayDays: number,
   today: string,
 ): Map<string, Promotion[]> {
   const customerKeyOf = (inv: InvoiceForPromotion) => inv.customer_number ?? inv.fortnox_doc_number;
@@ -50,7 +52,7 @@ export function simulatePromotions(
   const releases = unpaidInvoices
     .filter((inv) => inv.eligible_amount > 0)
     .map((inv) => {
-      const naturalDate = addDays(inv.due_date, avgDelayDays);
+      const naturalDate = addDays(inv.due_date, inv.delayDays);
       return { date: naturalDate < today ? today : naturalDate, amount: inv.eligible_amount, customerKey: customerKeyOf(inv) };
     })
     .sort((a, b) => a.date.localeCompare(b.date));
@@ -59,7 +61,7 @@ export function simulatePromotions(
   const queue = unpaidInvoices
     .filter((inv) => inv.excluded_amount > 0)
     .sort((a, b) => a.invoice_date.localeCompare(b.invoice_date) || a.fortnox_doc_number.localeCompare(b.fortnox_doc_number))
-    .map((inv) => ({ inv, remaining: inv.excluded_amount, naturalDate: addDays(inv.due_date, avgDelayDays) }));
+    .map((inv) => ({ inv, remaining: inv.excluded_amount, naturalDate: addDays(inv.due_date, inv.delayDays) }));
 
   // A single invoice can be promoted in more than one increment (partial fill now,
   // more once further capacity frees later) — keep each increment as its own dated
