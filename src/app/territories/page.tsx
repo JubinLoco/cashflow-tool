@@ -1,22 +1,20 @@
 import MapExplorer from "@/components/territories/MapExplorer";
 import CompetitorPanel from "@/components/territories/CompetitorPanel";
-import { classifyAllSettlements, type MonthlyHistoryMap } from "@/lib/territories/classifySettlements";
+import { classifyAllSettlements } from "@/lib/territories/classifySettlements";
 import { readGameConfig } from "@/lib/territories/configStore";
+import { readSettlements } from "@/lib/territories/settlementFinancials";
 import provincesGeojson from "@/data/territories/provinces.geojson.json";
 import marketSizeData from "@/data/territories/market-size.json";
-import settlementsData from "@/data/territories/settlements.json";
-import settlementHistoryData from "@/data/territories/settlement-monthly-history.json";
 import competitorsData from "@/data/territories/competitors.json";
 import type { CompetitorRoster, MarketSize, ProvincesGeoJSON, Settlement } from "@/lib/territories/types";
 
 export default async function TerritoriesPage() {
   const geojson = provincesGeojson as ProvincesGeoJSON;
   const marketSize = marketSizeData as MarketSize[];
-  const rawSettlements = settlementsData as Settlement[];
   const roster = competitorsData as CompetitorRoster;
-  const config = await readGameConfig();
+  const [config, { settlements: rawSettlements, history }] = await Promise.all([readGameConfig(), readSettlements()]);
 
-  const classified = classifyAllSettlements(rawSettlements, settlementHistoryData as MonthlyHistoryMap, config);
+  const classified = classifyAllSettlements(rawSettlements, history, config);
   const settlements: Settlement[] = classified.map((s) => ({ ...s, tier: s.classification.tier }));
 
   const legendTiers = [...config.tierRules].sort((a, b) => b.order - a.order);

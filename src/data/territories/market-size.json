@@ -1,149 +1,149 @@
 [
   {
-    "province": "Halland",
-    "solar": 797,
-    "battery": 5138,
-    "evCharger": 3909,
-    "total": 9844
-  },
-  {
-    "province": "Skåne",
-    "solar": 2525,
-    "battery": 1683,
-    "evCharger": 5239,
-    "total": 9447
-  },
-  {
-    "province": "Stockholm",
-    "solar": 3554,
-    "battery": 3607,
-    "evCharger": 2113,
-    "total": 9274
-  },
-  {
-    "province": "Östergötland",
-    "solar": 723,
-    "battery": 4306,
-    "evCharger": 3873,
-    "total": 8902
-  },
-  {
-    "province": "Västra Götaland",
-    "solar": 3229,
-    "battery": 1686,
-    "evCharger": 2827,
-    "total": 7742
-  },
-  {
-    "province": "Jönköping",
-    "solar": 597,
-    "battery": 3581,
-    "evCharger": 3491,
-    "total": 7669
-  },
-  {
-    "province": "Uppsala",
-    "solar": 738,
-    "battery": 3522,
-    "evCharger": 3065,
-    "total": 7325
-  },
-  {
-    "province": "Södermanland",
-    "solar": 554,
-    "battery": 2988,
-    "evCharger": 2382,
-    "total": 5924
-  },
-  {
-    "province": "Örebro",
-    "solar": 455,
-    "battery": 2523,
-    "evCharger": 2247,
-    "total": 5225
-  },
-  {
-    "province": "Kalmar",
-    "solar": 370,
-    "battery": 2665,
-    "evCharger": 2176,
-    "total": 5211
+    "province": "Blekinge",
+    "solar": 311,
+    "battery": 1873,
+    "evCharger": 1446,
+    "total": 3630
   },
   {
     "province": "Dalarna",
-    "solar": 448,
-    "battery": 2547,
-    "evCharger": 2138,
-    "total": 5133
-  },
-  {
-    "province": "Västmanland",
-    "solar": 329,
-    "battery": 2373,
-    "evCharger": 2012,
-    "total": 4714
-  },
-  {
-    "province": "Värmland",
-    "solar": 357,
-    "battery": 2129,
-    "evCharger": 2197,
-    "total": 4683
-  },
-  {
-    "province": "Kronoberg",
-    "solar": 340,
-    "battery": 2144,
-    "evCharger": 2109,
-    "total": 4593
+    "solar": 456,
+    "battery": 2619,
+    "evCharger": 2204,
+    "total": 5279
   },
   {
     "province": "Gävleborg",
-    "solar": 299,
-    "battery": 1711,
-    "evCharger": 1937,
-    "total": 3947
-  },
-  {
-    "province": "Blekinge",
-    "solar": 300,
-    "battery": 1840,
-    "evCharger": 1423,
-    "total": 3563
-  },
-  {
-    "province": "Västernorrland",
-    "solar": 351,
-    "battery": 1401,
-    "evCharger": 1735,
-    "total": 3487
-  },
-  {
-    "province": "Västerbotten",
-    "solar": 345,
-    "battery": 1277,
-    "evCharger": 1823,
-    "total": 3445
-  },
-  {
-    "province": "Norrbotten",
-    "solar": 251,
-    "battery": 772,
-    "evCharger": 1309,
-    "total": 2332
-  },
-  {
-    "province": "Jämtland",
-    "solar": 126,
-    "battery": 602,
-    "evCharger": 810,
-    "total": 1538
+    "solar": 308,
+    "battery": 1757,
+    "evCharger": 1973,
+    "total": 4038
   },
   {
     "province": "Gotland",
     "solar": 108,
-    "battery": 516,
-    "evCharger": 420,
-    "total": 1044
+    "battery": 518,
+    "evCharger": 426,
+    "total": 1052
+  },
+  {
+    "province": "Halland",
+    "solar": 809,
+    "battery": 5253,
+    "evCharger": 3957,
+    "total": 10019
+  },
+  {
+    "province": "Jämtland",
+    "solar": 135,
+    "battery": 619,
+    "evCharger": 833,
+    "total": 1587
+  },
+  {
+    "province": "Jönköping",
+    "solar": 606,
+    "battery": 3666,
+    "evCharger": 3562,
+    "total": 7834
+  },
+  {
+    "province": "Kalmar",
+    "solar": 378,
+    "battery": 2739,
+    "evCharger": 2211,
+    "total": 5328
+  },
+  {
+    "province": "Kronoberg",
+    "solar": 354,
+    "battery": 2220,
+    "evCharger": 2157,
+    "total": 4731
+  },
+  {
+    "province": "Norrbotten",
+    "solar": 261,
+    "battery": 798,
+    "evCharger": 1335,
+    "total": 2394
+  },
+  {
+    "province": "Örebro",
+    "solar": 470,
+    "battery": 2598,
+    "evCharger": 2271,
+    "total": 5339
+  },
+  {
+    "province": "Östergötland",
+    "solar": 756,
+    "battery": 4434,
+    "evCharger": 3938,
+    "total": 9128
+  },
+  {
+    "province": "Skåne",
+    "solar": 2606,
+    "battery": 15379,
+    "evCharger": 11035,
+    "total": 29020
+  },
+  {
+    "province": "Södermanland",
+    "solar": 568,
+    "battery": 3082,
+    "evCharger": 2442,
+    "total": 6092
+  },
+  {
+    "province": "Stockholm",
+    "solar": 3619,
+    "battery": 13773,
+    "evCharger": 15388,
+    "total": 32780
+  },
+  {
+    "province": "Uppsala",
+    "solar": 758,
+    "battery": 3611,
+    "evCharger": 3124,
+    "total": 7493
+  },
+  {
+    "province": "Värmland",
+    "solar": 361,
+    "battery": 2175,
+    "evCharger": 2257,
+    "total": 4793
+  },
+  {
+    "province": "Västerbotten",
+    "solar": 354,
+    "battery": 1314,
+    "evCharger": 1858,
+    "total": 3526
+  },
+  {
+    "province": "Västernorrland",
+    "solar": 361,
+    "battery": 1437,
+    "evCharger": 1756,
+    "total": 3554
+  },
+  {
+    "province": "Västmanland",
+    "solar": 342,
+    "battery": 2431,
+    "evCharger": 2048,
+    "total": 4821
+  },
+  {
+    "province": "Västra Götaland",
+    "solar": 3290,
+    "battery": 15145,
+    "evCharger": 14692,
+    "total": 33127
   }
 ]

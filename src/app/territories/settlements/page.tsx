@@ -1,16 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import settlementsData from "@/data/territories/settlements.json";
-import settlementHistoryData from "@/data/territories/settlement-monthly-history.json";
 import provincesGeojson from "@/data/territories/provinces.geojson.json";
 import competitorsData from "@/data/territories/competitors.json";
 import { classifyAllSettlements, type MonthlyHistoryMap } from "@/lib/territories/classifySettlements";
 import { DEFAULT_GAME_CONFIG, tierLabel, type GameConfig, type Prospect, type TierRule } from "@/lib/territories/tiers";
 import type { CompetitorRoster, ProvincesGeoJSON, Settlement } from "@/lib/territories/types";
+import type { SettlementsResult } from "@/lib/territories/settlementFinancials";
 
-const settlements = settlementsData as Settlement[];
-const history = settlementHistoryData as MonthlyHistoryMap;
 const provinces = (provincesGeojson as ProvincesGeoJSON).features.map((f) => f.properties.name).sort();
 const roster = competitorsData as CompetitorRoster;
 
@@ -20,6 +17,8 @@ function formatSEK(n: number) {
 
 export default function TerritoriesSettlementsPage() {
   const [config, setConfig] = useState<GameConfig>(DEFAULT_GAME_CONFIG);
+  const [settlements, setSettlements] = useState<Settlement[]>([]);
+  const [history, setHistory] = useState<MonthlyHistoryMap>({});
   const [loading, setLoading] = useState(true);
   const [draftRules, setDraftRules] = useState<TierRule[]>(DEFAULT_GAME_CONFIG.tierRules);
   const [rulesDirty, setRulesDirty] = useState(false);
@@ -37,16 +36,19 @@ export default function TerritoriesSettlementsPage() {
   });
 
   useEffect(() => {
-    fetch("/api/territories/config")
-      .then((r) => r.json())
-      .then((c: GameConfig) => {
-        setConfig(c);
-        setDraftRules(c.tierRules);
-        setLoading(false);
-      });
+    Promise.all([
+      fetch("/api/territories/config").then((r) => r.json()) as Promise<GameConfig>,
+      fetch("/api/territories/settlements").then((r) => r.json()) as Promise<SettlementsResult>,
+    ]).then(([configData, settlementsData]) => {
+      setConfig(configData);
+      setDraftRules(configData.tierRules);
+      setSettlements(settlementsData.settlements);
+      setHistory(settlementsData.history);
+      setLoading(false);
+    });
   }, []);
 
-  const classified = useMemo(() => classifyAllSettlements(settlements, history, config), [config]);
+  const classified = useMemo(() => classifyAllSettlements(settlements, history, config), [settlements, history, config]);
 
   function updateDraftRule(index: number, patch: Partial<TierRule>) {
     setDraftRules((rules) => rules.map((r, i) => (i === index ? { ...r, ...patch } : r)));

@@ -16,7 +16,7 @@ export default function TerritoriesTrendsPage() {
       <section>
         <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-3">Market size over the years</h2>
         <p className="text-xs text-[var(--text-secondary)] mb-3">
-          Monthly new installations claiming the green-tech tax deduction, from Skatteverket data (Jan 2022 – Jun
+          Monthly new installations claiming the green-tech tax deduction, from Skatteverket data (Jan 2021 – Jul
           2026).
         </p>
         <MarketSizeChart data={marketSizeMonthly} />
