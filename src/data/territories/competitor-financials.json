@@ -45,7 +45,7 @@
     "years": [
       { "year": 2022, "revenueSEK": 776000000, "profitSEK": null, "confidence": "verified (allabolag.se, corroborated by Investment AB Oresund reporting)" },
       { "year": 2023, "revenueSEK": 1530000000, "profitSEK": null, "confidence": "verified (+97% YoY growth)" },
-      { "year": 2024, "revenueSEK": 691000000, "profitSEK": null, "confidence": "verified revenue; net loss confirmed but exact amount not captured" }
+      { "year": 2024, "revenueSEK": 691000000, "profitSEK": -34694000, "confidence": "verified (allabolag.se/merinfo.se/syna.se, consistent across all three) -- 2025 annual report not yet indexed by any public registry as of 2026-07-26 despite being filed, revisit later" }
     ]
   },
   {
@@ -53,7 +53,7 @@
     "displayName": "Energygroup",
     "years": [
       { "year": 2024, "revenueSEK": 21300000, "profitSEK": null, "confidence": "uncertain -- derived figure conflicts with a separate source citing only +1.4% growth that year" },
-      { "year": 2025, "revenueSEK": 43080000, "profitSEK": 2320000, "confidence": "verified (merinfo.se/allabolag-sourced)" }
+      { "year": 2025, "revenueSEK": 43080000, "profitSEK": 2320000, "confidence": "verified (merinfo.se/allabolag.se, independently corroborated by syna.se's 2026-07-26 figures)" }
     ]
   },
   {

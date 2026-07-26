@@ -48,7 +48,7 @@
       "status": "active",
       "revenueEstimateSEK": 691000000,
       "revenueYear": 2024,
-      "revenueTrend": "volatile (1.53B in 2023 after 97% growth, then -55% to 691M in 2024)",
+      "revenueTrend": "volatile (1.53B in 2023 after 97% growth, then -55% to 691M in 2024, net loss ~34.7M SEK). 2025 annual report not yet indexed by any public registry as of 2026-07-26 despite reportedly being filed -- revisit later.",
       "hq": "Stockholm",
       "province": "Stockholm",
       "productFocus": ["solar", "battery", "ev_charger"],
@@ -59,13 +59,13 @@
       "displayName": "Energygroup",
       "legalNote": "Energy Group AES AB, independent/founder-led, HQ Forshaga (Varmland) with a Stockholm sales office.",
       "status": "active",
-      "revenueEstimateSEK": 43000000,
+      "revenueEstimateSEK": 43080000,
       "revenueYear": 2025,
-      "revenueTrend": "growing, battery-storage led (registry figures inconsistent with company's own growth narrative -- flagged, small player either way)",
+      "revenueTrend": "growing, battery-storage led (2025 revenue +102.6% YoY, result +115,900% YoY off a tiny base -- figures now independently corroborated across two registries)",
       "hq": "Forshaga",
       "province": "Värmland",
       "productFocus": ["battery", "solar", "ev_charger"],
-      "confidence": "medium (data inconsistency noted)"
+      "confidence": "high"
     },
     {
       "id": "ahlsell",
