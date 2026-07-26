@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { competitorColorFor, STATUS_COLOR, UNKNOWN_TIER_COLOR } from "@/lib/territories/color";
 import { useColorScheme } from "@/lib/territories/useColorScheme";
 
-type YearFigure = {
+export type YearFigure = {
   year: number;
   revenueSEK: number;
   profitSEK: number | null;
@@ -12,22 +12,59 @@ type YearFigure = {
   isPartial?: boolean;
 };
 
-type CompetitorFinancials = {
+export type CompetitorFinancials = {
   id: string;
   displayName: string;
   isPlayer?: boolean;
   years: YearFigure[];
 };
 
+function latestRevenue(c: CompetitorFinancials): number {
+  const latestYear = Math.max(...c.years.map((y) => y.year));
+  return c.years.find((y) => y.year === latestYear)!.revenueSEK;
+}
+
+/**
+ * Splits competitors into two groups at their single biggest turnover gap (ratio between
+ * consecutive companies sorted by latest-year revenue) -- lets each group use a linear
+ * Y-axis without one giant company flattening everyone else, and without a log scale
+ * visually compressing genuinely large size differences into looking similar. Adapts
+ * automatically as competitor figures are updated, rather than a hand-maintained threshold.
+ */
+export function splitByTurnoverGap(financials: CompetitorFinancials[]): {
+  high: CompetitorFinancials[];
+  low: CompetitorFinancials[];
+} {
+  if (financials.length <= 1) return { high: financials, low: [] };
+
+  const sorted = [...financials].sort((a, b) => latestRevenue(b) - latestRevenue(a));
+  let splitIndex = 1;
+  let biggestGapRatio = 0;
+  for (let i = 1; i < sorted.length; i++) {
+    const ratio = latestRevenue(sorted[i - 1]) / latestRevenue(sorted[i]);
+    if (ratio > biggestGapRatio) {
+      biggestGapRatio = ratio;
+      splitIndex = i;
+    }
+  }
+
+  return { high: sorted.slice(0, splitIndex), low: sorted.slice(splitIndex) };
+}
+
 const WIDTH = 760;
-const HEIGHT = 380;
+const HEIGHT = 320;
 const MARGIN = { top: 16, right: 16, bottom: 32, left: 56 };
 const PLOT_W = WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_H = HEIGHT - MARGIN.top - MARGIN.bottom;
+const Y_TICKS = 4;
 
 function formatSEK(n: number) {
   if (Math.abs(n) >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B SEK`;
   return `${Math.round(n / 1_000_000)}M SEK`;
+}
+
+function formatAxisValue(v: number) {
+  return v >= 1_000_000_000 ? `${(v / 1_000_000_000).toFixed(1)}B` : `${Math.round(v / 1_000_000)}M`;
 }
 
 export default function CompetitorFinancialsChart({ financials }: { financials: CompetitorFinancials[] }) {
@@ -38,24 +75,18 @@ export default function CompetitorFinancialsChart({ financials }: { financials: 
     () => [...new Set(financials.flatMap((c) => c.years.map((y) => y.year)))].sort((a, b) => a - b),
     [financials],
   );
-  const allRevenues = financials.flatMap((c) => c.years.map((y) => y.revenueSEK));
-  const logMin = Math.floor(Math.log10(Math.min(...allRevenues)) * 2) / 2 - 0.25;
-  const logMax = Math.ceil(Math.log10(Math.max(...allRevenues)) * 2) / 2 + 0.25;
+  const maxRevenue = Math.max(...financials.flatMap((c) => c.years.map((y) => y.revenueSEK))) * 1.1;
 
   const xFor = (year: number) => MARGIN.left + ((year - allYears[0]) / (allYears[allYears.length - 1] - allYears[0])) * PLOT_W;
-  const yFor = (revenue: number) => MARGIN.top + PLOT_H - ((Math.log10(revenue) - logMin) / (logMax - logMin)) * PLOT_H;
+  const yFor = (revenue: number) => MARGIN.top + PLOT_H - (revenue / maxRevenue) * PLOT_H;
 
-  const yGridSteps = useMemo(() => {
-    const steps: number[] = [];
-    for (let exp = Math.ceil(logMin); exp <= Math.floor(logMax); exp++) steps.push(10 ** exp);
-    return steps;
-  }, [logMin, logMax]);
+  const yGridValues = Array.from({ length: Y_TICKS + 1 }, (_, i) => (maxRevenue / Y_TICKS) * i);
 
   return (
     <div>
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="w-full h-auto" role="img" aria-label="Competitor turnover comparison over time">
-        {yGridSteps.map((v) => (
-          <g key={v}>
+        {yGridValues.map((v, i) => (
+          <g key={i}>
             <line
               x1={MARGIN.left}
               x2={WIDTH - MARGIN.right}
@@ -65,7 +96,7 @@ export default function CompetitorFinancialsChart({ financials }: { financials: 
               strokeWidth={1}
             />
             <text x={MARGIN.left - 6} y={yFor(v)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="var(--text-secondary)">
-              {v >= 1_000_000_000 ? `${v / 1_000_000_000}B` : `${v / 1_000_000}M`}
+              {formatAxisValue(v)}
             </text>
           </g>
         ))}
@@ -169,10 +200,7 @@ export default function CompetitorFinancialsChart({ financials }: { financials: 
         <span className="flex items-center gap-1">
           <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: "#d03b3b" }} /> Loss
         </span>
-        <span>
-          Y-axis is log-scaled (revenue spans ~3 orders of magnitude). Dashed segments = a gap year with no figure
-          found, or a fallen competitor. Hover a name or line to highlight it.
-        </span>
+        <span>Dashed segments = a gap year with no figure found, or a fallen competitor. Hover a name or line to highlight it.</span>
       </div>
     </div>
   );
