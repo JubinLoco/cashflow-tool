@@ -7,6 +7,7 @@ import { classifyAllSettlements, type MonthlyHistoryMap } from "@/lib/territorie
 import { DEFAULT_GAME_CONFIG, tierLabel, type GameConfig, type Prospect, type TierRule } from "@/lib/territories/tiers";
 import type { CompetitorRoster, ProvincesGeoJSON, Settlement } from "@/lib/territories/types";
 import type { SettlementsResult } from "@/lib/territories/settlementFinancials";
+import type { MarketSizeResult } from "@/lib/territories/marketSize";
 
 const provinces = (provincesGeojson as ProvincesGeoJSON).features.map((f) => f.properties.name).sort();
 const roster = competitorsData as CompetitorRoster;
@@ -34,19 +35,49 @@ export default function TerritoriesSettlementsPage() {
     potentialTier: "",
     note: "",
   });
+  const [marketSizeInfo, setMarketSizeInfo] = useState<{ rowCount: number; latestYearMonth: string | null } | null>(null);
+  const [uploadingMarketSize, setUploadingMarketSize] = useState(false);
+  const [uploadResult, setUploadResult] = useState<{ ok: boolean; message: string } | null>(null);
 
   useEffect(() => {
     Promise.all([
       fetch("/api/territories/config").then((r) => r.json()) as Promise<GameConfig>,
       fetch("/api/territories/settlements").then((r) => r.json()) as Promise<SettlementsResult>,
-    ]).then(([configData, settlementsData]) => {
+      fetch("/api/territories/config/market-size").then((r) => r.json()) as Promise<MarketSizeResult>,
+    ]).then(([configData, settlementsData, marketSizeData]) => {
       setConfig(configData);
       setDraftRules(configData.tierRules);
       setSettlements(settlementsData.settlements);
       setHistory(settlementsData.history);
+      setMarketSizeInfo({ rowCount: marketSizeData.monthly.length, latestYearMonth: marketSizeData.latestYearMonth });
       setLoading(false);
     });
   }, []);
+
+  async function handleMarketSizeUpload(file: File) {
+    setUploadingMarketSize(true);
+    setUploadResult(null);
+    try {
+      const csv = await file.text();
+      const res = await fetch("/api/territories/config/market-size", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ csv }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadResult({ ok: false, message: data.error ?? "Upload failed" });
+        return;
+      }
+      const result = data as MarketSizeResult;
+      setMarketSizeInfo({ rowCount: result.monthly.length, latestYearMonth: result.latestYearMonth });
+      setUploadResult({ ok: true, message: `Replaced with ${result.monthly.length} rows, latest month ${result.latestYearMonth}.` });
+    } catch {
+      setUploadResult({ ok: false, message: "Upload failed -- check the file and try again." });
+    } finally {
+      setUploadingMarketSize(false);
+    }
+  }
 
   const classified = useMemo(() => classifyAllSettlements(settlements, history, config), [settlements, history, config]);
 
@@ -148,6 +179,39 @@ export default function TerritoriesSettlementsPage() {
           this app.
         </p>
       </header>
+
+      <section>
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Market size data</h2>
+        <p className="text-xs text-[var(--text-secondary)] mb-3">
+          The map and Trends chart&apos;s monthly install counts, from Skatteverket&apos;s &quot;grön teknik&quot; export.
+          Uploading a new file replaces the entire dataset (Skatteverket republishes full history each time,
+          including revisions to past months).
+        </p>
+        <div className="rounded-lg border border-[var(--panel-border)] p-3 flex flex-wrap items-center gap-3">
+          <div className="text-sm text-[var(--text-primary)]">
+            {marketSizeInfo && marketSizeInfo.rowCount > 0
+              ? `${marketSizeInfo.rowCount} monthly rows loaded, latest month ${marketSizeInfo.latestYearMonth}`
+              : "No market size data loaded yet"}
+          </div>
+          <label className="text-xs px-3 py-1.5 rounded-md bg-[#2a78d6] text-white cursor-pointer">
+            {uploadingMarketSize ? "Uploading…" : "Upload CSV"}
+            <input
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              disabled={uploadingMarketSize}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleMarketSizeUpload(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          {uploadResult && (
+            <span className={`text-xs ${uploadResult.ok ? "text-[#0ca30c]" : "text-[#d03b3b]"}`}>{uploadResult.message}</span>
+          )}
+        </div>
+      </section>
 
       <section>
         <div className="flex items-center justify-between mb-3">
