@@ -1,6 +1,7 @@
 import MarketSizeChart from "@/components/territories/charts/MarketSizeChart";
-import CompetitorFinancialsChart, { splitByTurnoverGap } from "@/components/territories/charts/CompetitorFinancialsChart";
+import CompetitorFinancialsChart from "@/components/territories/charts/CompetitorFinancialsChart";
 import { readMarketSize } from "@/lib/territories/marketSize";
+import { splitByTurnoverGap } from "@/lib/territories/competitorFinancials";
 import competitorFinancials from "@/data/territories/competitor-financials.json";
 
 const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
