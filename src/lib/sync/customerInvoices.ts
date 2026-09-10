@@ -200,18 +200,31 @@ export async function syncCustomerInvoices() {
 
     if (batteryLinesByDoc.size > 0) {
       const models = new Map<string, string>();
-      const saleLineRows: { fortnox_doc_number: string; article_number: string; article_description: string; quantity: number; invoice_date: string }[] = [];
+      // Keyed by "docNumber|articleNumber" and summed -- the same article number can
+      // appear on more than one line of the same invoice (observed in practice), and a
+      // batch upsert with a duplicate conflict key within itself fails outright
+      // ("ON CONFLICT DO UPDATE command cannot affect row a second time").
+      const saleLinesByKey = new Map<
+        string,
+        { fortnox_doc_number: string; article_number: string; article_description: string; quantity: number; invoice_date: string }
+      >();
       for (const [docNumber, lines] of batteryLinesByDoc) {
         const invoiceDate = active.find((inv) => inv.DocumentNumber === docNumber)!.InvoiceDate;
         for (const line of lines) {
           models.set(line.article_number, line.article_description);
-          saleLineRows.push({
-            fortnox_doc_number: docNumber,
-            article_number: line.article_number,
-            article_description: line.article_description,
-            quantity: line.quantity,
-            invoice_date: invoiceDate,
-          });
+          const key = `${docNumber}|${line.article_number}`;
+          const existingLine = saleLinesByKey.get(key);
+          if (existingLine) {
+            existingLine.quantity += line.quantity;
+          } else {
+            saleLinesByKey.set(key, {
+              fortnox_doc_number: docNumber,
+              article_number: line.article_number,
+              article_description: line.article_description,
+              quantity: line.quantity,
+              invoice_date: invoiceDate,
+            });
+          }
         }
       }
 
@@ -227,7 +240,7 @@ export async function syncCustomerInvoices() {
 
       const { error: linesError } = await supabase
         .from("battery_sale_lines")
-        .upsert(saleLineRows, { onConflict: "fortnox_doc_number,article_number" });
+        .upsert([...saleLinesByKey.values()], { onConflict: "fortnox_doc_number,article_number" });
       if (linesError) throw new Error(`Failed to upsert battery sale lines: ${linesError.message}`);
     }
   }
