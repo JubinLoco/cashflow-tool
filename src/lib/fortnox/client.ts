@@ -37,7 +37,11 @@ async function fortnoxGetPage<TKey extends string, TItem>(
   page: number,
 ): Promise<FortnoxListResponse<TKey, TItem>> {
   const qs = new URLSearchParams({ limit: "500", page: String(page) });
-  const response = await fetchWithRetry(`${BASE_URL}${path}?${qs}`, accessToken);
+  // `path` may already carry its own query string (e.g. "?sortby=...&sortorder=...") --
+  // a second bare "?" produces a malformed URL where everything after it becomes part of
+  // the previous param's value, which Fortnox then rejects as an invalid parameter.
+  const separator = path.includes("?") ? "&" : "?";
+  const response = await fetchWithRetry(`${BASE_URL}${path}${separator}${qs}`, accessToken);
   if (!response.ok) {
     throw new Error(`Fortnox GET ${path} failed (${response.status}): ${await response.text()}`);
   }
