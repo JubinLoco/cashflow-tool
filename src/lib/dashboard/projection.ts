@@ -1,6 +1,11 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
-import { loadDerivationSettings, deriveTaxFlows, deriveMaterialCostFlows } from "@/lib/dashboard/derivedForecast";
+import {
+  loadDerivationSettings,
+  loadDerivedForecastOverrides,
+  deriveTaxFlows,
+  deriveMaterialCostFlows,
+} from "@/lib/dashboard/derivedForecast";
 
 export type DangerLevel = "ok" | "tax_buffer" | "warning" | "bankruptcy";
 
@@ -146,6 +151,7 @@ export async function computeProjection(
   }
 
   const salesForecast = await fetchAllRows<{
+    id: string;
     amount: number;
     probability: number;
     expected_date: string;
@@ -153,7 +159,7 @@ export async function computeProjection(
   }>((from, to) =>
     supabase
       .from("sales_forecast")
-      .select("amount, probability, expected_date, description")
+      .select("id, amount, probability, expected_date, description")
       .eq("status", "forecast")
       .range(from, to),
   );
@@ -180,10 +186,11 @@ export async function computeProjection(
   // for tax and supplier cost without needing a manually-entered purchase forecast row kept
   // in sync by hand.
   const derivationSettings = await loadDerivationSettings(supabase);
-  for (const flow of deriveTaxFlows(salesForecast, derivationSettings)) {
+  const derivedOverrides = await loadDerivedForecastOverrides(supabase);
+  for (const flow of deriveTaxFlows(salesForecast, derivationSettings, derivedOverrides)) {
     addFlow(flow.date, flow.amount, flow.description);
   }
-  for (const flow of deriveMaterialCostFlows(salesForecast, derivationSettings)) {
+  for (const flow of deriveMaterialCostFlows(salesForecast, derivationSettings, derivedOverrides)) {
     addFlow(flow.date, flow.amount, flow.description);
   }
 

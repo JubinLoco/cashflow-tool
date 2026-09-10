@@ -1,6 +1,11 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows, type RangedResult } from "@/lib/supabase/fetchAll";
-import { loadDerivationSettings, deriveTaxFlows, deriveMaterialCostFlows } from "@/lib/dashboard/derivedForecast";
+import {
+  loadDerivationSettings,
+  loadDerivedForecastOverrides,
+  deriveTaxFlows,
+  deriveMaterialCostFlows,
+} from "@/lib/dashboard/derivedForecast";
 
 export type MonthlyComparison = { month: string; forecast: number; actual: number };
 
@@ -16,12 +21,13 @@ async function derivedPurchaseTotals(
   startDate: string,
   endDate: string,
 ): Promise<Map<string, number>> {
-  const salesForecast = await fetchAllRows<{ amount: number; probability: number; expected_date: string }>(
+  const salesForecast = await fetchAllRows<{ id: string; amount: number; probability: number; expected_date: string }>(
     (from, to) =>
-      supabase.from("sales_forecast").select("amount, probability, expected_date").eq("status", "forecast").range(from, to),
+      supabase.from("sales_forecast").select("id, amount, probability, expected_date").eq("status", "forecast").range(from, to),
   );
   const settings = await loadDerivationSettings(supabase);
-  const flows = [...deriveTaxFlows(salesForecast, settings), ...deriveMaterialCostFlows(salesForecast, settings)];
+  const overrides = await loadDerivedForecastOverrides(supabase);
+  const flows = [...deriveTaxFlows(salesForecast, settings, overrides), ...deriveMaterialCostFlows(salesForecast, settings, overrides)];
 
   const totals = new Map<string, number>();
   for (const flow of flows) {

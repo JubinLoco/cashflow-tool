@@ -13,6 +13,7 @@ type VerificationRow = {
   status: string;
   recurringGroupId: string | null;
   expectedMarginPct: number | null;
+  isOverridden: boolean;
 };
 
 const INVOICE_ENDPOINT: Record<"sales" | "purchase", "customer-invoices" | "supplier-invoices"> = {
@@ -40,6 +41,11 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
   const [editAmount, setEditAmount] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editMarginPct, setEditMarginPct] = useState("");
+  // Separate from editingId/editAmount above — derived rows aren't real forecast rows (no
+  // date/margin/recurring-scope to edit, and they PATCH a different endpoint), so keeping
+  // this edit path independent avoids entangling it with the real-forecast-row edit flow.
+  const [editingDerivedKey, setEditingDerivedKey] = useState<string | null>(null);
+  const [editDerivedAmount, setEditDerivedAmount] = useState("");
 
   function load() {
     fetch(`/api/forecast/${apiBase}/verify`)
@@ -114,6 +120,25 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
     load();
   }
 
+  async function handleSaveDerivedEdit(key: string) {
+    await fetch("/api/forecast/derived-overrides", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key, amount: Number(editDerivedAmount) }),
+    });
+    setEditingDerivedKey(null);
+    load();
+  }
+
+  async function handleResetDerived(key: string) {
+    await fetch("/api/forecast/derived-overrides", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key, amount: null }),
+    });
+    load();
+  }
+
   const visibleRows = (rows ?? []).filter((row) => {
     if (showResolved) return true;
     if (row.type === "forecast") return row.status === "forecast" || row.status === "derived";
@@ -148,7 +173,34 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
             </thead>
             <tbody>
               {visibleRows.map((row, i) =>
-                row.id && editingId === row.id ? (
+                row.status === "derived" && editingDerivedKey === row.id ? (
+                  <tr key={i} className="border-b">
+                    <td className="py-2 px-3">
+                      <span className="px-1.5 py-0.5 rounded text-xs bg-blue-900 text-blue-100">Forecast</span>
+                    </td>
+                    <td className="py-2 px-3">{row.description}</td>
+                    <td className="py-2 px-3">
+                      <input
+                        className="border rounded px-1 py-0.5 w-24"
+                        type="number"
+                        value={editDerivedAmount}
+                        onChange={(e) => setEditDerivedAmount(e.target.value)}
+                      />
+                    </td>
+                    <td className="py-2 px-3">{row.date}</td>
+                    <td className="py-2 px-3 text-zinc-500">—</td>
+                    {apiBase === "sales" && <td className="py-2 px-3 text-zinc-500">—</td>}
+                    <td className="py-2 px-3">{row.status}</td>
+                    <td className="py-2 px-3 flex gap-2">
+                      <button onClick={() => handleSaveDerivedEdit(row.id!)} className="text-green-700 underline">
+                        Save
+                      </button>
+                      <button onClick={() => setEditingDerivedKey(null)} className="underline">
+                        Cancel
+                      </button>
+                    </td>
+                  </tr>
+                ) : row.id && editingId === row.id ? (
                   <tr key={i} className="border-b">
                     <td className="py-2 px-3">
                       <span className="px-1.5 py-0.5 rounded text-xs bg-blue-900 text-blue-100">Forecast</span>
@@ -229,7 +281,7 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                           Undo
                         </button>
                       )}
-                      {row.type === "forecast" && row.id && (
+                      {row.type === "forecast" && row.status !== "derived" && row.id && (
                         <>
                           <button onClick={() => startEdit(row)} className="underline">
                             Edit
@@ -237,6 +289,24 @@ export default function VerifyList({ apiBase, refreshSignal }: { apiBase: "sales
                           <button onClick={() => handleDelete(row.id!, Boolean(row.recurringGroupId))} className="text-red-600 underline">
                             Delete
                           </button>
+                        </>
+                      )}
+                      {row.status === "derived" && row.id && (
+                        <>
+                          <button
+                            onClick={() => {
+                              setEditingDerivedKey(row.id);
+                              setEditDerivedAmount(String(row.amount));
+                            }}
+                            className="underline"
+                          >
+                            Edit
+                          </button>
+                          {row.isOverridden && (
+                            <button onClick={() => handleResetDerived(row.id!)} className="text-red-600 underline">
+                              Reset to estimate
+                            </button>
+                          )}
                         </>
                       )}
                       {row.type === "actual" && row.id && (

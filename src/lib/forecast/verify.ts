@@ -1,6 +1,11 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
-import { loadDerivationSettings, deriveTaxFlows, deriveMaterialCostFlows } from "@/lib/dashboard/derivedForecast";
+import {
+  loadDerivationSettings,
+  loadDerivedForecastOverrides,
+  deriveTaxFlows,
+  deriveMaterialCostFlows,
+} from "@/lib/dashboard/derivedForecast";
 
 export type VerificationRow = {
   id: string | null;
@@ -19,6 +24,9 @@ export type VerificationRow = {
   // Sales forecast rows only — null means "use the global gross_margin_pct default"
   // (see weeklyByLine.ts). Always null for purchase forecast, derived, and actual rows.
   expectedMarginPct: number | null;
+  // Derived rows only — whether this flow currently has a derived_forecast_overrides row
+  // substituting the formula-computed amount. Always false for non-derived rows.
+  isOverridden: boolean;
 };
 
 // Merges forecast entries with the real invoices they're compared against (same
@@ -95,15 +103,20 @@ export async function buildVerificationList(
   // not the other way around.
   const derivedRows: VerificationRow[] = [];
   if (forecastTable === "purchase_forecast") {
-    const salesForecast = await fetchAllRows<{ amount: number; probability: number; expected_date: string }>((from, to) =>
-      supabase.from("sales_forecast").select("amount, probability, expected_date").eq("status", "forecast").range(from, to),
+    const salesForecast = await fetchAllRows<{ id: string; amount: number; probability: number; expected_date: string }>(
+      (from, to) =>
+        supabase.from("sales_forecast").select("id, amount, probability, expected_date").eq("status", "forecast").range(from, to),
     );
     const settings = await loadDerivationSettings(supabase);
-    const flows = [...deriveTaxFlows(salesForecast, settings), ...deriveMaterialCostFlows(salesForecast, settings)];
+    const overrides = await loadDerivedForecastOverrides(supabase);
+    const flows = [
+      ...deriveTaxFlows(salesForecast, settings, overrides),
+      ...deriveMaterialCostFlows(salesForecast, settings, overrides),
+    ];
     for (const flow of flows) {
       if (flow.date < startDate || flow.date >= endDate) continue;
       derivedRows.push({
-        id: null,
+        id: flow.key,
         type: "forecast",
         description: flow.description,
         amount: Math.abs(flow.amount),
@@ -112,6 +125,7 @@ export async function buildVerificationList(
         status: "derived",
         recurringGroupId: null,
         expectedMarginPct: null,
+        isOverridden: overrides.has(flow.key),
       });
     }
   }
@@ -127,6 +141,7 @@ export async function buildVerificationList(
       status: r.status,
       recurringGroupId: r.recurring_group_id,
       expectedMarginPct: r.expected_margin_pct ?? null,
+      isOverridden: false,
     })),
     ...derivedRows,
     ...invoiceRows.map((r) => {
@@ -143,6 +158,7 @@ export async function buildVerificationList(
         status: (r.manual_paid ?? r.balance <= 0) ? "paid" : "open",
         recurringGroupId: null,
         expectedMarginPct: null,
+        isOverridden: false,
       };
     }),
   ];

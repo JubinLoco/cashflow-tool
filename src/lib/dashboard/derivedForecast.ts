@@ -9,9 +9,9 @@ export type DerivationSettings = {
   otherSupplierPaymentDays: number;
 };
 
-export type DerivedFlow = { date: string; amount: number; description: string };
+export type DerivedFlow = { date: string; amount: number; description: string; key: string };
 
-type SalesForecastRow = { amount: number; probability: number; expected_date: string };
+type SalesForecastRow = { id: string; amount: number; probability: number; expected_date: string };
 
 function addDays(date: string, days: number): string {
   const d = new Date(date);
@@ -53,43 +53,73 @@ export async function loadDerivationSettings(supabase: ReturnType<typeof createA
   };
 }
 
+// Both derived flows are computed live, never stored as rows — this lets a specific one be
+// overridden with a known actual value (see derived_forecast_overrides) as the real date
+// approaches, keyed by the same stable synthetic id used in deriveTaxFlows/
+// deriveMaterialCostFlows below. Stored as a positive magnitude, matching how real
+// forecast-row amounts are stored/edited elsewhere — sign is applied here, same place the
+// formula-computed amount is already negated.
+export async function loadDerivedForecastOverrides(supabase: ReturnType<typeof createAdminClient>): Promise<Map<string, number>> {
+  const { data } = await supabase.from("derived_forecast_overrides").select("key, amount");
+  return new Map((data ?? []).map((r) => [r.key, r.amount]));
+}
+
 // Tax is charged on total sales for a month, due on a fixed day of the following month —
 // grouped by month rather than per-entry since it's a single monthly payment.
-export function deriveTaxFlows(salesForecast: SalesForecastRow[], settings: DerivationSettings): DerivedFlow[] {
+export function deriveTaxFlows(
+  salesForecast: SalesForecastRow[],
+  settings: DerivationSettings,
+  overrides: Map<string, number>,
+): DerivedFlow[] {
   const byMonth = new Map<string, number>();
   for (const f of salesForecast) {
     const month = f.expected_date.slice(0, 7);
     byMonth.set(month, (byMonth.get(month) ?? 0) + f.amount * f.probability);
   }
 
-  return Array.from(byMonth.entries()).map(([month, total]) => ({
-    date: nextMonthDueDate(month, settings.taxDueDay),
-    amount: -(total * settings.taxPctOfSales),
-    description: `Tax (${Math.round(settings.taxPctOfSales * 100)}% of ${month} sales forecast)`,
-  }));
+  return Array.from(byMonth.entries()).map(([month, total]) => {
+    const key = `tax:${month}`;
+    const override = overrides.get(key);
+    return {
+      key,
+      date: nextMonthDueDate(month, settings.taxDueDay),
+      amount: override !== undefined ? -Math.abs(override) : -(total * settings.taxPctOfSales),
+      description: `Tax (${Math.round(settings.taxPctOfSales * 100)}% of ${month} sales forecast)${override !== undefined ? " — actual" : ""}`,
+    };
+  });
 }
 
 // Material cost is per-sale (each sale implies its own material purchase, with its own
 // payment-terms clock), split between the dominant supplier (FoxESS) and everyone else.
-export function deriveMaterialCostFlows(salesForecast: SalesForecastRow[], settings: DerivationSettings): DerivedFlow[] {
+export function deriveMaterialCostFlows(
+  salesForecast: SalesForecastRow[],
+  settings: DerivationSettings,
+  overrides: Map<string, number>,
+): DerivedFlow[] {
   const flows: DerivedFlow[] = [];
   for (const f of salesForecast) {
     const totalCost = f.amount * f.probability * settings.materialCostPct;
     const foxessCost = totalCost * settings.foxessSharePct;
     const otherCost = totalCost - foxessCost;
 
-    if (foxessCost > 0) {
+    const foxessKey = `material:${f.id}:foxess`;
+    const foxessOverride = overrides.get(foxessKey);
+    if (foxessCost > 0 || foxessOverride !== undefined) {
       flows.push({
+        key: foxessKey,
         date: addDays(f.expected_date, settings.foxessPaymentDays),
-        amount: -foxessCost,
-        description: `FoxESS material cost (${settings.foxessPaymentDays}d, derived)`,
+        amount: foxessOverride !== undefined ? -Math.abs(foxessOverride) : -foxessCost,
+        description: `FoxESS material cost (${settings.foxessPaymentDays}d, derived)${foxessOverride !== undefined ? " — actual" : ""}`,
       });
     }
-    if (otherCost > 0) {
+    const otherKey = `material:${f.id}:other`;
+    const otherOverride = overrides.get(otherKey);
+    if (otherCost > 0 || otherOverride !== undefined) {
       flows.push({
+        key: otherKey,
         date: addDays(f.expected_date, settings.otherSupplierPaymentDays),
-        amount: -otherCost,
-        description: `Other material cost (${settings.otherSupplierPaymentDays}d, derived)`,
+        amount: otherOverride !== undefined ? -Math.abs(otherOverride) : -otherCost,
+        description: `Other material cost (${settings.otherSupplierPaymentDays}d, derived)${otherOverride !== undefined ? " — actual" : ""}`,
       });
     }
   }
