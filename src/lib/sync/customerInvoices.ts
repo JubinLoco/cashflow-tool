@@ -54,7 +54,14 @@ type BatteryLine = { article_number: string; article_description: string; quanti
 
 function extractBatteryRows(rows: FortnoxInvoiceRow[]): BatteryLine[] {
   return rows
-    .filter((row) => isBatteryArticle(row.Description))
+    // A blank ArticleNumber (a manually-typed line item not linked to a real Fortnox
+    // Article record) can't be tracked as "one model" at all -- battery_models/
+    // battery_sale_lines are keyed by article_number, so every blank-numbered line,
+    // regardless of how many genuinely different products they describe, would collide
+    // into a single row (confirmed in practice: 6 distinct products, from a real battery
+    // to battery cables to a monitoring subscription, sharing one row -- removing "one"
+    // of them from the UI silently deleted all six). Skip rather than mis-group them.
+    .filter((row) => row.ArticleNumber && isBatteryArticle(row.Description))
     .map((row) => ({
       article_number: row.ArticleNumber,
       article_description: row.Description,
