@@ -21,7 +21,7 @@ export async function computeMonthlyPnl(monthsBack: number, monthsForward: numbe
   const startMonth = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - monthsBack, 1));
   const endMonth = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + monthsForward + 1, 1));
 
-  const [voucherRows, budgetRows, startingEquitySetting] = await Promise.all([
+  const [voucherRows, budgetRows, startingEquitySetting, salesForecastRows, vatRateSetting] = await Promise.all([
     fetchAllRows<{ account_number: string | null; transaction_date: string | null; amount: number }>((from, to) =>
       supabase.from("fortnox_vouchers").select("account_number, transaction_date, amount").range(from, to),
     ),
@@ -29,8 +29,17 @@ export async function computeMonthlyPnl(monthsBack: number, monthsForward: numbe
       supabase.from("monthly_budget").select("month, turnover, cogs, opex").range(from, to),
     ),
     supabase.from("settings").select("value").eq("key", "starting_equity").maybeSingle(),
+    // Unmatched status filtering mirrors weeklyByLine.ts — a matched forecast row is still a
+    // valid data point for projecting turnover, only "dropped" (flagged wrong/duplicate) isn't.
+    fetchAllRows<{ amount: number; probability: number; expected_date: string }>((from, to) =>
+      supabase.from("sales_forecast").select("amount, probability, expected_date").neq("status", "dropped").range(from, to),
+    ),
+    supabase.from("settings").select("value").eq("key", "vat_rate").maybeSingle(),
   ]);
   const startingEquity = Number(startingEquitySetting.data?.value ?? 0);
+  // sales_forecast.amount is VAT-inclusive (see weeklyByLine.ts) but real ledger turnover
+  // (BAS accounts) never includes VAT — convert so the two are comparable.
+  const vatRate = Number(vatRateSetting.data?.value ?? 0.25);
 
   // Sum every ledger row into a per-month real P&L, across all history (not just the
   // display window) — the equity roll-forward needs to anchor at the true earliest
@@ -57,19 +66,58 @@ export async function computeMonthlyPnl(monthsBack: number, monthsForward: numbe
     months.push(cursor.toISOString().slice(0, 7));
   }
 
+  // Forecast turnover per month, from the same sales pipeline weeklyByLine.ts already
+  // reports on — lets the Budget column auto-populate for any month without a manual
+  // monthly_budget entry (a manual entry still overrides, see the resolution below).
+  const forecastTurnoverByMonth = new Map<string, number>();
+  for (const f of salesForecastRows) {
+    const month = f.expected_date.slice(0, 7);
+    const exVat = (f.amount * f.probability) / (1 + vatRate);
+    forecastTurnoverByMonth.set(month, (forecastTurnoverByMonth.get(month) ?? 0) + exVat);
+  }
+
+  // COGS is a variable cost (scales with sales) — trend it as a % of turnover from the
+  // last 3 real months. Opex is predominantly fixed (salaries, rent) — trend it as a flat
+  // trailing average instead of scaling it with forecast turnover.
+  const recentRealMonths = Array.from(realByMonth.entries())
+    .filter(([, v]) => v.turnover > 0)
+    .sort((a, b) => b[0].localeCompare(a[0]))
+    .slice(0, 3);
+  const trailingCogsPct =
+    recentRealMonths.length > 0
+      ? recentRealMonths.reduce((sum, [, v]) => sum + v.cogs / v.turnover, 0) / recentRealMonths.length
+      : 0;
+  const trailingOpex =
+    recentRealMonths.length > 0 ? recentRealMonths.reduce((sum, [, v]) => sum + v.opex, 0) / recentRealMonths.length : 0;
+
+  const forecastByMonth = new Map<string, { turnover: number; cogs: number; opex: number }>();
+  for (const month of months) {
+    const turnover = forecastTurnoverByMonth.get(month);
+    if (!turnover) continue; // no forecast coverage this month — falls through to the zero default
+    forecastByMonth.set(month, { turnover, cogs: turnover * trailingCogsPct, opex: trailingOpex });
+  }
+
   const equityByMonth = new Map<string, number>();
   const allMonths = [...new Set([...realByMonth.keys(), ...months])].sort();
   let runningEquity = startingEquity;
   for (const month of allMonths) {
     const real = realByMonth.get(month);
-    if (real) runningEquity += real.turnover - real.cogs - real.opex;
+    if (real) {
+      runningEquity += real.turnover - real.cogs - real.opex;
+    } else {
+      // No real ledger data yet for this month — keep compounding on whatever the Budget
+      // column resolves to (manual entry, else the sales-forecast-derived projection)
+      // instead of freezing equity flat.
+      const projected = budgetByMonth.get(month) ?? forecastByMonth.get(month);
+      if (projected) runningEquity += projected.turnover - projected.cogs - projected.opex;
+    }
     equityByMonth.set(month, runningEquity);
   }
 
   return months.map((month) => ({
     month,
     real: deriveFigures(realByMonth.get(month) ?? { turnover: 0, cogs: 0, opex: 0 }),
-    budget: deriveFigures(budgetByMonth.get(month) ?? { turnover: 0, cogs: 0, opex: 0 }),
+    budget: deriveFigures(budgetByMonth.get(month) ?? forecastByMonth.get(month) ?? { turnover: 0, cogs: 0, opex: 0 }),
     equity: equityByMonth.get(month) ?? runningEquity,
   }));
 }
