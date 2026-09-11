@@ -3,7 +3,18 @@ import { fetchAllRows } from "@/lib/supabase/fetchAll";
 import { classifyAccount } from "@/lib/dashboard/basAccounts";
 
 type PnlFigures = { turnover: number; cogs: number; grossProfit: number; opex: number; companyProfit: number };
-export type MonthlyPnlRow = { month: string; real: PnlFigures; budget: PnlFigures; equity: number };
+export type MonthlyPnlRow = {
+  month: string;
+  real: PnlFigures;
+  budget: PnlFigures;
+  // Real equity is only ever shown through the last closed month — null from the current
+  // month onward (a running equity built partly on an in-progress month is misleading, same
+  // reasoning as excluding an unclosed month from the COGS/opex trend above). Budget equity
+  // takes over exactly where real equity leaves off, compounding forward on budget/forecast
+  // profit — null for any month that still has realEquity instead.
+  realEquity: number | null;
+  budgetEquity: number | null;
+};
 
 function deriveFigures(base: { turnover: number; cogs: number; opex: number }): PnlFigures {
   return {
@@ -110,27 +121,45 @@ export async function computeMonthlyPnl(monthsBack: number, monthsForward: numbe
     forecastByMonth.set(month, { turnover, cogs: turnover * trailingCogsPct, opex: trailingOpex });
   }
 
-  const equityByMonth = new Map<string, number>();
   const allMonths = [...new Set([...realByMonth.keys(), ...months])].sort();
-  let runningEquity = startingEquity;
+  const currentMonthKey = today.toISOString().slice(0, 7);
+
+  // Real equity: advances only on real ledger data — freezes once real data runs out
+  // (naturally true from the current month onward, since the ledger can't have future
+  // postings, and a current month's partial postings shouldn't feed a displayed equity
+  // figure either).
+  const realEquityByMonth = new Map<string, number>();
+  let runningRealEquity = startingEquity;
+  for (const month of allMonths) {
+    const real = realByMonth.get(month);
+    if (real) runningRealEquity += real.turnover - real.cogs - real.opex;
+    realEquityByMonth.set(month, runningRealEquity);
+  }
+
+  // Budget equity: follows the exact same real path as above, then keeps compounding past
+  // it using whatever the Budget column resolves to (manual entry, else the sales-forecast
+  // projection) once real data runs out — this is what "current month onward" displays.
+  const budgetEquityByMonth = new Map<string, number>();
+  let runningBudgetEquity = startingEquity;
   for (const month of allMonths) {
     const real = realByMonth.get(month);
     if (real) {
-      runningEquity += real.turnover - real.cogs - real.opex;
+      runningBudgetEquity += real.turnover - real.cogs - real.opex;
     } else {
-      // No real ledger data yet for this month — keep compounding on whatever the Budget
-      // column resolves to (manual entry, else the sales-forecast-derived projection)
-      // instead of freezing equity flat.
       const projected = budgetByMonth.get(month) ?? forecastByMonth.get(month);
-      if (projected) runningEquity += projected.turnover - projected.cogs - projected.opex;
+      if (projected) runningBudgetEquity += projected.turnover - projected.cogs - projected.opex;
     }
-    equityByMonth.set(month, runningEquity);
+    budgetEquityByMonth.set(month, runningBudgetEquity);
   }
 
-  return months.map((month) => ({
-    month,
-    real: deriveFigures(realByMonth.get(month) ?? { turnover: 0, cogs: 0, opex: 0 }),
-    budget: deriveFigures(budgetByMonth.get(month) ?? forecastByMonth.get(month) ?? { turnover: 0, cogs: 0, opex: 0 }),
-    equity: equityByMonth.get(month) ?? runningEquity,
-  }));
+  return months.map((month) => {
+    const isCurrentOrFuture = month >= currentMonthKey;
+    return {
+      month,
+      real: deriveFigures(realByMonth.get(month) ?? { turnover: 0, cogs: 0, opex: 0 }),
+      budget: deriveFigures(budgetByMonth.get(month) ?? forecastByMonth.get(month) ?? { turnover: 0, cogs: 0, opex: 0 }),
+      realEquity: isCurrentOrFuture ? null : (realEquityByMonth.get(month) ?? null),
+      budgetEquity: isCurrentOrFuture ? (budgetEquityByMonth.get(month) ?? null) : null,
+    };
+  });
 }

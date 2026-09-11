@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { formatSEK } from "@/lib/format";
 
 type PnlFigures = { turnover: number; cogs: number; grossProfit: number; opex: number; companyProfit: number };
-type MonthlyPnlRow = { month: string; real: PnlFigures; budget: PnlFigures; equity: number };
+type MonthlyPnlRow = { month: string; real: PnlFigures; budget: PnlFigures; realEquity: number | null; budgetEquity: number | null };
 
 const LINES: { key: keyof PnlFigures; label: string }[] = [
   { key: "turnover", label: "Turnover" },
@@ -82,10 +82,18 @@ export default function MonthlyPnlTable({ data }: { data: MonthlyPnlRow[] }) {
               {data.map((row) => (
                 <Fragment key={row.month}>
                   <td className="py-2 px-3 border-l" style={{ borderColor: "var(--gridline)" }}>
-                    {formatSEK(row.equity)}
+                    {row.realEquity != null ? (
+                      formatSEK(row.realEquity)
+                    ) : (
+                      <span style={{ color: "var(--muted)" }}>—</span>
+                    )}
                   </td>
-                  <td className="py-2 px-3 text-center" style={{ color: "var(--muted)" }}>
-                    —
+                  <td className="py-2 px-3">
+                    {row.budgetEquity != null ? (
+                      formatSEK(row.budgetEquity)
+                    ) : (
+                      <span style={{ color: "var(--muted)" }}>—</span>
+                    )}
                   </td>
                 </Fragment>
               ))}
