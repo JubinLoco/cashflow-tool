@@ -124,26 +124,28 @@ export async function computeMonthlyPnl(monthsBack: number, monthsForward: numbe
   const allMonths = [...new Set([...realByMonth.keys(), ...months])].sort();
   const currentMonthKey = today.toISOString().slice(0, 7);
 
-  // Real equity: advances only on real ledger data — freezes once real data runs out
-  // (naturally true from the current month onward, since the ledger can't have future
-  // postings, and a current month's partial postings shouldn't feed a displayed equity
-  // figure either).
+  // Real equity: advances only on real ledger data from fully-past months — NOT just
+  // "real data exists," since the current month can already have partial real postings
+  // (and, per the COGS/opex trend fix above, a still-open month's real figures can be
+  // badly distorted — e.g. negative COGS). Freezes once we reach the current month.
   const realEquityByMonth = new Map<string, number>();
   let runningRealEquity = startingEquity;
   for (const month of allMonths) {
     const real = realByMonth.get(month);
-    if (real) runningRealEquity += real.turnover - real.cogs - real.opex;
+    if (real && month < currentMonthKey) runningRealEquity += real.turnover - real.cogs - real.opex;
     realEquityByMonth.set(month, runningRealEquity);
   }
 
-  // Budget equity: follows the exact same real path as above, then keeps compounding past
-  // it using whatever the Budget column resolves to (manual entry, else the sales-forecast
-  // projection) once real data runs out — this is what "current month onward" displays.
+  // Budget equity: follows the exact same real path as above through the last fully-past
+  // month, then — from the current month on, regardless of whether that month already has
+  // some partial real postings — compounds using whatever the Budget column resolves to
+  // (manual entry, else the sales-forecast projection) instead of the distorted partial real
+  // figure.
   const budgetEquityByMonth = new Map<string, number>();
   let runningBudgetEquity = startingEquity;
   for (const month of allMonths) {
     const real = realByMonth.get(month);
-    if (real) {
+    if (real && month < currentMonthKey) {
       runningBudgetEquity += real.turnover - real.cogs - real.opex;
     } else {
       const projected = budgetByMonth.get(month) ?? forecastByMonth.get(month);
