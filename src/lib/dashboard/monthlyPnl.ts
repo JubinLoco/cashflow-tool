@@ -77,10 +77,23 @@ export async function computeMonthlyPnl(monthsBack: number, monthsForward: numbe
   }
 
   // COGS is a variable cost (scales with sales) — trend it as a % of turnover from the
-  // last 3 real months. Opex is predominantly fixed (salaries, rent) — trend it as a flat
-  // trailing average instead of scaling it with forecast turnover.
+  // last 3 real, fully-closed months. Opex is predominantly fixed (salaries, rent) — trend
+  // it as a flat trailing average instead of scaling it with forecast turnover. A month isn't
+  // "closed" the moment the calendar page turns — costs like supplier invoices for materials
+  // routinely land after the revenue they relate to, and in practice a month's costs aren't
+  // fully booked until the 10th-15th of the following month. Trending from a month that
+  // hasn't reached that cutoff yet understates COGS more than it understates turnover
+  // (confirmed against real data: one partially-booked month showed *negative* COGS), so use
+  // day 15 of the following month as the close cutoff, not just "not the current month."
+  function monthCloses(month: string): Date {
+    const [year, monthNum] = month.split("-").map(Number);
+    // monthNum is 1-indexed ("08" for August); passing it directly as Date's 0-indexed month
+    // param naturally lands on the 15th of the *following* month (same trick as
+    // derivedForecast.ts's nextMonthDueDate).
+    return new Date(Date.UTC(year, monthNum, 15));
+  }
   const recentRealMonths = Array.from(realByMonth.entries())
-    .filter(([, v]) => v.turnover > 0)
+    .filter(([month, v]) => v.turnover > 0 && today >= monthCloses(month))
     .sort((a, b) => b[0].localeCompare(a[0]))
     .slice(0, 3);
   const trailingCogsPct =
