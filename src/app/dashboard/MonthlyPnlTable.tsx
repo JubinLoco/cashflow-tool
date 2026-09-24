@@ -4,7 +4,17 @@ import { Fragment } from "react";
 import { formatSEK } from "@/lib/format";
 
 type PnlFigures = { turnover: number; cogs: number; grossProfit: number; opex: number; companyProfit: number };
-type MonthlyPnlRow = { month: string; real: PnlFigures; budget: PnlFigures; realEquity: number | null; budgetEquity: number | null };
+type MonthlyPnlRow = {
+  month: string;
+  real: PnlFigures;
+  budget: PnlFigures;
+  realEquity: number | null;
+  budgetEquity: number | null;
+  soliditet: number | null;
+  kassalikviditet: number | null;
+  avkastningPaTotaltKapital: number | null;
+  kapitaletsOmsattningshastighet: number | null;
+};
 
 const LINES: { key: keyof PnlFigures; label: string }[] = [
   { key: "turnover", label: "Turnover" },
@@ -13,6 +23,21 @@ const LINES: { key: keyof PnlFigures; label: string }[] = [
   { key: "opex", label: "Opex" },
   { key: "companyProfit", label: "Company profit" },
 ];
+
+// Real/actual only, no forecast equivalent — Budget column always shows "—" for these.
+const RATIO_LINES: {
+  key: "soliditet" | "kassalikviditet" | "avkastningPaTotaltKapital" | "kapitaletsOmsattningshastighet";
+  label: string;
+}[] = [
+  { key: "soliditet", label: "Soliditet" },
+  { key: "kassalikviditet", label: "Kassalikviditet" },
+  { key: "avkastningPaTotaltKapital", label: "Avkastning på totalt kapital" },
+  { key: "kapitaletsOmsattningshastighet", label: "Kapitalets omsättningshastighet" },
+];
+
+function formatPct(n: number): string {
+  return `${(n * 100).toFixed(1)}%`;
+}
 
 export default function MonthlyPnlTable({ data }: { data: MonthlyPnlRow[] }) {
   return (
@@ -98,6 +123,23 @@ export default function MonthlyPnlTable({ data }: { data: MonthlyPnlRow[] }) {
                 </Fragment>
               ))}
             </tr>
+            {RATIO_LINES.map((line) => (
+              <tr key={line.key} className="border-b" style={{ borderColor: "var(--gridline)" }}>
+                <td className="py-2 px-3 font-medium" style={{ color: "var(--text-primary)" }}>
+                  {line.label}
+                </td>
+                {data.map((row) => (
+                  <Fragment key={row.month}>
+                    <td className="py-2 px-3 border-l" style={{ borderColor: "var(--gridline)" }}>
+                      {row[line.key] != null ? formatPct(row[line.key]!) : <span style={{ color: "var(--muted)" }}>—</span>}
+                    </td>
+                    <td className="py-2 px-3">
+                      <span style={{ color: "var(--muted)" }}>—</span>
+                    </td>
+                  </Fragment>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

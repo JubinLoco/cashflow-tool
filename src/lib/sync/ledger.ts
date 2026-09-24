@@ -6,6 +6,12 @@ type FortnoxAccount = {
   Number: number;
   Description: string;
   Active: boolean;
+  // The account's opening balance for the current fiscal year, and Fortnox's own live
+  // running balance — both already present on the list response, previously discarded.
+  // BalanceBroughtForward is what makes balance-sheet ratios computable without a
+  // historical voucher backfill (see basAccounts.ts / monthlyPnl.ts).
+  BalanceBroughtForward: number;
+  BalanceCarriedForward: number;
 };
 
 export async function syncFortnoxAccounts() {
@@ -18,6 +24,8 @@ export async function syncFortnoxAccounts() {
       number: String(a.Number),
       description: a.Description,
       active: a.Active,
+      balance_brought_forward: a.BalanceBroughtForward,
+      balance_carried_forward: a.BalanceCarriedForward,
     }));
     const { error } = await supabase.from("fortnox_accounts").upsert(rows, { onConflict: "number" });
     if (error) throw new Error(`Failed to upsert Fortnox accounts: ${error.message}`);

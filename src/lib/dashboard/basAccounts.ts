@@ -14,3 +14,27 @@ export function classifyAccount(accountNumber: string): PnlBucket | null {
   if (n >= 5000 && n <= 8999) return "opex";
   return null;
 }
+
+// Balance-sheet counterpart, for solvency/liquidity ratios (Soliditet, Kassalikviditet,
+// etc.) — additive, doesn't affect classifyAccount()/the P&L above. Classes 1-2, credit-
+// natured for equity/liabilities same as turnover above (negated where accumulated).
+export type BalanceSheetBucket =
+  | "fixedAssets" // 1000-1399: Anläggningstillgångar (immateriella/materiella/finansiella)
+  | "inventory" // 1400-1499: Varulager
+  | "currentAssetsOther" // 1500-1999: kortfristiga fordringar + kassa/bank — this is exactly
+  //   Kassalikviditet's numerator (current assets excl. inventory)
+  | "equity" // 2000-2099: Eget kapital
+  | "longTermLiabilities" // 2100-2399: obeskattade reserver, avsättningar, långfristiga skulder
+  | "currentLiabilities"; // 2400-2999: kortfristiga skulder
+
+export function classifyBalanceSheetAccount(accountNumber: string): BalanceSheetBucket | null {
+  const n = Number(accountNumber);
+  if (!Number.isFinite(n)) return null;
+  if (n >= 1000 && n <= 1399) return "fixedAssets";
+  if (n >= 1400 && n <= 1499) return "inventory";
+  if (n >= 1500 && n <= 1999) return "currentAssetsOther";
+  if (n >= 2000 && n <= 2099) return "equity";
+  if (n >= 2100 && n <= 2399) return "longTermLiabilities";
+  if (n >= 2400 && n <= 2999) return "currentLiabilities";
+  return null;
+}

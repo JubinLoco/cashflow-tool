@@ -4,7 +4,17 @@ import { useEffect, useState } from "react";
 import MonthlyPnlTable from "../MonthlyPnlTable";
 
 type PnlFigures = { turnover: number; cogs: number; grossProfit: number; opex: number; companyProfit: number };
-type MonthlyPnlRow = { month: string; real: PnlFigures; budget: PnlFigures; realEquity: number | null; budgetEquity: number | null };
+type MonthlyPnlRow = {
+  month: string;
+  real: PnlFigures;
+  budget: PnlFigures;
+  realEquity: number | null;
+  budgetEquity: number | null;
+  soliditet: number | null;
+  kassalikviditet: number | null;
+  avkastningPaTotaltKapital: number | null;
+  kapitaletsOmsattningshastighet: number | null;
+};
 
 export default function MonthlyPnlPage() {
   const [monthlyPnl, setMonthlyPnl] = useState<MonthlyPnlRow[]>([]);
