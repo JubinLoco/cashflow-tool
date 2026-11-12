@@ -3,6 +3,7 @@ import { fetchAllRows } from "@/lib/supabase/fetchAll";
 import {
   loadDerivationSettings,
   loadDerivedForecastOverrides,
+  loadInvoicedTotalsByMonth,
   deriveTaxFlows,
   deriveMaterialCostFlows,
 } from "@/lib/dashboard/derivedForecast";
@@ -187,7 +188,8 @@ export async function computeProjection(
   // in sync by hand.
   const derivationSettings = await loadDerivationSettings(supabase);
   const derivedOverrides = await loadDerivedForecastOverrides(supabase);
-  for (const flow of deriveTaxFlows(salesForecast, derivationSettings, derivedOverrides)) {
+  const invoicedByMonth = await loadInvoicedTotalsByMonth(supabase);
+  for (const flow of deriveTaxFlows(salesForecast, derivationSettings, derivedOverrides, invoicedByMonth, asOfDate)) {
     addFlow(flow.date, flow.amount, flow.description);
   }
   for (const flow of deriveMaterialCostFlows(salesForecast, derivationSettings, derivedOverrides)) {

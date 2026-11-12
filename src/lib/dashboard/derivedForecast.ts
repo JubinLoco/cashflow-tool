@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fetchAllRows } from "@/lib/supabase/fetchAll";
 
 export type DerivationSettings = {
   taxPctOfSales: number;
@@ -64,27 +65,70 @@ export async function loadDerivedForecastOverrides(supabase: ReturnType<typeof c
   return new Map((data ?? []).map((r) => [r.key, r.amount]));
 }
 
+// What was actually invoiced per month (customer_invoices.total, VAT-inclusive — same basis
+// as sales_forecast.amount, which the tax percentage is applied to). Used to replace the
+// forecast as the tax base once a month has ended. Cancelled invoices are already skipped at
+// sync time, so every row here is a live invoice. The last 13 months are fetched, enough for
+// the forecast-vs-actual chart's look-back (the projection itself only needs the last month).
+export async function loadInvoicedTotalsByMonth(supabase: ReturnType<typeof createAdminClient>): Promise<Map<string, number>> {
+  const now = new Date();
+  const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 13, 1)).toISOString().slice(0, 10);
+  const rows = await fetchAllRows<{ invoice_date: string; total: number }>((fromIdx, toIdx) =>
+    supabase.from("customer_invoices").select("invoice_date, total").gte("invoice_date", from).range(fromIdx, toIdx),
+  );
+  const byMonth = new Map<string, number>();
+  for (const r of rows) {
+    const month = r.invoice_date.slice(0, 7);
+    byMonth.set(month, (byMonth.get(month) ?? 0) + Number(r.total));
+  }
+  return byMonth;
+}
+
 // Tax is charged on total sales for a month, due on a fixed day of the following month —
-// grouped by month rather than per-entry since it's a single monthly payment.
+// grouped by month rather than per-entry since it's a single monthly payment. The base is
+// the sales forecast for future months, but once a month has ended it switches to what was
+// actually invoiced that month — a forecast is only an estimate, and by then the real figure
+// exists (real October invoicing came in at roughly double the forecast the tax line was
+// built from). The current month uses whichever is higher: the forecast or what has been
+// invoiced so far. A manual override (derived_forecast_overrides) still wins over any basis.
 export function deriveTaxFlows(
   salesForecast: SalesForecastRow[],
   settings: DerivationSettings,
   overrides: Map<string, number>,
+  invoicedByMonth: Map<string, number>,
+  asOfDate: string = new Date().toISOString().slice(0, 10),
 ): DerivedFlow[] {
-  const byMonth = new Map<string, number>();
+  const currentMonthKey = asOfDate.slice(0, 7);
+  const byMonth = new Map<string, { total: number; basis: "forecast" | "invoiced" | "invoiced-so-far" }>();
+
   for (const f of salesForecast) {
     const month = f.expected_date.slice(0, 7);
-    byMonth.set(month, (byMonth.get(month) ?? 0) + f.amount * f.probability);
+    if (month < currentMonthKey) continue; // ended month — superseded by the invoiced total below
+    const entry = byMonth.get(month) ?? { total: 0, basis: "forecast" as const };
+    entry.total += f.amount * f.probability;
+    byMonth.set(month, entry);
+  }
+  for (const [month, total] of invoicedByMonth) {
+    if (month > currentMonthKey || total <= 0) continue;
+    if (month === currentMonthKey) {
+      // Month still running: invoicing so far is a floor — never estimate below what's
+      // already been billed, but keep the forecast if it expects more to come.
+      const existing = byMonth.get(month);
+      if (existing && existing.total >= total) continue;
+      byMonth.set(month, { total, basis: "invoiced-so-far" });
+    } else {
+      byMonth.set(month, { total, basis: "invoiced" });
+    }
   }
 
-  return Array.from(byMonth.entries()).map(([month, total]) => {
+  return Array.from(byMonth.entries()).map(([month, { total, basis }]) => {
     const key = `tax:${month}`;
     const override = overrides.get(key);
     return {
       key,
       date: nextMonthDueDate(month, settings.taxDueDay),
       amount: override !== undefined ? -Math.abs(override) : -(total * settings.taxPctOfSales),
-      description: `Tax (${Math.round(settings.taxPctOfSales * 100)}% of ${month} sales forecast)${override !== undefined ? " — actual" : ""}`,
+      description: `Tax (${Math.round(settings.taxPctOfSales * 100)}% of ${month} ${basis === "invoiced" ? "invoiced sales" : basis === "invoiced-so-far" ? "sales invoiced so far" : "sales forecast"})${override !== undefined ? " — actual" : ""}`,
     };
   });
 }

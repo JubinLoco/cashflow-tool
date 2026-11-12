@@ -3,6 +3,7 @@ import { fetchAllRows, type RangedResult } from "@/lib/supabase/fetchAll";
 import {
   loadDerivationSettings,
   loadDerivedForecastOverrides,
+  loadInvoicedTotalsByMonth,
   deriveTaxFlows,
   deriveMaterialCostFlows,
 } from "@/lib/dashboard/derivedForecast";
@@ -27,7 +28,11 @@ async function derivedPurchaseTotals(
   );
   const settings = await loadDerivationSettings(supabase);
   const overrides = await loadDerivedForecastOverrides(supabase);
-  const flows = [...deriveTaxFlows(salesForecast, settings, overrides), ...deriveMaterialCostFlows(salesForecast, settings, overrides)];
+  const invoicedByMonth = await loadInvoicedTotalsByMonth(supabase);
+  const flows = [
+    ...deriveTaxFlows(salesForecast, settings, overrides, invoicedByMonth),
+    ...deriveMaterialCostFlows(salesForecast, settings, overrides),
+  ];
 
   const totals = new Map<string, number>();
   for (const flow of flows) {
