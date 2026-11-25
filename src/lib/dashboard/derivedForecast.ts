@@ -89,8 +89,8 @@ export async function loadInvoicedTotalsByMonth(supabase: ReturnType<typeof crea
 // the sales forecast for future months, but once a month has ended it switches to what was
 // actually invoiced that month — a forecast is only an estimate, and by then the real figure
 // exists (real October invoicing came in at roughly double the forecast the tax line was
-// built from). The current month uses whichever is higher: the forecast or what has been
-// invoiced so far. A manual override (derived_forecast_overrides) still wins over any basis.
+// built from). The current month uses what has been invoiced so far plus the forecast still
+// ahead in the month. A manual override (derived_forecast_overrides) still wins over any basis.
 export function deriveTaxFlows(
   salesForecast: SalesForecastRow[],
   settings: DerivationSettings,
@@ -104,6 +104,9 @@ export function deriveTaxFlows(
   for (const f of salesForecast) {
     const month = f.expected_date.slice(0, 7);
     if (month < currentMonthKey) continue; // ended month — superseded by the invoiced total below
+    // Current month: only the part of the forecast still ahead of us. Rows dated earlier
+    // this month are covered by what's been invoiced so far (counting both would double count).
+    if (month === currentMonthKey && f.expected_date < asOfDate) continue;
     const entry = byMonth.get(month) ?? { total: 0, basis: "forecast" as const };
     entry.total += f.amount * f.probability;
     byMonth.set(month, entry);
@@ -111,11 +114,11 @@ export function deriveTaxFlows(
   for (const [month, total] of invoicedByMonth) {
     if (month > currentMonthKey || total <= 0) continue;
     if (month === currentMonthKey) {
-      // Month still running: invoicing so far is a floor — never estimate below what's
-      // already been billed, but keep the forecast if it expects more to come.
-      const existing = byMonth.get(month);
-      if (existing && existing.total >= total) continue;
-      byMonth.set(month, { total, basis: "invoiced-so-far" });
+      // Month still running: what's been invoiced so far plus the forecast for the rest of
+      // the month (rows dated today or later), so mid-month invoicing running ahead of the
+      // forecast doesn't make the remaining weeks' expected sales disappear.
+      const remainingForecast = byMonth.get(month)?.total ?? 0;
+      byMonth.set(month, { total: total + remainingForecast, basis: "invoiced-so-far" });
     } else {
       byMonth.set(month, { total, basis: "invoiced" });
     }
@@ -128,7 +131,7 @@ export function deriveTaxFlows(
       key,
       date: nextMonthDueDate(month, settings.taxDueDay),
       amount: override !== undefined ? -Math.abs(override) : -(total * settings.taxPctOfSales),
-      description: `Tax (${Math.round(settings.taxPctOfSales * 100)}% of ${month} ${basis === "invoiced" ? "invoiced sales" : basis === "invoiced-so-far" ? "sales invoiced so far" : "sales forecast"})${override !== undefined ? " — actual" : ""}`,
+      description: `Tax (${Math.round(settings.taxPctOfSales * 100)}% of ${month} ${basis === "invoiced" ? "invoiced sales" : basis === "invoiced-so-far" ? "sales: invoiced so far + remaining forecast" : "sales forecast"})${override !== undefined ? " — actual" : ""}`,
     };
   });
 }
