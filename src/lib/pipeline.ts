@@ -1,5 +1,6 @@
 import { syncCustomerInvoices } from "@/lib/sync/customerInvoices";
 import { syncSupplierInvoices } from "@/lib/sync/supplierInvoices";
+import { syncItRevenue } from "@/lib/sync/itRevenue";
 import { syncFortnoxAccounts, syncFortnoxVouchers } from "@/lib/sync/ledger";
 import { computePaymentDelayStats } from "@/lib/factoring/paymentDelayStats";
 import { reallocateFactoring } from "@/lib/factoring/reallocate";
@@ -19,7 +20,10 @@ export async function runSyncPhase() {
   // same (single-use, rotating) refresh token at once.
   await getValidAccessToken();
   const [customerInvoices, supplierInvoices] = await Promise.all([syncCustomerInvoices(), syncSupplierInvoices()]);
-  return { customerInvoices, supplierInvoices };
+  // IT-solutions revenue (article-filtered, a handful of calls) -- kept from ever failing the
+  // main sync: the dashboard tab just shows what was last stored if this errors.
+  const itRevenue = await syncItRevenue().catch((err) => ({ error: (err as Error).message }));
+  return { customerInvoices, supplierInvoices, itRevenue };
 }
 
 // Own phase, separate from runSyncPhase — ledger data (every journal line, not just AP/AR

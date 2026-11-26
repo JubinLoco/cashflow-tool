@@ -8,6 +8,7 @@ const TABS = [
   { href: "/dashboard/weekly", label: "Weekly by business line" },
   { href: "/dashboard/monthly", label: "Monthly P&L and equity" },
   { href: "/dashboard/battery-recycling", label: "Battery recycling" },
+  { href: "/dashboard/it-solutions", label: "IT solutions" },
 ];
 
 export default function DashboardTabs() {
