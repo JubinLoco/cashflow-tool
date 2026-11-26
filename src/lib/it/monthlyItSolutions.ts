@@ -1,14 +1,14 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllRows } from "@/lib/supabase/fetchAll";
+import { IT_ARTICLE_STREAM, IT_RECURRING_STREAM, IT_REVENUE_STREAMS, IT_ROLES, type ItTeam } from "@/lib/it/config";
 
 export type ItMonthRow = {
   month: string; // "YYYY-MM"
   costWattWealth: number;
   costAutotme: number;
   cost: number;
-  revenueArticle41: number;
-  revenueArticle105: number;
-  revenueRecurring: number;
+  costByRole: Record<string, number>; // keyed by IT_ROLES key (+ "unallocated" when an invoice has no team)
+  revenueByStream: Record<string, number>; // keyed by IT_REVENUE_STREAMS key
   revenue: number;
   net: number; // revenue - cost
   recoveredPct: number | null; // revenue / cost, null when the month has no cost booked yet
@@ -22,6 +22,7 @@ export type ItCostInvoice = {
   total: number | null; // SEK, as booked in Fortnox
   months: string[];
   note: string | null;
+  team: ItTeam | null; // headcount per role behind this invoice
 };
 
 export type ItUnassignedInvoice = {
@@ -32,12 +33,14 @@ export type ItUnassignedInvoice = {
 };
 
 export type ItSolutionsData = {
+  streams: { key: string; label: string }[];
+  roles: { key: string; label: string }[];
   months: ItMonthRow[];
   invoices: ItCostInvoice[];
   unassigned: ItUnassignedInvoice[];
 };
 
-type CostRow = { fortnox_doc_number: string; vendor: string; months: string[]; note: string | null };
+type CostRow = { fortnox_doc_number: string; vendor: string; months: string[]; note: string | null; team?: ItTeam | null };
 type SupplierRow = { fortnox_doc_number: string; supplier_name: string | null; invoice_date: string | null; total: number | null };
 type RevenueRow = { article_number: string; invoice_date: string; net_amount: number };
 type RecurringRow = { monthly_amount: number; start_month: string; end_month: string | null };
@@ -65,10 +68,19 @@ function monthRange(from: string, to: string): string[] {
 export async function computeItSolutions(): Promise<ItSolutionsData> {
   const supabase = createAdminClient();
 
-  const [costRows, revenueRows, recurringRows] = await Promise.all([
+  // `team` was added by migration 0026 -- fall back to selecting without it so the tab keeps
+  // working (cost per month, no role split) until that migration has been run.
+  const loadCostRows = () =>
     fetchAllRows<CostRow>((from, to) =>
-      supabase.from("it_cost_invoices").select("fortnox_doc_number, vendor, months, note").range(from, to),
-    ),
+      supabase.from("it_cost_invoices").select("fortnox_doc_number, vendor, months, note, team").range(from, to),
+    ).catch(() =>
+      fetchAllRows<CostRow>((from, to) =>
+        supabase.from("it_cost_invoices").select("fortnox_doc_number, vendor, months, note").range(from, to),
+      ),
+    );
+
+  const [costRows, revenueRows, recurringRows] = await Promise.all([
+    loadCostRows(),
     fetchAllRows<RevenueRow>((from, to) =>
       supabase.from("it_revenue_lines").select("article_number, invoice_date, net_amount").range(from, to),
     ),
@@ -100,6 +112,7 @@ export async function computeItSolutions(): Promise<ItSolutionsData> {
   }
 
   const costByMonth = new Map<string, { WattWealth: number; Autotme: number }>();
+  const roleCostByMonth = new Map<string, Record<string, number>>();
   const invoices: ItCostInvoice[] = [];
   for (const c of costRows) {
     const supplier = supplierByDoc.get(c.fortnox_doc_number);
@@ -112,14 +125,27 @@ export async function computeItSolutions(): Promise<ItSolutionsData> {
       total,
       months: [...c.months].sort(),
       note: c.note,
+      team: c.team ?? null,
     });
     if (total == null || c.months.length === 0) continue;
     const share = total / c.months.length;
+
+    // Split the invoice across roles in proportion to headcount x rough rate, so the roles sum
+    // to exactly the invoice amount. No usable team -> the whole amount is "unallocated".
+    const weights = IT_ROLES.map((r) => ({ key: r.key as string, w: Math.max(0, Number(c.team?.[r.key] ?? 0)) * r.monthlyRate }));
+    const weightSum = weights.reduce((a, b) => a + b.w, 0);
+    const roleSplit: Record<string, number> =
+      weightSum > 0 ? Object.fromEntries(weights.filter((x) => x.w > 0).map((x) => [x.key, (share * x.w) / weightSum])) : { unallocated: share };
+
     for (const month of c.months) {
       const entry = costByMonth.get(month) ?? { WattWealth: 0, Autotme: 0 };
       if (c.vendor === "Autotme") entry.Autotme += share;
       else entry.WattWealth += share;
       costByMonth.set(month, entry);
+
+      const roleEntry = roleCostByMonth.get(month) ?? {};
+      for (const [role, amount] of Object.entries(roleSplit)) roleEntry[role] = (roleEntry[role] ?? 0) + amount;
+      roleCostByMonth.set(month, roleEntry);
     }
   }
 
@@ -134,12 +160,13 @@ export async function computeItSolutions(): Promise<ItSolutionsData> {
     }))
     .sort((a, b) => a.invoiceDate.localeCompare(b.invoiceDate));
 
-  const revenueByMonth = new Map<string, { a41: number; a105: number }>();
+  const revenueByMonth = new Map<string, Record<string, number>>();
   for (const r of revenueRows) {
+    const stream = IT_ARTICLE_STREAM[r.article_number];
+    if (!stream) continue; // article no longer mapped to a stream
     const month = r.invoice_date.slice(0, 7);
-    const entry = revenueByMonth.get(month) ?? { a41: 0, a105: 0 };
-    if (r.article_number === "105") entry.a105 += Number(r.net_amount);
-    else entry.a41 += Number(r.net_amount);
+    const entry = revenueByMonth.get(month) ?? {};
+    entry[stream] = (entry[stream] ?? 0) + Number(r.net_amount);
     revenueByMonth.set(month, entry);
   }
 
@@ -151,20 +178,21 @@ export async function computeItSolutions(): Promise<ItSolutionsData> {
 
   const months: ItMonthRow[] = monthRange(firstMonth, lastMonth).map((month) => {
     const cost = costByMonth.get(month) ?? { WattWealth: 0, Autotme: 0 };
-    const rev = revenueByMonth.get(month) ?? { a41: 0, a105: 0 };
-    const recurring = recurringRows
+    const revenueByStream: Record<string, number> = Object.fromEntries(
+      IT_REVENUE_STREAMS.map((s) => [s.key, revenueByMonth.get(month)?.[s.key] ?? 0]),
+    );
+    revenueByStream[IT_RECURRING_STREAM] += recurringRows
       .filter((r) => r.start_month <= month && (r.end_month == null || month <= r.end_month))
       .reduce((sum, r) => sum + Number(r.monthly_amount), 0);
     const totalCost = cost.WattWealth + cost.Autotme;
-    const revenue = rev.a41 + rev.a105 + recurring;
+    const revenue = Object.values(revenueByStream).reduce((a, b) => a + b, 0);
     return {
       month,
       costWattWealth: cost.WattWealth,
       costAutotme: cost.Autotme,
       cost: totalCost,
-      revenueArticle41: rev.a41,
-      revenueArticle105: rev.a105,
-      revenueRecurring: recurring,
+      costByRole: roleCostByMonth.get(month) ?? {},
+      revenueByStream,
       revenue,
       net: revenue - totalCost,
       recoveredPct: totalCost > 0 ? revenue / totalCost : null,
@@ -172,5 +200,8 @@ export async function computeItSolutions(): Promise<ItSolutionsData> {
   });
 
   invoices.sort((a, b) => (a.months[0] ?? "").localeCompare(b.months[0] ?? "") || a.fortnoxDocNumber.localeCompare(b.fortnoxDocNumber));
-  return { months, invoices, unassigned };
+  const roles: { key: string; label: string }[] = IT_ROLES.map((r) => ({ key: r.key, label: r.label }));
+  if (months.some((m) => (m.costByRole.unallocated ?? 0) > 0)) roles.push({ key: "unallocated", label: "Unallocated" });
+
+  return { streams: IT_REVENUE_STREAMS.map((s) => ({ key: s.key, label: s.label })), roles, months, invoices, unassigned };
 }
